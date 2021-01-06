@@ -1,0 +1,7 @@
+extends layout
+
+block content
+    section(class="section")
+        div(class="container notification is-primary")
+            each company in companylist
+                p=company.company_name
