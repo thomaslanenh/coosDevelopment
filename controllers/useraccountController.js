@@ -18,11 +18,11 @@ exports.companyhome = function (req, res, next) {
     company: function(callback){
       pool.query(
         `SELECT * FROM companyprofile WHERE company_id = ${req.params.id}`
-      )
+      , callback)
     }
 },function(err, results) {
     console.log(results);
-      res.render("companypage", { companylist: results.company });
+      res.render("companypage", { companylist: results.company.rows });
   }
   )
 }

@@ -2,9 +2,34 @@ doctype html
 html
   head
     title= title
-    meta(name="viewport" content="width=device-width, initial-scale=1")
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='/stylesheets/mystyles.css')
     link(rel="icon", href='/icons/mothershipicon.png')
+    script(src="/menuToggle.js")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
   body
+    nav(class="navbar" role="navigation" aria-label="main navigation")
+      div(class="navbar-brand")
+        a(class="navbar-item" href="/")
+          img(src="/icons/mothershipiconlarge.png" alt="Mothership")
+          p(class='has-text-centered' style='padding-left: 5px;') Mothership
+        a.navbar-burger(role='button' aria-label='menu' aria-expanded='false' data-target='navbarBasicExample')
+          span(aria-hidden='true')
+          span(aria-hidden='true')
+          span(aria-hidden='true')
+      #navbarBasicExample.navbar-menu
+        .navbar-start
+          a(class="navbar-item" href="/") Home
+        div(class="navbar-end")
+          if user
+            div(class='buttons navbar-item')
+              a(class="button is-primary" href="/profile")
+                p Profile
+          else
+            div(class="navbar-item")
+              div(class='buttons')
+                a(class="button is-primary" href='/signup')
+                  p Sign Up
+                a(class="button is-light" href='/login')
+                  p Log In
     block content
