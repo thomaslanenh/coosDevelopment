@@ -14,16 +14,21 @@ exports.index = function (req, res) {
 };
 
 exports.companyhome = function (req, res, next) {
-  async.parallel({
-    company: function(callback){
-      pool.query(
-        `SELECT * FROM companyprofile WHERE company_id = ${req.params.id}`
-      , callback)
-    }
-},function(err, results) {
-    console.log(results);
+  async.parallel(
+    {
+      company: function (callback) {
+        pool.query(
+          "SELECT * FROM company WHERE id = $1",
+          [req.params.id],
+          callback
+        );
+      },
+    },
+    function (err, results) {
+      if (err) {
+        next(err);
+      }
       res.render("companypage", { companylist: results.company.rows });
-  }
-  )
-}
-
+    }
+  );
+};

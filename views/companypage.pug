@@ -5,4 +5,8 @@ block content
         div(class="container notification is-primary")
             each company in companylist
                 p=company.company_name
-                p=company.company_id
+    section(class="section")
+        div(class="columns is-mobile")
+            div(class="column is-full")
+                each company in companylist
+                    p=company.website
