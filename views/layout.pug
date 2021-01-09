@@ -1,7 +1,10 @@
 doctype html
 html
   head
-    title= title
+    if title
+      title=title
+    else
+      title Mothership
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='/stylesheets/mystyles.css')
     link(rel="icon", href='/icons/mothershipicon.png')

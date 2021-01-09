@@ -10,7 +10,7 @@ const pool = new Pool({
 });
 
 exports.index = function (req, res) {
-  res.render("login");
+  res.render("login", { title: 'Login'});
 };
 
 exports.companyhome = function (req, res, next) {
@@ -28,7 +28,8 @@ exports.companyhome = function (req, res, next) {
       if (err) {
         next(err);
       }
-      res.render("companypage", { companylist: results.company.rows });
+      let [ foundcompany ] = results.company.rows
+      res.render("companypage", { companylist: results.company.rows, title: foundcompany.company_name });
     }
   );
 };
