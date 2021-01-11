@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    section(class="section")
+        div(class="columns is-mobile is-centered")
+            if userinfo
+                p=userinfo[0].username + "'s Profile"
+            div(class="column is-half")
+                a(href=`mailto:${userinfo[0].email}`)
+                    p=userinfo[0].email
+                p Profile Last Updated: 
+                    p=userinfo[0].last_updated

@@ -4,6 +4,7 @@ var router = express.Router();
 var homepage_controller = require('../controllers/homepageController')
 var useraccount_controller = require('../controllers/useraccountController')
 var async = require('async')
+var passport = require('passport')
 
 router.get('/', homepage_controller.index )
 
@@ -11,5 +12,13 @@ router.get('/company/:id', useraccount_controller.companyhome)
 
 // user account stuff
 router.get('/login', useraccount_controller.index )
+router.get('/signup', useraccount_controller.signup)
+router.post('/signup', useraccount_controller.signup_post)
+
+router.get('/:username/profile', useraccount_controller.profile)
+
+router.get('/test', function(req,res,next){
+    res.send("TEST PAGE FOR MAC! :) ")
+})
 
 module.exports = router;

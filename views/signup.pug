@@ -1,0 +1,39 @@
+extends layout
+
+block content
+    section(class="section")
+        if message
+            div(class="container is-success notification")
+                p=message
+        else if error
+            div(class="container is-danger notification")
+                p=error
+        else
+            div(class="container is-dark notification")
+                p User Creation Portal
+        div(class="columns is-mobile")
+            div(class="column is-3")
+            div(class="column is-7")
+                form(action='' method="Post")
+                    div(class="field")
+                        label(class="label") Username
+                        input(type="text" class="input" id="username" name="username")
+                        p(class="help") Enter a username here.
+                    div(class="field")
+                        label(class="label") Password
+                        input(class="input" id="password" name="password" type="password")
+                        p(class="help") Enter a password for the user here.
+                    div(class="field")
+                        label(class="label") E-Mail Address
+                        input(class="input" id="email" name="email" type="text")
+                        p(class="help") Enter a email address for the user here.
+                    div(class="field")
+                        label(class="label") Associated Company:
+                            p(class="help") Select the associated company for this user.
+                    div(class="control")
+                        for company in companys
+                            label(class="radio")=company.company_name
+                                input(type="radio" name="companyradio" value=company.id)
+                                
+                    div(class="field")
+                        button(type="Submit" class="button is-link") Submit
