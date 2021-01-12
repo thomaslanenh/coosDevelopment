@@ -33,7 +33,6 @@ app.use(passport.session())
 
 app.use('/', formRouter);
 
-
 const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,

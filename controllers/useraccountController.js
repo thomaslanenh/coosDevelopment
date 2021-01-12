@@ -14,25 +14,11 @@ const pool = new Pool({
 });
 
 
-function ensureAuthentication(req,res,next){
-  if (req.isAuthenticated()){
-    next()
-  }else {
-    req.session.error = "You must be logged in to see this page."
-    res.redirect(403, "/login")
-  }
-}
+
 
 exports.index = function (req, res) {
-    res.render("login", { title: "Login" });
+    res.render("login", { title: "Login", user: req.user });
   };
-
-exports.indexpost = function (req, res, next) {
-  passport.authenticate('local', (err,result,info) => {
-    console.log(req.user)
-    res.redirect('/')
-  })
-};
 
 exports.logout = function(req,res,next){
   req.logout();
