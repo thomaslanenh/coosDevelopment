@@ -1,27 +1,28 @@
 extends layout
 
 block content
-  - var [ foundcompany ] = companylist
-    section(class="hero is-info is-medium")
-        div(class="hero-body is-mobile" style=`background-image: url(${foundcompany.business_picture}); background-size: cover;`)
-            div(class="columns")
-                div(class="column is-two-fifths")
-                    h1(class='title')=foundcompany.company_name
-                    a(href=foundcompany.website)
-                        p(class="is-size-5 is-link has-text-link-light") Website
-                div(class="column is-two-fifths")
-                div(class="column is-two-fifths has-text-right")
-                    img(src=foundcompany.logo class="image is-128x128" style="opacity:0.8;")
-    section(class="section")
-        div(class="columns is-mobile")
-            div(class="column is-4 has-text-left")
-                p(class="is-size-7")
-                    | Ages Served:
-                    | NYI
-                p(class="is-size-7") Location: 
-                    p(class="is-size-7")=foundcompany.address
-                    p(class="is-size-7")=foundcompany.town
-            div(class="column is-4")
-                p=foundcompany.description
-            div(class="column is-4")
-                p Right
+    if companylist
+    - var [ foundcompany ] = companylist
+        section(class="hero is-info is-medium")
+            div(class="hero-body is-mobile" style=`background-image: url(${foundcompany.business_picture}); background-size: cover;`)
+                div(class="columns")
+                    div(class="column is-two-fifths")
+                        h1(class='title')=foundcompany.company_name
+                        a(href=foundcompany.website)
+                            p(class="is-size-5 is-link has-text-link-light") Website
+                    div(class="column is-two-fifths")
+                    div(class="column is-two-fifths has-text-right")
+                        img(src=foundcompany.logo class="image is-128x128" style="opacity:0.8;")
+        section(class="section")
+            div(class="columns is-mobile")
+                div(class="column is-4 has-text-left")
+                    p(class="is-size-7")
+                        | Ages Served:
+                        | NYI
+                    p(class="is-size-7") Location: 
+                        p(class="is-size-7")=foundcompany.address
+                        p(class="is-size-7")=foundcompany.town
+                div(class="column is-4")
+                    p=foundcompany.description
+                div(class="column is-4")
+                    p Right

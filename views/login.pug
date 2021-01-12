@@ -5,3 +5,16 @@ block content
         div(class="container notification is-dark")
             p Log In
     section(class="section")
+        div(class="columns is-mobile is-centered")
+            div(class="column")
+                form(action='' method="POST")
+                    div(class="field")
+                        label(class="label") Username
+                        input(class="input" type="text" name="username" id="username")
+                        p(class="help") Type in your username here.
+                    div(class="field")
+                        label(class="label") Password
+                        input(class="input" type="password" name="password" id="password")
+                        p(class="help") Enter your password here. 
+                    div(class="field")
+                        button(class="button is-link") Submit
