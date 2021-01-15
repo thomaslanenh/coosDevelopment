@@ -1,15 +1,21 @@
 extends layout
 
 block content
-    section(class="section")
-        div(class="columns is-mobile is-centered")
-            if userinfo
-                p=userinfo[0].username + "'s Profile"
-            div(class="column is-half")
-                a(href=`mailto:${userinfo[0].email}`)
-                    p=userinfo[0].email
-                p Profile Last Updated: 
-                    p=userinfo[0].last_updated
-                p Assigned Company:
-                    p=userinfo[0].company_name
-                    img(src=userinfo[0].logo)
+    section(class="main-content columns is-fullheight")
+        aside(class="column is-2 is-narrow-mobile is-fullheight section")
+            p(class="menu-label") Dashboard
+            ul(class='menu-list')
+                li
+                    a(href="/" class="is-italic") Home
+        div(class="columns is-10 is-mobile is-centered")
+            section(class="section")
+                if userinfo
+                    p=userinfo[0].username + "'s Profile"
+                div(class="column is-half")
+                    a(href=`mailto:${userinfo[0].email}`)
+                        p=userinfo[0].email
+                    p Profile Last Updated: 
+                        p=userinfo[0].last_updated
+                    p Assigned Company:
+                        p=userinfo[0].company_name
+                        img(src=userinfo[0].logo)

@@ -24,12 +24,14 @@ html
         .navbar-start
           a(class="navbar-item" href="/") Home
         div(class="navbar-end")
-          if user
             div(class='buttons navbar-item')
-              a(class="button is-primary" href="/profile")
-                p Profile
-          else
-            div(class="navbar-item")
+            if user
+              div(class='buttons')
+                  a(class="button is-primary" href=`/${user.user}/profile`)
+                    p Profile
+                  a(class="button is-light" href='/logout')
+                    p Log Out
+            else
               div(class='buttons')
                 a(class="button is-primary" href='/signup')
                   p Sign Up
