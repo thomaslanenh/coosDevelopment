@@ -2,8 +2,13 @@ extends layout
 
 block content
     section(class="section")
-        div(class="container notification is-dark")
-            p Log In
+        -console.log(messages.info)
+        if (messages.error)
+            div(class="container is-danger notification")
+                p= messages.error
+        else
+            div(class="container is-dark notification")
+                p Log In
     section(class="section")
         div(class="columns is-mobile is-centered")
             div(class="column")

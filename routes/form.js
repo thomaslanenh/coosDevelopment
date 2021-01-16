@@ -21,26 +21,15 @@ router.get("/company/:id", useraccount_controller.companyhome);
 
 // user account stuff
 router.get("/login", useraccount_controller.index);
-router.post("/login", (req, res, next) => {
-  passport.authenticate("local", (err, result, info) => {
-    if (err) {
-      console.log(err);
-      return next(err);
-    }
-    if (!result) {
-      req.session.error = "Username or Password Incorrect";
-    }
-    req.logIn(result, (err) => {
-      if (err) {
-        console.log(err);
-        return next(err);
-      }
-      console.log(result);
-      res.redirect(result.user + "/profile");
-    });
-  })(req, res, next);
-});
-
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: `/`,
+    successFlash: true,
+    failureRedirect: "/login",
+    failureFlash: true,
+  })
+);
 router.get("/signup", useraccount_controller.signup);
 router.post("/signup", useraccount_controller.signup_post);
 

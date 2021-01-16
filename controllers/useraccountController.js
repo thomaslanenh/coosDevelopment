@@ -4,7 +4,7 @@ var passport = require("passport");
 var session = require("express-session");
 const LocalStrategy = require("passport-local").Strategy;
 const app = require("../app");
-const pool = require("../db");
+const db = require("../db");
 
 exports.index = function (req, res) {
   res.render("login", { title: "Login", user: req.user });
@@ -16,106 +16,86 @@ exports.logout = function (req, res, next) {
 };
 
 exports.signup = function (req, res) {
-  async.parallel(
-    {
-      companys: function (callback) {
-        pool.query("Select company_name, id FROM COMPANY", callback);
-      },
-    },
-    function (err, results) {
-      console.log(results.companys.rows);
-      if (err) {
-        return next(err);
-      }
-
+  db.tx(async (t) => {
+    const companys = await t.any("SELECT company_name, id FROM company");
+    return { companys };
+  })
+    .then((data) => {
       res.render("signup", {
         title: "Sign Up",
-        companys: results.companys.rows,
+        companys: data.companys,
         user: req.user,
       });
-    }
-  );
-};
-
-exports.signup_post = function (req, res, next) {
-  console.log(req.body.password);
-  var pwd = bcrypt.hash(req.body.password, 10);
-  console.log(pwd);
-  async.parallel(
-    {
-      companys: function (callback) {
-        pool.query("SELECT company_name, id FROM COMPANY", callback);
-      },
-    },
-    function (err, results) {
-      if (err) {
-        return next(err);
-      }
-
-      bcrypt.hash(req.body.password, 10, function (error, hash) {
-        pool.query(
-          "INSERT INTO useraccount(username, password, email, company_id) VALUES($1,$2,$3,$4)",
-          [req.body.username, hash, req.body.email, req.body.companyradio],
-          (err, result) => {
-            console.log(err);
-            if (err) {
-              res.render("signup", {
-                title: "Sign Up",
-                companys: results.companys.rows,
-                error: "Username or E-Mail already registered. Try Again.",
-                user: req.user,
-              });
-            } else {
-              pool.query("COMMIT");
-              res.redirect("/");
-            }
-          }
-        );
-      });
-    }
-  );
-};
-
-exports.companyhome = function (req, res, next) {
-  pool.query(
-    "SELECT * FROM company WHERE id = $1",
-    [req.params.id],
-    (err, result) => {
+    })
+    .catch((err) => {
       if (err) {
         next(err);
       }
+    });
+};
+
+exports.signup_post = async function (req, res, next) {
+  bcrypt.hash(req.body.password, 10, async function (error, hash) {
+    if (error) {
+      next(error);
+    }
+
+    db.tx(async (t) => {
+      const companys = await t.any("SELECT company_name, id FROM company");
+      const insertion = await t.none(
+        "INSERT INTO useraccount(username, password,email, company_id) VALUES ($1, $2, $3, $4)",
+        [req.body.username, hash, req.body.email, req.body.companyradio]
+      );
+      return companys;
+    })
+      .then((data) => {
+        console.log(data);
+        res.redirect("/");
+      })
+      .catch((err) => {
+        if (err) {
+          req.flash('info', 'Username or E-Mail already registered. Try again.')
+          res.redirect('/signup')
+        }
+      });
+  });
+};
+
+exports.companyhome = function (req, res, next) {
+  db.one("select * from company where id = $1", [req.params.id])
+    .then((data) => {
+      console.log(data);
       res.render("companypage", {
-        companylist: result.rows,
+        companylist: data,
         title: "Company Profile",
         user: req.user,
       });
-    }
-  );
+    })
+    .catch((error) => {
+      if (error) {
+        next(error);
+      }
+    });
 };
 
-exports.profile = function (req, res, next) {
+exports.profile = async function (req, res, next) {
   if (req.isAuthenticated()) {
-    async.parallel(
-      {
-        username: function (callback) {
-          pool.query(
-            "SELECT * FROM useraccount INNER JOIN company ON useraccount.company_id = company.id WHERE username = $1",
-            [req.params.username],
-            callback
-          );
-        },
-      },
-      function (err, results) {
-        if (err) {
-          next(err);
-        }
+    db.one(
+      "SELECT * from useraccount INNER JOIN company on useraccount.company_id = company.id WHERE username = $1",
+      [req.params.username]
+    )
+      .then((data) => {
         res.render("profile", {
-          title: `${req.user.user} Profile`,
-          userinfo: results.username.rows,
+          title: `${data.user} Profile`,
+          userinfo: data,
           user: req.user,
         });
-      }
-    );
+      })
+      .catch((error) => {
+        if (error) {
+          next(err);
+        }
+      });
   } else {
     res.redirect("/login");
   }

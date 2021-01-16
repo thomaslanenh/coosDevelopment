@@ -2,12 +2,9 @@ extends layout
 
 block content
     section(class="section")
-        if message
-            div(class="container is-success notification")
-                p=message
-        else if error
+        if (messages.info)
             div(class="container is-danger notification")
-                p=error
+                    p= messages.info
         else
             div(class="container is-dark notification")
                 p User Creation Portal
@@ -31,9 +28,8 @@ block content
                         label(class="label") Associated Company:
                             p(class="help") Select the associated company for this user.
                     div(class="control")
-                        for company in companys
+                        each company in companys
                             label(class="radio")=company.company_name
                                 input(type="radio" name="companyradio" value=company.id)
-                                
                     div(class="field")
                         button(type="Submit" class="button is-link") Submit

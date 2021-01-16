@@ -10,12 +10,12 @@ block content
         div(class="columns is-10 is-mobile is-centered")
             section(class="section")
                 if userinfo
-                    p=userinfo[0].username + "'s Profile"
+                    p=userinfo.username + "'s Profile"
                 div(class="column is-half")
-                    a(href=`mailto:${userinfo[0].email}`)
-                        p=userinfo[0].email
+                    a(href=`mailto:${userinfo.email}`)
+                        p=userinfo.email
                     p Profile Last Updated: 
-                        p=userinfo[0].last_updated
+                        p=userinfo.last_updated
                     p Assigned Company:
-                        p=userinfo[0].company_name
-                        img(src=userinfo[0].logo)
+                        p=userinfo.company_name
+                        img(src=userinfo.logo)
