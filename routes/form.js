@@ -6,7 +6,7 @@ var useraccount_controller = require("../controllers/useraccountController");
 var companycreate_controller = require("../controllers/companycreationController");
 var async = require("async");
 var passport = require("passport");
-
+const { path } = require("../app");
 function ensureAuthentication(req, res, next) {
   if (req.isAuthenticated()) {
     next();
@@ -16,10 +16,9 @@ function ensureAuthentication(req, res, next) {
   }
 }
 
-
 function administratorCheck(req, res, next) {
-  console.log(req.user)
-  if (req.isAuthenticated() && (req.user.user_type === "ADMIN")) {
+  console.log(req.user);
+  if (req.isAuthenticated() && req.user.user_type === "ADMIN") {
     next();
   } else {
     req.session.error = "You must be a administrator to see this page.";
@@ -58,6 +57,7 @@ router.get(
   administratorCheck,
   companycreate_controller.createcompany
 );
+
 router.post(
   "/createcompany",
   companycreate_controller.createcompany_post
