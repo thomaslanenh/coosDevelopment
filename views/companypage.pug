@@ -3,7 +3,7 @@ extends layout
 block content
     if companylist
         section(class="hero is-info is-medium")
-            div(class="hero-body is-mobile" style=`background-image: url(${companylist.business_picture}); background-size: cover;`)
+            div(class="hero-body is-mobile" style=`background-image: url(${companylist.business_picture}); background-size: cover; background-position: center center;`)
                 div(class="columns")
                     div(class="column is-two-fifths")
                         h1(class='title')=companylist.company_name

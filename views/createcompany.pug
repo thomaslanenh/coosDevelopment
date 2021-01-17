@@ -1,0 +1,60 @@
+extends layout
+
+block content
+    section(class='section')
+        div(class='notification is-dark is-mobile')
+            p Create a Business
+        div(class='columns is-mobile is-centered')
+            div(class='column is-8')
+                form(action='' method='POST')
+                    div(class="field")
+                        label(class='label') Company Name:
+                        input(type='text' name='company_name' class='input' required)
+                    div(class='field')
+                        label(class='label') Address:
+                        input(type='text' name='address' class='input')
+                    div(class='field')
+                        label(class='label') Town:
+                        input(type='text' name='town' class='input')
+                    div(class='field')
+                        label(class='label') State:
+                        div(class='select')
+                            select(name='state')
+                                option(value='NH') NH
+                                option(value='VT') VT
+                                option(value='ME') ME
+                    div(class='field')
+                        label(class='label') Zip Code:
+                        input(type='number' minlength='5' maxlength=10 name='zipcode' class='input')
+                        p(class='help') Enter a zip code in this format: 00000
+                    div(class='field')
+                        label(class='label') Phone Number:
+                        input(type='number' minlength='10' maxlength=10 name='phone_number' class='input')
+                        p(class='help') Enter a phone number in this format: 6035551234
+                    div(class='field')
+                        label(class='label') Website:
+                        input(type='url' name='website' class='input')
+                    div(class='field')
+                        label(class='label') Company Description:
+                        textarea(type='text' id='description' name='description' class='textarea' maxlength=700)
+                    div(class='field')
+                        label(class='label') Logo:
+                        input(type='text' name='logo' class='input' maxlength=300)
+                    div(class='field')
+                        label(class='label') Business Image:
+                        input(type='text' name='business_picture' class='input')
+                    hr(class='solid')
+                    h2(class='is-italic has-text-centered') Director Information
+                    div(class='field')
+                        label(class='label') First Name:
+                        input(type='text' class='input' name='first_name') 
+                    div(class='field')
+                        label(class='label') Last Name:
+                        input(type='text' class='input' name='last_name')
+                    h2(class='is-italic has-text-centered') Co-Director Information
+                    div(class='field')
+                        label(class='label') Full Name:
+                        input(type='text' class='input' name='codirector_name')
+                        p(class='help') If no co-director, ignore this field
+                    div(class='field')
+                        button(type='Submit' class='button is-primary') Create Company

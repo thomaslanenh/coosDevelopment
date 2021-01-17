@@ -23,6 +23,14 @@ html
       #navbarBasicExample.navbar-menu
         .navbar-start
           a(class="navbar-item" href="/") Home
+          if user
+            if user.user_type === "ADMIN"
+              div(class="navbar-item has-dropdown is-hoverable")
+                a(class='navbar-link') Admin Menu
+                div(class='navbar-dropdown')
+                  a(class='navbar-item' href='/createcompany') Create Company
+                  hr(class='solid')
+                  a(class='navbar-item' href='/signup') Create User
         div(class="navbar-end")
             div(class='buttons navbar-item')
             if user

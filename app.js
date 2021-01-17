@@ -52,7 +52,7 @@ const pool = new Pool({
 passport.use(
   new LocalStrategy(function (username, password, done) {
     pool.query(
-      "SELECT id,username,password from useraccount WHERE username = $1",
+      "SELECT id,username,password,user_type from useraccount WHERE username = $1",
       [username],
       (err, result) => {
         if (err) {
@@ -64,6 +64,7 @@ passport.use(
               done(null, {
                 id: result.rows[0].id,
                 user: result.rows[0].username,
+                user_type: result.rows[0].user_type,
               });
             } else {
               done(null, false);

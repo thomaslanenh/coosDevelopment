@@ -86,7 +86,7 @@ exports.profile = async function (req, res, next) {
     )
       .then((data) => {
         res.render("profile", {
-          title: `${data.user} Profile`,
+          title: `${req.params.username}'s Profile`,
           userinfo: data,
           user: req.user,
         });
