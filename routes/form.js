@@ -1,10 +1,21 @@
 require("dotenv").config();
 var express = require("express");
+var db = require('../db')
 var router = express.Router();
 var homepage_controller = require("../controllers/homepageController");
 var useraccount_controller = require("../controllers/useraccountController");
 var companycreate_controller = require("../controllers/companycreationController");
 var async = require("async");
+var multer = require('multer')
+var storage = multer.diskStorage({
+  destination: function(req,file,cb) {
+    cb(null, 'uploads/')
+  },
+  filename: function(req,file,cb) {
+    cb(null, file.originalname)
+  }
+})
+var upload = multer({ storage: storage })
 var passport = require("passport");
 const { path } = require("../app");
 function ensureAuthentication(req, res, next) {
@@ -58,8 +69,42 @@ router.get(
   companycreate_controller.createcompany
 );
 
+var compUploader = upload.fields([{ name: 'logo' }, { name: 'business_picture' }])
+
 router.post(
-  "/createcompany",
-  companycreate_controller.createcompany_post
+  "/createcompany", compUploader,
+  function(req,res,next){
+    console.log(req.files.logo[0].originalname)
+    db.tx(async (t) => {
+      const insertCompany = await db.none(
+        `insert into company(company_name, address, town, state, zipcode,phone_number,website,description,logo,business_picture,first_name,last_name,codirector_name)
+              values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
+        [
+          req.body.company_name,
+          req.body.address,
+          req.body.town,
+          req.body.state,
+          req.body.zipcode,
+          req.body.phone_number,
+          req.body.website,
+          req.body.description,
+          req.files.logo[0].originalname,
+          req.files.business_picture[0].originalname,
+          req.body.first_name,
+          req.body.last_name,
+          req.body.codirector_name,
+        ]
+      );
+    })
+      .then((data) => {
+        res.redirect("/");
+      })
+      .catch((err) => {
+        if (err) {
+          req.flash("error", "Something went wrong, contact DB admin");
+          res.redirect("/createcompany");
+        }
+      });
+  }
 );
 module.exports = router;
