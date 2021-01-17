@@ -29,7 +29,6 @@ html
                 a(class='navbar-link') Admin Menu
                 div(class='navbar-dropdown')
                   a(class='navbar-item' href='/createcompany') Create Company
-                  hr(class='solid')
                   a(class='navbar-item' href='/signup') Create User
         div(class="navbar-end")
             div(class='buttons navbar-item')
@@ -41,8 +40,6 @@ html
                     p Log Out
             else
               div(class='buttons')
-                a(class="button is-primary" href='/signup')
-                  p Sign Up
                 a(class="button is-light" href='/login')
                   p Log In
     block content

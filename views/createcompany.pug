@@ -6,7 +6,7 @@ block content
             p Create a Business
         div(class='columns is-mobile is-centered')
             div(class='column is-8')
-                form(action='' method='POST')
+                form(action='' method='POST' enctype="multipart/form-data")
                     div(class="field")
                         label(class='label') Company Name:
                         input(type='text' name='company_name' class='input' required)
@@ -39,10 +39,10 @@ block content
                         textarea(type='text' id='description' name='description' class='textarea' maxlength=700)
                     div(class='field')
                         label(class='label') Logo:
-                        input(type='text' name='logo' class='input' maxlength=300)
+                        input(type='file' name='logo' class='input' maxlength=300)
                     div(class='field')
                         label(class='label') Business Image:
-                        input(type='text' name='business_picture' class='input')
+                        input(type='file' name='business_picture' class='input')
                     hr(class='solid')
                     h2(class='is-italic has-text-centered') Director Information
                     div(class='field')
