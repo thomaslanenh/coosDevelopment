@@ -2,11 +2,17 @@ require("dotenv").config();
 var express = require("express");
 var db = require("../db");
 var router = express.Router();
+
+// controller inits
 var homepage_controller = require("../controllers/homepageController");
 var useraccount_controller = require("../controllers/useraccountController");
 var companycreate_controller = require("../controllers/companycreationController");
 var formcreate_controller = require("../controllers/formController");
+
+
 var async = require("async");
+
+// multer initiation and sets upload folder to be /uploads
 var multer = require("multer");
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -17,8 +23,12 @@ var storage = multer.diskStorage({
   },
 });
 var upload = multer({ storage: storage });
+
+
 var passport = require("passport");
 const { path } = require("../app");
+
+// ensures authentication for user before letting them log in
 function ensureAuthentication(req, res, next) {
   if (req.isAuthenticated()) {
     next();
@@ -28,6 +38,7 @@ function ensureAuthentication(req, res, next) {
   }
 }
 
+// ensures user is a administrator AND authenticated before letting them to a ADMIN area.
 function administratorCheck(req, res, next) {
   console.log(req.user);
   if (req.isAuthenticated() && req.user.user_type === "ADMIN") {
@@ -40,6 +51,7 @@ function administratorCheck(req, res, next) {
 
 router.get("/", homepage_controller.index);
 
+//dynamically assign a company page to their ID.
 router.get("/company/:id", useraccount_controller.companyhome);
 
 // user account stuff
@@ -70,6 +82,8 @@ router.get(
   companycreate_controller.createcompany
 );
 
+// sets variables for company uploader to take the File input type. Sticks it in the "uplaods' folder"
+
 var compUploader = upload.fields([
   { name: "logo" },
   { name: "business_picture" },
@@ -77,6 +91,9 @@ var compUploader = upload.fields([
 
 router.post("/createcompany", compUploader, function (req, res, next) {
   console.log(req.files.logo[0].originalname);
+
+  //transactionally adds the company to the database. Multer removes req.body access for multipart forms when the input 
+  // type is file, so req.files.x.x needs to be used.
   db.tx(async (t) => {
     const insertCompany = await db.none(
       `insert into company(company_name, address, town, state, zipcode,phone_number,website,description,logo,business_picture,first_name,last_name,codirector_name)
