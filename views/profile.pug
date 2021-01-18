@@ -12,10 +12,13 @@ block content
                 if userinfo
                     p=userinfo.username + "'s Profile"
                 div(class="column is-half")
+                    p(class='has-text-weight-bold') User Account E-Mail:
                     a(href=`mailto:${userinfo.email}`)
                         p=userinfo.email
+                    br
                     p Profile Last Updated: 
                         p=userinfo.last_updated
+                    br
                     p Assigned Company:
                         p=userinfo.company_name
                         img(src=userinfo.logo)

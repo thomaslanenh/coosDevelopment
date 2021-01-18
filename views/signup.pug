@@ -28,8 +28,8 @@ block content
                         label(class="label") Associated Company:
                             p(class="help") Select the associated company for this user.
                     div(class="control")
-                        each company in companys
-                            label(class="radio")=company.company_name
-                                input(type="radio" name="companyradio" value=company.id)
+                        select(class='select' name='companyradio')
+                            each company in companys
+                                    option(value=company.id)=company.company_name
                     div(class="field")
                         button(type="Submit" class="button is-link") Submit

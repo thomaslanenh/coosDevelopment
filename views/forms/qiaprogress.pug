@@ -1,0 +1,30 @@
+extends layout
+
+block content
+    section(class='section')
+        div(class='notification is-dark is-centered')
+            p QIA Progress Reporting Form
+        div(class='columns is-mobile is-centered')
+            div(class='column is-half')
+                form(action='' method="POST")
+                    div(class='field')
+                        label(class='label') Date:
+                        input(type='date' name='date' class='input' required)
+                    div(class='field')
+                        label(class='label') Reporting Year:
+                        div(class='select')
+                            select(name='reportingyear')
+                                for year in years
+                                    option(value=year)=year
+                    div(class='field')
+                        label(class='label') Early Childhood Professional:
+                        input(type='text' name='earlyprofessional' class='input' required)
+                    div(class='field')
+                        label(class='label') Item(s) Bought:
+                        textarea(class='textarea' name='itemsbought' required)
+                    div(class='field')
+                        label(class='label') Evidence of Progress Towards Implementation:
+                        p(class='help') Please provide an update of the progress you have made so far in the expenditure of funds and how this has improved your program, improved outcomes for children, increased your skill level as a teacher, and/or created sustainable change in the quality of child care in Coös County.
+                        textarea(name='evidenceprogress' class='textarea' rows='20' col='40' required)
+                    div(class='field')
+                        button(type='Submit' class='button is-primary') Submit

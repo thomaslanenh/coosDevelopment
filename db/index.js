@@ -1,6 +1,7 @@
 
 const pgp = require('pg-promise')({
     //init options
+    capSQL: true
 })
 
 const cn = {

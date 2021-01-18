@@ -3,7 +3,7 @@ extends layout
 block content
     if companylist
         section(class="hero is-info is-medium")
-            div(class="hero-body is-mobile" style=`background-image: url(${companylist.business_picture}); background-size: cover; background-position: center center;`)
+            div(class="hero-body is-mobile" style=`background-image: url('/uploads/${companylist.business_picture}'); background-size: cover; background-position: center center;`)
                 div(class="columns")
                     div(class="column is-two-fifths")
                         h1(class='title')=companylist.company_name
@@ -11,7 +11,7 @@ block content
                             p(class="is-size-5 is-link has-text-link-light") Website
                     div(class="column is-two-fifths")
                     div(class="column is-two-fifths has-text-right")
-                        img(src=companylist.logo class="image is-128x128" style="opacity:0.8;")
+                        img(src=`/uploads/${companylist.logo}` class="image is-128x128" style="opacity:0.8;")
         section(class="section")
             div(class="columns is-mobile")
                 div(class="column is-4 has-text-left")

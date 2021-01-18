@@ -1,0 +1,45 @@
+doctype html
+html
+  head
+    if title
+      title=title
+    else
+      title Mothership
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/mystyles.css')
+    link(rel="icon", href='/icons/mothershipicon.png')
+    script(src="/menuToggle.js")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+  body
+    nav(class="navbar" role="navigation" aria-label="main navigation")
+      div(class="navbar-brand")
+        a(class="navbar-item" href="/")
+          img(src="/icons/mothershipiconlarge.png" alt="Mothership")
+          p(class='has-text-centered' style='padding-left: 5px;') Mothership
+        a.navbar-burger(role='button' aria-label='menu' aria-expanded='false' data-target='navbarBasicExample')
+          span(aria-hidden='true')
+          span(aria-hidden='true')
+          span(aria-hidden='true')
+      #navbarBasicExample.navbar-menu
+        .navbar-start
+          a(class="navbar-item" href="/") Home
+          if user
+            if user.user_type === "ADMIN"
+              div(class="navbar-item has-dropdown is-hoverable")
+                a(class='navbar-link') Admin Menu
+                div(class='navbar-dropdown')
+                  a(class='navbar-item' href='/createcompany') Create Company
+                  a(class='navbar-item' href='/signup') Create User
+        div(class="navbar-end")
+            div(class='buttons navbar-item')
+            if user
+              div(class='buttons')
+                  a(class="button is-primary" href=`/${user.user}/profile`)
+                    p Profile
+                  a(class="button is-light" href='/logout')
+                    p Log Out
+            else
+              div(class='buttons')
+                a(class="button is-light" href='/login')
+                  p Log In
+    block content

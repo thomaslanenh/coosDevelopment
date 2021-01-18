@@ -26,6 +26,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "css")));
+app.use('/uploads', express.static(process.cwd() + '/uploads'));
 app.use(
   session({
     secret: "aperfectcirclefan2020",
