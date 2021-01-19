@@ -131,4 +131,9 @@ router.post("/createcompany", compUploader, function (req, res, next) {
 router.get("/forms/qiaprogress",ensureAuthentication, formcreate_controller.qiaprogress);
 router.post("/forms/qiaprogress", formcreate_controller.qiaprogress_post);
 
+
+// form thank you page
+router.get('/thanks', function(req,res,next){
+  res.render('thanks', {user: req.user})
+})
 module.exports = router;
