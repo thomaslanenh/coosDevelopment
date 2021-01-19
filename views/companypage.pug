@@ -2,7 +2,7 @@ extends layout
 
 block content
     if companylist
-        section(class="hero is-info is-medium")
+        section(class="hero is-info is-medium" style="flex: 1 0 auto;")
             div(class="hero-body is-mobile" style=`background-image: url('/uploads/${companylist.business_picture}'); background-size: cover; background-position: center center;`)
                 div(class="columns")
                     div(class="column is-two-fifths")

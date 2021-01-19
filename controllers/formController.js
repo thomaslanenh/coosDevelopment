@@ -5,6 +5,7 @@ var session = require("express-session");
 const LocalStrategy = require("passport-local").Strategy;
 const app = require("../app");
 const db = require("../db");
+var currentYear = new Date().getFullYear();
 const pgp = require("pg-promise")({
   /* initialization options */
   capSQL: true, // capitalize all generated SQL
@@ -24,7 +25,7 @@ exports.qiaprogress = function (req, res, next) {
   }
 
   // renders the form
-  res.render("./forms/qiaprogress", { users: req.user, years: options });
+  res.render("./forms/qiaprogress", { users: req.user, years: options, currentYear });
 };
 
 exports.qiaprogress_post = async function (req, res, next) {

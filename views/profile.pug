@@ -1,24 +1,63 @@
 extends layout
 
 block content
-    section(class="main-content columns is-fullheight")
+    section(class="main-content columns is-fullheight" style="flex: 1 0 auto; padding: 20px;")
         aside(class="column is-2 is-narrow-mobile is-fullheight section")
             p(class="menu-label") Dashboard
             ul(class='menu-list')
                 li
                     a(href="/" class="is-italic") Home
-        div(class="columns is-10 is-mobile is-centered")
-            section(class="section")
-                if userinfo
-                    p=userinfo.username + "'s Profile"
-                div(class="column is-half")
-                    p(class='has-text-weight-bold') User Account E-Mail:
-                    a(href=`mailto:${userinfo.email}`)
-                        p=userinfo.email
-                    br
-                    p Profile Last Updated: 
-                        p=userinfo.last_updated
-                    br
-                    p Assigned Company:
-                        p=userinfo.company_name
-                        img(src=userinfo.logo)
+        div(class='columns is-mobile is-centered is-multiline')
+            div(class="column is-7")
+                section(class="section")
+                    if userinfo
+                        p=userinfo.username + "'s Profile"
+                    div(class="column is-half")
+                        p(class='has-text-weight-bold') User Account E-Mail:
+                        a(href=`mailto:${userinfo.email}`)
+                            p=userinfo.email
+                        br
+                        p Profile Last Updated: 
+                            p=userinfo.last_updated
+                        br
+                        p Assigned Company:
+                            a(href=`/company/${userinfo.company_id}`)
+                                p=userinfo.company_name
+                                img(src=`/uploads/${userinfo.logo}`)
+            div(class='column is-5')
+                section(class='section')
+                    table(class='table is-bordered is-striped is-hoverable')
+                        thead
+                            p(class='has-text-centered has-text-weight-bold') #{currentYear} Forms
+                            br
+                            tr
+                                th Form Name
+                                th #{currentYear}
+                        tbody
+                            tr  
+                                td
+                                    a(class='is-link' href='/forms/qiaprogress')
+                                        p(class='has-text-weight-bold') QIA Progress Report
+                                if todaysDate
+                                    if todaysDate === "Yes"
+                                        td ✓
+                                    else
+                                        td= " "
+                div(class='column is-full')
+                    section(class='section')
+                        h3(class='has-text-weight-bold has-text-centered') Recently Completed Forms:
+                        if recentForms.length > 0
+                            table(class='table is-bordered is-striped is-hoverable')
+                                thead
+                                    tr
+                                        th Form Name
+                                        th Completion Date
+                                    tbody
+                                        each form in recentForms
+                                            tr
+                                                td
+                                                    a(class='is-link' href=`/submittedforms/${form.form_id}`)
+                                                        p #{form.form_name}
+                                                td #{form.to_char}
+                        else
+                            p(class='is-italic has-text-centered subtitle') No Recently Completed Forms.

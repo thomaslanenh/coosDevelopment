@@ -5,9 +5,10 @@ var session = require("express-session");
 const LocalStrategy = require("passport-local").Strategy;
 const app = require("../app");
 const db = require("../db");
+var currentYear = new Date().getFullYear();
 
 exports.index = function (req, res) {
-  res.render("login", { title: "Login", user: req.user });
+  res.render("login", { title: "Login", user: req.user, currentYear });
 };
 
 exports.logout = function (req, res, next) {
@@ -25,6 +26,7 @@ exports.signup = function (req, res) {
         title: "Sign Up",
         companys: data.companys,
         user: req.user,
+        currentYear,
       });
     })
     .catch((err) => {
@@ -49,13 +51,15 @@ exports.signup_post = async function (req, res, next) {
       return companys;
     })
       .then((data) => {
-        console.log(data);
         res.redirect("/");
       })
       .catch((err) => {
         if (err) {
-          req.flash('info', 'Username or E-Mail already registered. Try again.')
-          res.redirect('/signup')
+          req.flash(
+            "info",
+            "Username or E-Mail already registered. Try again."
+          );
+          res.redirect("/signup");
         }
       });
   });
@@ -64,11 +68,11 @@ exports.signup_post = async function (req, res, next) {
 exports.companyhome = function (req, res, next) {
   db.one("select * from company where id = $1", [req.params.id])
     .then((data) => {
-      console.log(data);
       res.render("companypage", {
         companylist: data,
         title: "Company Profile",
         user: req.user,
+        currentYear,
       });
     })
     .catch((error) => {
@@ -79,24 +83,52 @@ exports.companyhome = function (req, res, next) {
 };
 
 exports.profile = async function (req, res, next) {
-  if (req.isAuthenticated()) {
-    db.one(
+  let accountInfo = {};
+  let recentForms = {};
+
+  db.tx(async (t) => {
+    accountInfo = await t.one(
       "SELECT * from useraccount INNER JOIN company on useraccount.company_id = company.id WHERE username = $1",
       [req.params.username]
-    )
-      .then((data) => {
-        res.render("profile", {
-          title: `${req.params.username}'s Profile`,
-          userinfo: data,
-          user: req.user,
-        });
-      })
-      .catch((error) => {
-        if (error) {
-          next(err);
-        }
+    );
+    recentForms = await t.any(
+      "SELECT f.form_id, TO_CHAR(f.date_submitted :: DATE,'yyyy-mm-dd'), f2.form_name from formresponse f INNER JOIN forms f2 on f.form_id = f2.form_id WHERE f.company_id = $1",
+      [accountInfo.company_id]
+    );
+    return accountInfo, recentForms;
+  })
+    .then((data) => {
+      // We need to compare the form submitted date to our date today to determine if completed.
+      // First we need to see if to_char exists and then decalre the forms date as a date variable
+      if (recentForms.to_char != undefined){
+        formDate = new Date(recentForms[0].to_char);
+      }
+      else {
+        formDate = '2120-01-12' 
+      }
+
+      // now we declare todays date as a variable
+      let todaysDate = new Date();
+
+      // Then we do our comparisons.
+      if (formDate <= todaysDate) {
+        todaysDate = "Yes";
+      } else {
+        todaysDate = "No";
+      }
+
+      res.render("profile", {
+        title: `${req.params.username}'s Profile`,
+        userinfo: accountInfo,
+        user: req.user,
+        currentYear,
+        todaysDate,
+        recentForms,
       });
-  } else {
-    res.redirect("/login");
-  }
+    })
+    .catch((error) => {
+      if (error) {
+        next(error);
+      }
+    });
 };

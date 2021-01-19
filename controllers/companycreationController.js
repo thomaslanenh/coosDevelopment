@@ -5,13 +5,14 @@ var session = require("express-session");
 const LocalStrategy = require("passport-local").Strategy;
 const app = require("../app");
 const db = require("../db");
+var currentYear = new Date().getFullYear();
 
 exports.index = function (req, res, next) {
   res.send("NYI");
 };
 
 exports.createcompany = function (req, res, next) {
-  res.render("createcompany", { user: req.user });
+  res.render("createcompany", { user: req.user, currentYear });
 };
 
 exports.createcompany_post = function (req, res, next) {
