@@ -1,8 +1,10 @@
 const db = require("../db");
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
+var currentYear = new Date().getFullYear();
 
 exports.index = async function (req, res, next) {
+  // queries the DB to return information about the selected form that brought them to this page.
   await db
     .any(
       `select c.company_name, f.form_responses, f3.attribute_name, f4.value 
@@ -27,8 +29,8 @@ exports.index = async function (req, res, next) {
         .font("Helvetica-Bold")
         .fontSize(8)
         .text(results[0].company_name, {
-          align: 'center',
-          underline: 'true'
+          align: "center",
+          underline: "true",
         })
         .moveDown();
 
@@ -36,11 +38,12 @@ exports.index = async function (req, res, next) {
         doc
           .font("Helvetica-Bold")
           .fontSize(8)
-          .text(results[result].attribute_name + ":")
+          .text(results[result].attribute_name + ":");
         doc
           .font("Helvetica")
           .fontSize(7)
-          .text(results[result].value).moveDown();
+          .text(results[result].value)
+          .moveDown();
       }
 
       // ends Doc generation
@@ -50,6 +53,7 @@ exports.index = async function (req, res, next) {
       res.render("userformview", {
         companyForm: results,
         users: req.users,
+        currentYear,
       });
     })
     .catch((error) => {
@@ -57,4 +61,31 @@ exports.index = async function (req, res, next) {
         next(error);
       }
     });
+};
+
+// view all forms by a company.
+exports.viewall = function (req, res, next) {
+
+  let accountInfo = {}
+  let recentForms = {}
+
+  // get neccesary information.
+  db.tx(async (t) => {
+    accountInfo = await t.one(
+      "SELECT username, company_name, logo, company_id, email from useraccount INNER JOIN company on useraccount.company_id = company.id WHERE username = $1",
+      [req.params.username]
+    );
+    recentForms = await t.any(
+      "SELECT f.form_id, f.company_id, f.response_id, TO_CHAR(f.date_submitted :: DATE,'mm-dd-yyyy'), f2.form_name from formresponse f INNER JOIN forms f2 on f.form_id = f2.form_id WHERE f.company_id = $1 LIMIT 100",
+      [accountInfo.company_id]
+    );
+    return {accountInfo, recentForms}
+  }).then((results) => {
+    res.render('viewall', {user: req.user, recentForms, accountInfo, currentYear})
+  }).catch(error => {
+    if (error){
+      console.log(error)
+      res.redirect('/')
+    }
+  });
 };

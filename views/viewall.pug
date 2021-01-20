@@ -1,0 +1,24 @@
+extends layout
+
+block content
+    -console.log(accountInfo)
+    -console.log(recentForms)
+    section(class='section' style="flex: 1 0 auto; padding: 20px;")
+        div(class='columns is-multiline is-centered')
+            div(class='column is-full')
+                h1(class='has-text-centered is-size-2 has-text-weight-bold')=accountInfo.company_name
+                h2(class='has-text-centered is-size-7 is-italic') Form History
+            div(class='column is-narrow')
+                p(class='help') This page only shows the last 100 forms submitted. If you need to request additional forms, please contact CCDN.
+                 table(class='table is-bordered is-striped is-hoverable')
+                    thead
+                            tr
+                                th Form Name
+                                th Completion Date
+                            tbody
+                            each form in recentForms
+                                tr
+                                    td
+                                        a(class='is-link' href=`/${accountInfo.username}/forms/${form.company_id}/${form.form_id}/${form.response_id}`)
+                                            p #{form.form_name}
+                                    td #{form.to_char}

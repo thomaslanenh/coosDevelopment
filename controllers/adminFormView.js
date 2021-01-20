@@ -1,3 +1,5 @@
+var currentYear = new Date().getFullYear();
+
 exports.index = async function (req, res, next) {
     await db
       .any(
@@ -46,6 +48,7 @@ exports.index = async function (req, res, next) {
         res.render("userformview", {
           companyForm: results,
           users: req.users,
+          currentYear
         });
       })
       .catch((error) => {

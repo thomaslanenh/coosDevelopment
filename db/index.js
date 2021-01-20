@@ -1,9 +1,11 @@
+const monitor = require('pg-monitor')
 
-const pgp = require('pg-promise')({
-    //init options
-    capSQL: true
-})
+const initOptions = {
+    capSQL: true,
+}
+const pgp = require('pg-promise')(initOptions)
 
+monitor.attach(initOptions)
 const cn = {
     user: process.env.DB_USER,
     host: process.env.DB_HOST,

@@ -7,11 +7,13 @@ block content
             ul(class='menu-list')
                 li
                     a(href="/" class="is-italic") Home
+                li
+                    a(href=`/${userinfo.username}/forms/${recentForms[0].company_id}/all` class='is-italic') Completed Forms
         div(class='columns is-mobile is-centered is-multiline')
-            div(class="column is-7")
+            div(class="column is-narrow")
                 section(class="section")
                     if userinfo
-                        p=userinfo.username + "'s Profile"
+                        h1(class='has-text-centered has-text-weight-bold is-size-2')=userinfo.username + "'s Profile"
                     div(class="column is-half")
                         p(class='has-text-weight-bold') User Account E-Mail:
                         a(href=`mailto:${userinfo.email}`)
@@ -24,28 +26,29 @@ block content
                             a(href=`/company/${userinfo.company_id}`)
                                 p=userinfo.company_name
                                 img(src=`/uploads/${userinfo.logo}`)
-            div(class='column is-5')
-                section(class='section')
-                    table(class='table is-bordered is-striped is-hoverable')
-                        thead
-                            p(class='has-text-centered has-text-weight-bold') #{currentYear} Forms
-                            br
-                            tr
-                                th Form Name
-                                th #{currentYear}
-                        tbody
-                            tr  
-                                td
-                                    a(class='is-link' href='/forms/qiaprogress')
-                                        p(class='has-text-weight-bold') QIA Progress Report
-                                if todaysDate
-                                    if todaysDate === "Yes"
-                                        td ✓
-                                    else
-                                        td= " "
-                div(class='column is-full')
+            div(class='column is-narrow')
+                div(class='column is-narrow')
                     section(class='section')
-                        h3(class='has-text-weight-bold has-text-centered') Recently Completed Forms:
+                        table(class='table is-bordered is-striped is-hoverable')
+                            thead
+                                p(class='has-text-centered has-text-weight-semibold is-size-5') #{currentYear} Forms
+                                br
+                                tr
+                                    th Form Name
+                                    th #{currentYear}
+                            tbody
+                                tr  
+                                    td
+                                        a(class='is-link' href='/forms/qiaprogress')
+                                            p(class='has-text-weight-bold') QIA Progress Report Form
+                                    if todaysDate
+                                        if todaysDate === "Yes"
+                                            td ✓
+                                        else
+                                            td= " "
+                div(class='column is-narrow')
+                    section(class='section')
+                        h3(class='has-text-weight-semibold has-text-centered is-size-5') Recently Completed Forms:
                         if recentForms.length > 0
                             table(class='table is-bordered is-striped is-hoverable')
                                 thead
@@ -59,5 +62,9 @@ block content
                                                     a(class='is-link' href=`/${userinfo.username}/forms/${form.company_id}/${form.form_id}/${form.response_id}`)
                                                         p #{form.form_name}
                                                 td #{form.to_char}
+                            section(class='section')
+                                a(href=`/${userinfo.username}/forms/${recentForms[0].company_id}/all`)
+                                    p(class='has-text-centered has-text-weight-bold is-italic') View More Forms
+                                
                         else
                             p(class='is-italic has-text-centered subtitle') No Recently Completed Forms.

@@ -126,26 +126,31 @@ router.post("/createcompany", compUploader, function (req, res, next) {
     });
 });
 
-//starting forms
+// starting forms
 
+// QIA Progress Form
 router.get(
   "/forms/qiaprogress",
   ensureAuthentication,
   formcreate_controller.qiaprogress
 );
-router.post("/forms/qiaprogress", formcreate_controller.qiaprogress_post);
+router.post("/forms/qiaprogress", ensureAuthentication, formcreate_controller.qiaprogress_post);
 
-// form thank you page
+// form submit thank you page
 router.get("/thanks", function (req, res, next) {
   res.render("thanks", { user: req.user });
 });
 
-//form user view
+// form user view and download
 router.get(
-  "/:username/forms/:companyid/:formid/:formresponseid",
+  "/:username/forms/:companyid/:formid/:formresponseid",ensureAuthentication,
   userformview_controller.index
 );
-//form administration view
-router.get("/admin/:companyid/:formid/:formresponseid", adminformview_controller.index);
+
+// form administration view
+router.get("/admin/:companyid/:formid/:formresponseid", administratorCheck, adminformview_controller.index);
+
+// view all user forms
+router.get('/:username/forms/:companyid/all', ensureAuthentication, userformview_controller.viewall)
 
 module.exports = router;

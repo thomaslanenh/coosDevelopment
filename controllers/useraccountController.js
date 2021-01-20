@@ -5,6 +5,8 @@ var session = require("express-session");
 const LocalStrategy = require("passport-local").Strategy;
 const app = require("../app");
 const db = require("../db");
+var { body, validationResult } = require("express-validator");
+const { errors } = require("pg-promise");
 var currentYear = new Date().getFullYear();
 
 exports.index = function (req, res) {
@@ -36,34 +38,56 @@ exports.signup = function (req, res) {
     });
 };
 
-exports.signup_post = async function (req, res, next) {
-  bcrypt.hash(req.body.password, 10, async function (error, hash) {
-    if (error) {
-      next(error);
-    }
+exports.signup_post = [
+  body("username")
+  .isLength({ min: 1, max: 25})
+  .withMessage("Username must be under 25 characters.")
+  .custom(value => !/\s/.test(value))
+  .withMessage("Username must not have spaces"),
+  body("email")
+    .isEmail()
+    .withMessage("E-mail Address must be a valid e-mail address."),
+  (req, res, next) => {
+    const errors = validationResult(req);
 
-    db.tx(async (t) => {
-      const companys = await t.any("SELECT company_name, id FROM company");
-      const insertion = await t.none(
-        "INSERT INTO useraccount(username, password,email, company_id) VALUES ($1, $2, $3, $4)",
-        [req.body.username, hash, req.body.email, req.body.companyradio]
-      );
-      return companys;
-    })
-      .then((data) => {
-        res.redirect("/");
-      })
-      .catch((err) => {
-        if (err) {
-          req.flash(
-            "info",
-            "Username or E-Mail already registered. Try again."
-          );
-          res.redirect("/signup");
+    if (!errors.isEmpty()) {
+      console.log(errors);
+      req.flash("error", errors);
+      res.redirect("/signup");
+    } else {
+      bcrypt.hash(req.body.password, 10, async function (error, hash) {
+        if (error) {
+          next(error);
         }
+
+        db.tx(async (t) => {
+          const companys = await t.any(
+            "SELECT company_name, id FROM company"
+          );
+          const insertion = await t.none(
+            "INSERT INTO useraccount(username, password,email, company_id) VALUES ($1, $2, $3, $4)",
+            [req.body.username, hash, req.body.email, req.body.companyradio]
+          );
+          return companys;
+        })
+          .then((data) => {
+            res.redirect("/thanks");
+          })
+          .catch((err) => {
+            if (err) {
+              req.flash(
+                "info",
+                "Username or E-Mail already registered. Try again."
+              );
+              res.redirect("/signup");
+            }
+          });
       });
-  });
-};
+    }}
+];
+
+
+
 
 exports.companyhome = function (req, res, next) {
   db.one("select * from company where id = $1", [req.params.id])
