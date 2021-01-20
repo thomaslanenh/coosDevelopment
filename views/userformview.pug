@@ -1,0 +1,16 @@
+extends layout
+
+block content
+    section(style="flex: 1 0 auto; padding: 20px;")
+        div(class='columns is-multiline is-mobile is-centered')
+            div(class='column is-half')
+                form(action='/formdownloads/form.pdf')
+                    h1(class='has-text-centered has-text-weight-bold')= companyForm[0].company_name
+                    div(class='column is-mobile is-multiline' id='form')
+                        for company in companyForm
+                            div(style='field')
+                                label(class='label')=company.attribute_name
+                                div(class='control')
+                                    input(readonly class='input' type='text' value=company.value style='width:100%;margin:-3px;border:2px inset #eee')
+                            br
+                    button(type='Submit' class='button') View PDF

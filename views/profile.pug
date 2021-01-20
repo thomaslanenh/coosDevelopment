@@ -56,7 +56,7 @@ block content
                                         each form in recentForms
                                             tr
                                                 td
-                                                    a(class='is-link' href=`/submittedforms/${form.form_id}`)
+                                                    a(class='is-link' href=`/${userinfo.username}/forms/${form.company_id}/${form.form_id}/${form.response_id}`)
                                                         p #{form.form_name}
                                                 td #{form.to_char}
                         else

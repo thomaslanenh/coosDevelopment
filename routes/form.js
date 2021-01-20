@@ -8,7 +8,8 @@ var homepage_controller = require("../controllers/homepageController");
 var useraccount_controller = require("../controllers/useraccountController");
 var companycreate_controller = require("../controllers/companycreationController");
 var formcreate_controller = require("../controllers/formController");
-
+var adminformview_controller = require("../controllers/adminFormView");
+var userformview_controller = require("../controllers/userFormView");
 
 var async = require("async");
 
@@ -23,7 +24,6 @@ var storage = multer.diskStorage({
   },
 });
 var upload = multer({ storage: storage });
-
 
 var passport = require("passport");
 const { path } = require("../app");
@@ -92,7 +92,7 @@ var compUploader = upload.fields([
 router.post("/createcompany", compUploader, function (req, res, next) {
   console.log(req.files.logo[0].originalname);
 
-  //transactionally adds the company to the database. Multer removes req.body access for multipart forms when the input 
+  //transactionally adds the company to the database. Multer removes req.body access for multipart forms when the input
   // type is file, so req.files.x.x needs to be used.
   db.tx(async (t) => {
     const insertCompany = await db.none(
@@ -128,12 +128,24 @@ router.post("/createcompany", compUploader, function (req, res, next) {
 
 //starting forms
 
-router.get("/forms/qiaprogress",ensureAuthentication, formcreate_controller.qiaprogress);
+router.get(
+  "/forms/qiaprogress",
+  ensureAuthentication,
+  formcreate_controller.qiaprogress
+);
 router.post("/forms/qiaprogress", formcreate_controller.qiaprogress_post);
 
-
 // form thank you page
-router.get('/thanks', function(req,res,next){
-  res.render('thanks', {user: req.user})
-})
+router.get("/thanks", function (req, res, next) {
+  res.render("thanks", { user: req.user });
+});
+
+//form user view
+router.get(
+  "/:username/forms/:companyid/:formid/:formresponseid",
+  userformview_controller.index
+);
+//form administration view
+router.get("/admin/:companyid/:formid/:formresponseid", adminformview_controller.index);
+
 module.exports = router;

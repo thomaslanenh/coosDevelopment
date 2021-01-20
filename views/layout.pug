@@ -7,7 +7,7 @@ html
       title Mothership
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='/stylesheets/mystyles.css')
-    link(rel="icon", href='/icons/mothershipicon.png')
+    link(rel="icon", type='text/css', href='/icons/mothershipicon.png')
     script(src="/menuToggle.js")
     meta(name="viewport" content="width=device-width, initial-scale=1")
   body
@@ -40,7 +40,7 @@ html
                     p Log Out
             else
               div(class='buttons')
-                a(class="button is-light" href='/login')
+                a(class="button is-light" href='/login' style='padding-right: 20px')
                   p Log In
     block content
     block foot
