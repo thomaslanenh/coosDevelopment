@@ -103,3 +103,21 @@ exports.qiaprogress_post = async function (req, res, next) {
       next(error);
     });
 };
+
+
+exports.qiaoutcome = function(req,res,next){
+  let measures = db.any('SELECT * from qualitymeasures')
+  .then(results => {
+    res.render('./forms/qiaoutcome', {user:req.user, currentYear, measures: results})
+  }).catch(error => {
+    if (error){
+      req.flash('error', 'There was a error, please try again or submit a support ticket.')
+      res.redirect('/')
+    }
+  })
+ 
+}
+
+exports.qiaoutcome_post = function(req,res,next){
+  res.send('NYI')
+}

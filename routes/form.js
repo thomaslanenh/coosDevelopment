@@ -10,7 +10,7 @@ var companycreate_controller = require("../controllers/companycreationController
 var formcreate_controller = require("../controllers/formController");
 var adminformview_controller = require("../controllers/adminFormView");
 var userformview_controller = require("../controllers/userFormView");
-var support_controller = require('../controllers/supportController')
+var support_controller = require("../controllers/supportController");
 
 var async = require("async");
 
@@ -78,8 +78,8 @@ router.get(
 );
 
 // Support Routes
-router.get('/support', ensureAuthentication, support_controller.index)
-router.post('/support', support_controller.indexpost)
+router.get("/support", ensureAuthentication, support_controller.index);
+router.post("/support", support_controller.indexpost);
 // Route to Create a Company
 
 router.get(
@@ -140,7 +140,23 @@ router.get(
   ensureAuthentication,
   formcreate_controller.qiaprogress
 );
-router.post("/forms/qiaprogress", ensureAuthentication, formcreate_controller.qiaprogress_post);
+router.post(
+  "/forms/qiaprogress",
+  ensureAuthentication,
+  formcreate_controller.qiaprogress_post
+);
+
+// QIA Outcome Reporting Form
+router.get(
+  "/forms/qiaoutcome",
+  ensureAuthentication,
+  formcreate_controller.qiaoutcome
+);
+router.post(
+  "/forms/qiaoutcome",
+  ensureAuthentication,
+  formcreate_controller.qiaoutcome_post
+);
 
 // form submit thank you page
 router.get("/thanks", function (req, res, next) {
@@ -149,14 +165,23 @@ router.get("/thanks", function (req, res, next) {
 
 // form user view and download
 router.get(
-  "/:username/forms/:companyid/:formid/:formresponseid",ensureAuthentication,
+  "/:username/forms/:companyid/:formid/:formresponseid",
+  ensureAuthentication,
   userformview_controller.index
 );
 
 // form administration view
-router.get("/admin/:companyid/:formid/:formresponseid", administratorCheck, adminformview_controller.index);
+router.get(
+  "/admin/:companyid/:formid/:formresponseid",
+  administratorCheck,
+  adminformview_controller.index
+);
 
 // view all user forms
-router.get('/:username/forms/:companyid/all', ensureAuthentication, userformview_controller.viewall)
+router.get(
+  "/:username/forms/:companyid/all",
+  ensureAuthentication,
+  userformview_controller.viewall
+);
 
 module.exports = router;

@@ -1,0 +1,25 @@
+extends layout
+
+block content
+    -console.log(measures)
+    section(class='section' style="flex: 1 0 auto;")
+        div(class='columns is-mobile is-centered is-multiline')
+            div(class='column is-full')
+                h1(class='has-text-weight-bold is-size-2 has-text-centered') Outcome Reporting Form
+            div(class='column is-8')
+                form(action='' method='POST')
+                    div(class='field')
+                        label(class='label') Date:
+                        input(class='input' name='date' type='date')
+                    div(class='field')
+                        label(class='label') Early Childhood Professional:
+                        input(class='input' name='earlyprofessional' type='text')
+                    div(class='field')
+                        label(class='label') Center Improvement Plan Goal #1:
+                        textarea(class='textarea' name='centerimprovement' rows=15)
+                    div(class='field')
+                        h2(class='label') Quality Measure(s) Used to Identify Goal:
+                        for measure in measures
+                            label(class='checkbox') #{measure.measure_type} 
+                                input(type='checkbox' id=measure.measure_id)
+                            br
