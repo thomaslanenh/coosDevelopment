@@ -10,6 +10,7 @@ var companycreate_controller = require("../controllers/companycreationController
 var formcreate_controller = require("../controllers/formController");
 var adminformview_controller = require("../controllers/adminFormView");
 var userformview_controller = require("../controllers/userFormView");
+var support_controller = require('../controllers/supportController')
 
 var async = require("async");
 
@@ -75,6 +76,11 @@ router.get(
   ensureAuthentication,
   useraccount_controller.profile
 );
+
+// Support Routes
+router.get('/support', ensureAuthentication, support_controller.index)
+router.post('/support', support_controller.indexpost)
+// Route to Create a Company
 
 router.get(
   "/createcompany",

@@ -4,4 +4,9 @@ block content
     section(style="flex: 1 0 auto; padding: 20px;")
         div(class='columns is-centered is-mobile')
             div(class="column")
-                p(class='has-text-centered') Thank you for your submission.
+                if(messages.info)
+                    div(class='notification is-success')
+                        p=messages.info
+                else
+                    div(class='notification is-dark')
+                        p Thanks for your submission.

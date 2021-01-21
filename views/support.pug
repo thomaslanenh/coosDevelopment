@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    section(style="flex: 1 0 auto; padding: 20px;")
+        div(class='columns is-mobile is-centered')
+            div(class='column is-6')
+                form(action='' method='POST')
+                    div(class='field')
+                        label(class='label') Support Type:
+                        div(class='select' name='support_type')
+                            select
+                                each option in supportTypes
+                                    option(value=option.supporttype_id)=option.support_type
+                    div(class='field')
+                        label(class='label') Message
+                        textarea(class='textarea' name='message' rows=25)
+                    div(class='field')
+                        button(type='Submit' class='button is-primary') Submit Message

@@ -31,17 +31,21 @@ html
                   a(class='navbar-item' href='/createcompany') Create Company
                   a(class='navbar-item' href='/signup') Create User
         div(class="navbar-end")
+          if user
+            div(class='navbar-item has-dropdown is-hoverable')
+              a(class='navbar-link') Support
+              div(class='navbar-dropdown')
+                a(class='navbar-item' href="/support") Submit a Ticket
             div(class='buttons navbar-item')
-            if user
               div(class='buttons')
                   a(class="button is-primary" href=`/${user.user}/profile`)
                     p Dashboard
                   a(class="button is-light" href='/logout')
                     p Log Out
-            else
-              div(class='buttons')
-                a(class="button is-light" href='/login' style='padding-right: 20px')
-                  p Log In
+          else
+            div(class='buttons')
+              a(class="button is-light" href='/login' style='padding-right: 20px')
+                p Log In
     block content
     block foot
       footer
