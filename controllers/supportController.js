@@ -23,9 +23,10 @@ exports.index = function(req,res,next) {
 }
 
 exports.indexpost = function(req,res,next){
+    console.log(req.body)
     db.tx(async(t) => {
         const userinfo = await t.one('select id from useraccount WHERE username = $1', [req.user.user])
-        const supportticket = await t.none('insert into helptickets(message,user_id) values ($1, $2)', [req.body.message, userinfo.id])
+        const supportticket = await t.none('insert into helptickets(message,user_id, support_type) values ($1, $2, $3)', [req.body.message, userinfo.id, req.body.support_type])
     }).then(results => {
         req.flash('info', 'Your ticket has been submitted. Thank you.')
         res.redirect('/thanks')

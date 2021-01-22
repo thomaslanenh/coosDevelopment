@@ -2,6 +2,7 @@ require("dotenv").config();
 var express = require("express");
 var db = require("../db");
 var router = express.Router();
+var currentYear = new Date().getFullYear();
 
 // controller inits
 var homepage_controller = require("../controllers/homepageController");

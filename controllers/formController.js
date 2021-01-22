@@ -24,7 +24,7 @@ exports.qiaprogress = function (req, res, next) {
 
   // renders the form
   res.render("./forms/qiaprogress", {
-    users: req.user,
+    user: req.user,
     years: options,
     currentYear,
   });

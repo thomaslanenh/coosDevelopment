@@ -7,9 +7,10 @@ block content
                 form(action='' method='POST')
                     div(class='field')
                         label(class='label') Support Type:
-                        div(class='select' name='support_type')
-                            select
+                        div(class='select')
+                            select(name='support_type')
                                 each option in supportTypes
+                                    -console.log(option.supporttype_id)
                                     option(value=option.supporttype_id)=option.support_type
                     div(class='field')
                         label(class='label') Message
