@@ -1,0 +1,43 @@
+extends layout
+
+block content
+    section(class="section" style="flex: 1 0 auto; padding: 20px;")
+        if messages.info
+            div(class='notification is-primary is-light')
+                p=messages.info
+        if messages.error
+            div(class='notification is-danger is-light')
+                p=messages.error
+        div(class='columns is-mobile is-centered is-multiline')
+            div(class='column is-8')
+                article(class='media')
+                    div(class='media-content')
+                        div(class='content')
+                            p
+                                a(href=`mailto:`+messageinfo.email)
+                                    strong=messageinfo.username+" "
+                                small(class='is-italic')=messageinfo.company_name+" "
+                                small=messageinfo.user_type + " "
+                                small=messageinfo.to_char
+                            p
+                                p(class='is-italic is-size-7')=messageinfo.subject_title
+                                p=messageinfo.message
+            if messageloop
+                each message in messageloop
+                    div(class='column is-8')
+                        article(class='media')
+                            div(class='media-content')
+                                div(class='content')
+                                    p
+                                        a(href=`mailto:`+message.email)
+                                            strong=message.username+" "
+                                        small=message.user_type + " "
+                                        small=message.to_char
+                                    p
+                                        p=message.message
+            div(class='column is-10')
+                form(action='' method='POST')
+                    div(class='field')
+                        textarea(class='textarea' name='reply' rows=15)
+                    div(class='field')
+                        button(type='Submit' class='button is-primary') Submit Reply

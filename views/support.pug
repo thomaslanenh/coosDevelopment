@@ -13,7 +13,12 @@ block content
                                     -console.log(option.supporttype_id)
                                     option(value=option.supporttype_id)=option.support_type
                     div(class='field')
-                        label(class='label') Message
-                        textarea(class='textarea' name='message' rows=25)
+                        label(class='label') Subject:
+                        p(class='help') Please briefly describe your issue/request here.
+                        input(type='text' name='subject' class='input')
+                    div(class='field')
+                        label(class='label') Message:
+                        p(class='help') Please describe your issue/request in detail here.
+                        textarea(class='textarea' name='message' rows=15)
                     div(class='field')
                         button(type='Submit' class='button is-primary') Submit Message

@@ -81,8 +81,13 @@ router.get(
 // Support Routes
 router.get("/support", ensureAuthentication, support_controller.index);
 router.post("/support", support_controller.indexpost);
-// Route to Create a Company
 
+// Support Messages Routes
+router.get('/messages', ensureAuthentication, support_controller.messages)
+// Support Message Detail 
+router.get('/messages/:messageid', ensureAuthentication, support_controller.messagedetail)
+router.post('/messages/:messageid', support_controller.messagedetailpost)
+// Route to Create a Company
 router.get(
   "/createcompany",
   administratorCheck,

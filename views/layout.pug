@@ -7,6 +7,7 @@ html
       title Mothership
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='/stylesheets/mystyles.css')
+    link(rel='stylesheet', href='/css/all.css')
     link(rel="icon", type='text/css', href='/icons/mothershipicon.png')
     script(src="/menuToggle.js")
     meta(name="viewport" content="width=device-width, initial-scale=1")
@@ -36,6 +37,11 @@ html
               a(class='navbar-link') Support
               div(class='navbar-dropdown')
                 a(class='navbar-item' href="/support") Submit a Ticket
+            div(class='navbar-item')
+              a(class='link' href='/messages')
+                span(class='icon has-text-info')
+                  i(class="fas fa-envelope" )
+                span Messages
             div(class='buttons navbar-item')
               div(class='buttons')
                   a(class="button is-primary" href=`/${user.user}/profile`)

@@ -1,0 +1,22 @@
+extends layout
+
+block content
+    section(class="section" style="flex: 1 0 auto; padding: 20px;")
+        div(class='columns is-mobile is-centered is-multiline')
+            div(class='column is-full')
+                p(class='help has-text-centered') Please submit a support ticket to start a conversation or click in to a message below to reply.
+            div(class='column is-narrow')
+                if supporttickets.length > 0
+                    table(class='table is-bordered is-hoverable is-striped')
+                        thead
+                            th Message:
+                            th User:
+                        tbody
+                            each ticket in supporttickets
+                                tr
+                                    th
+                                        a(href=`/messages/${ticket.ticketid}`)
+                                            p=ticket.subject_title
+                                    th=ticket.username
+                else
+                    p(class='has-text-weight-bold has-text-centered is-size-6 is-italic') You Have No Messages
