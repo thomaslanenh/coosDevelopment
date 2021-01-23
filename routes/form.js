@@ -161,7 +161,7 @@ router.post(
 
 // form submit thank you page
 router.get("/thanks", function (req, res, next) {
-  res.render("thanks", { user: req.user });
+  res.render("thanks", { user: req.user, currentYear });
 });
 
 // form user view and download

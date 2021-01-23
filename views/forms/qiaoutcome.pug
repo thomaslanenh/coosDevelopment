@@ -10,16 +10,368 @@ block content
                 form(action='' method='POST')
                     div(class='field')
                         label(class='label') Date:
-                        input(class='input' name='date' type='date')
+                        input(class='input' name='date' type='date' required)
                     div(class='field')
                         label(class='label') Early Childhood Professional:
-                        input(class='input' name='earlyprofessional' type='text')
+                        input(class='input' name='earlyprofessionalgoalone' type='text' required)
                     div(class='field')
                         label(class='label') Center Improvement Plan Goal #1:
-                        textarea(class='textarea' name='centerimprovement' rows=15)
+                        textarea(class='textarea' name='centerimprovementgoalone' rows=15 required)
                     div(class='field')
                         h2(class='label') Quality Measure(s) Used to Identify Goal:
                         for measure in measures
                             label(class='checkbox') #{measure.measure_type} 
-                                input(type='checkbox' id=measure.measure_id)
+                                input(type='checkbox' value=measure.measure_id id=measure.measure_id name='measuresgoalone')
                             br
+                    div(class='field')
+                        label(class='label') Items Bought:
+                        p(class='help') Please put seperate items on seperate lines.
+                        textarea(class='textarea' name='itemsboughtgoalone' rows=10 required)
+                    div(class='field')
+                        label(class='label') Please include the indicators for each quality measure that is applicable to goal #1 in the following. You may have mulitple indicators for one quality measure.
+                        table(class='table')
+                            thead
+                                tr(class='has-text-centered')
+                                    th Quality Measurement
+                                    th Indicator
+                                    th #{previousYear} Score
+                                    th #{currentYear} Score
+                            tbody
+                                tr 
+                                    td
+                                        select(class='select' name='measuretypeindicatoronechoice1')
+                                            for measure in measures
+                                                option(value=measure.measure_id)=measure.measure_type
+                                    td
+                                        input(type='text' class='input' name='indicatorgoalonechoice1' required)
+                                    td
+                                        input(type='number' class='input' name='previousyearscoregoalonechoice1' required)
+                                    td
+                                        input(type='number' class='input' name='currentyearscoregoalonechoice1' required)
+                                tr 
+                                    td
+                                        select(class='select' name='measuretypeindicatoronechoice2')
+                                            for measure in measures
+                                                option(value=measure.measure_id)=measure.measure_type
+                                    td
+                                        input(type='text' class='input' name='indicatorgoalonechoice2')
+                                    td
+                                        input(type='number' class='input' name='previousyearscoregoalonechoice2')
+                                    td
+                                        input(type='number' class='input' name='currentyearscoregoalonechoice2')
+                                tr 
+                                    td
+                                        select(class='select' name='measuretypeindicatoronechoice3')
+                                            for measure in measures
+                                                option(value=measure.measure_id)=measure.measure_type
+                                    td
+                                        input(type='text' class='input' name='indicatorgoalonechoice3')
+                                    td
+                                        input(type='number' class='input' name='previousyearscoregoalonechoice3')
+                                    td
+                                        input(type='number' class='input' name='currentyearscoregoalonechoice3')
+                                tr 
+                                    td
+                                        select(class='select' name='measuretypeindicatoronechoice4')
+                                            for measure in measures
+                                                option(value=measure.measure_id)=measure.measure_type
+                                    td
+                                        input(type='text' class='input' name='indicatorgoalonechoice4')
+                                    td
+                                        input(type='number' class='input' name='previousyearscoregoalonechoice4')
+                                    td
+                                        input(type='number' class='input' name='currentyearscoregoalonechoice4')
+                                tr 
+                                    td
+                                        select(class='select' name='measuretypeindicatoronechoice5')
+                                            for measure in measures
+                                                option(value=measure.measure_id)=measure.measure_type
+                                    td
+                                        input(type='text' class='input' name='indicatorgoalonechoice5')
+                                    td
+                                        input(type='number' class='input' name='previousyearscoregoalonechoice5')
+                                    td
+                                        input(type='number' class='input' name='currentyearscoregoalonechoice5')
+                                tr 
+                                    td
+                                        select(class='select' name='measuretypeindicatoronechoice6')
+                                            for measure in measures
+                                                option=measure.measure_type
+                                    td
+                                        input(type='text' class='input' name='indicatorgoalonechoice6')
+                                    td
+                                        input(type='number' class='input' name='previousyearscoregoalonechoice6')
+                                    td
+                                        input(type='number' class='input' name='currentyearscoregoalonechoice6')
+                                tr 
+                                    td
+                                        select(class='select' name='measuretypeindicatoronechoice7')
+                                            for measure in measures
+                                                option(value=measure.measure_id)=measure.measure_type
+                                    td
+                                        input(type='text' class='input' name='indicatorgoalonechoice7')
+                                    td
+                                        input(type='number' class='input' name='previousyearscoregoalonechoice7')
+                                    td
+                                        input(type='number' class='input' name='currentyearscoregoalonechoice7')
+                        div(class='notification is-info is-light')
+                            p Evidence of progress toward implementation:  Please provide a detailed description of how the expenditure of funds has improved your program, improved outcomes for children, increased your skill level as a teacher, and/or created sustainable change in the quality of child care in Coös County. 
+                        p(class='help has-text-centered') This is for the Quality Improvement Award #{currentYear}
+                        div(class='field')
+                            label(class='label') Narrative for Goal #1:
+                            textarea(class='textarea' name='narrativeforgoalone' rows=15 required)
+                        hr(class='solid')
+                        // goal two
+                        div(class='field')
+                        label(class='label') Center Improvement Plan Goal #2:
+                        textarea(class='textarea' name='centerimprovementgoaltwo' rows=15)
+                        div(class='field')
+                            label(class='checkbox') None 
+                            input(type='checkbox' value=8 name='measuresgoaltwo' checked)
+                            br
+                            label(class='checkbox') ECERS-3
+                            input(type='checkbox' name='measuresgoaltwo' value=1)
+                            br
+                            label(class='checkbox') ITERS-3 
+                            input(type='checkbox' name='measuresgoaltwo' value=2)
+                            br
+                            label(class='checkbox') TPOT 
+                            input(type='checkbox' name='measuresgoaltwo' value=3)
+                            br
+                            label(class='checkbox') TPITOS 
+                            input(type='checkbox' name='measuresgoaltwo' value=4)
+                            br
+                            label(class='checkbox') NAEYC Annual Report 
+                            input(type='checkbox' name='measuresgoaltwo' value=5) 
+                            br
+                            label(class='checkbox') Parent Survey 
+                            input(type='checkbox' name='measuresgoaltwo' value=6)
+                            br
+                            label(class='checkbox') Staff Input 
+                            input(type='checkbox' name='measuresgoaltwo' value=7)
+                        div(class='field')
+                            label(class='label') Items Bought:
+                            p(class='help') Please put seperate items on seperate lines.
+                            textarea(class='textarea' name='itemsboughtgoaltwo' rows=10)
+                        div(class='field')
+                            label(class='label') Please include the indicators for each quality measure that is applicable to goal #1 in the following. You may have mulitple indicators for one quality measure.
+                            table(class='table')
+                                thead
+                                    tr(class='has-text-centered')
+                                        th Quality Measurement
+                                        th Indicator
+                                        th #{previousYear} Score
+                                        th #{currentYear} Score
+                                tbody
+                                    tr 
+                                        td
+                                            select(class='select' name='measuretypeindicatortwochoice1')
+                                                for measure in measures
+                                                    option(value=measure.measure_id)=measure.measure_type
+                                        td
+                                            input(type='text' class='input' name='indicatorgoaltwochoice1')
+                                        td
+                                            input(type='number' class='input' name='previousyearscoregoaltwochoice1')
+                                        td
+                                            input(type='number' class='input' name='currentyearscoregoaltwochoice1')
+                                    tr 
+                                        td
+                                            select(class='select' name='measuretypeindicatortwochoice2')
+                                                for measure in measures
+                                                    option(value=measure.measure_id)=measure.measure_type
+                                        td
+                                            input(type='text' class='input' name='indicatorgoaltwochoice2')
+                                        td
+                                            input(type='number' class='input' name='previousyearscoregoaltwochoice2')
+                                        td
+                                            input(type='number' class='input' name='currentyearscoregoaltwochoice2')
+                                    tr 
+                                        td
+                                            select(class='select' name='measuretypeindicatortwochoice3')
+                                                for measure in measures
+                                                    option(value=measure.measure_id)=measure.measure_type
+                                        td
+                                            input(type='text' class='input' name='indicatorgoaltwochoice3')
+                                        td
+                                            input(type='number' class='input' name='previousyearscoregoaltwochoice3')
+                                        td
+                                            input(type='number' class='input' name='currentyearscoregoaltwochoice3')
+                                    tr 
+                                        td
+                                            select(class='select' name='measuretypeindicatortwochoice4')
+                                                for measure in measures
+                                                    option(value=measure.measure_id)=measure.measure_type
+                                        td
+                                            input(type='text' class='input' name='indicatorgoaltwochoice4')
+                                        td
+                                            input(type='number' class='input' name='previousyearscoregoaltwochoice4')
+                                        td
+                                            input(type='number' class='input' name='currentyearscoregoaltwochoice4')
+                                    tr 
+                                        td
+                                            select(class='select' name='measuretypeindicatortwochoice5')
+                                                for measure in measures
+                                                    option(value=measure.measure_id)=measure.measure_type
+                                        td
+                                            input(type='text' class='input' name='indicatorgoaltwochoice5')
+                                        td
+                                            input(type='number' class='input' name='previousyearscoregoaltwochoice5')
+                                        td
+                                            input(type='number' class='input' name='currentyearscoregoaltwochoice5')
+                                    tr 
+                                        td
+                                            select(class='select' name='measuretypeindicatortwochoice6')
+                                                for measure in measures
+                                                    option(value=measure.measure_id)=measure.measure_type
+                                        td
+                                            input(type='text' class='input' name='indicatorgoaltwochoice6')
+                                        td
+                                            input(type='number' class='input' name='previousyearscoregoaltwochoice6')
+                                        td
+                                            input(type='number' class='input' name='currentyearscoregoaltwochoice6')
+                                    tr 
+                                        td
+                                            select(class='select' name='measuretypeindicatortwochoice7')
+                                                for measure in measures
+                                                    option(value=measure.measure_id)=measure.measure_type
+                                        td
+                                            input(type='text' class='input' name='indicatorgoaltwochoice7')
+                                        td
+                                            input(type='number' class='input' name='previousyearscoregoaltwochoice7')
+                                        td
+                                            input(type='number' class='input' name='currentyearscoregoaltwochoice7')
+                        div(class='notification is-info is-light')
+                            p Evidence of progress toward implementation:  Please provide a detailed description of how the expenditure of funds has improved your program, improved outcomes for children, increased your skill level as a teacher, and/or created sustainable change in the quality of child care in Coös County. 
+                        p(class='help has-text-centered') This is for the Quality Improvement Award #{currentYear}
+                        div(class='field')
+                            label(class='label') Narrative for Goal #2:
+                            textarea(class='textarea' name='narrativeforgoaltwo' rows=15)
+                        hr(class='solid')
+                        // goal three
+                        div(class='field')
+                        label(class='label') Center Improvement Plan Goal #3:
+                        textarea(class='textarea' name='centerimprovementgoalthree' rows=15)
+                        div(class='field')
+                            h2(class='label') Quality Measure(s) Used to Identify Goal:
+                            label(class='checkbox') None
+                            input(type='checkbox' value=8 name='measuresgoalthree' checked)
+                            br
+                            label(class='checkbox') ECERS-3
+                            input(type='checkbox' name='measuresgoalthree' value=1)
+                            br
+                            label(class='checkbox') ITERS-3
+                            input(type='checkbox' name='measuresgoalthree' value=2)
+                            br
+                            label(class='checkbox') TPOT
+                            input(type='checkbox' name='measuresgoalthree' value=3)
+                            br
+                            label(class='checkbox') TPITOS
+                            input(type='checkbox' name='measuresgoalthree' value=4)
+                            br
+                            label(class='checkbox') NAEYC Annual Report
+                            input(type='checkbox' name='measuresgoalthree' value=5) 
+                            br
+                            label(class='checkbox') Parent Survey
+                            input(type='checkbox' name='measuresgoalthree' value=6)
+                            br
+                            label(class='checkbox') Staff Input
+                            input(type='checkbox' name='measuresgoalthree' value=7)
+                        div(class='field')
+                            label(class='label') Items Bought:
+                            p(class='help') Please put seperate items on seperate lines.
+                            textarea(class='textarea' name='itemsboughtgoalthree' rows=10)
+                        div(class='field')
+                            label(class='label') Please include the indicators for each quality measure that is applicable to goal #1 in the following. You may have mulitple indicators for one quality measure.
+                            table(class='table')
+                                thead
+                                    tr(class='has-text-centered')
+                                        th Quality Measurement
+                                        th Indicator
+                                        th #{previousYear} Score
+                                        th #{currentYear} Score
+                                tbody
+                                    tr 
+                                        td
+                                            select(class='select' name='measuretypeindicatorthreechoice1')
+                                                for measure in measures
+                                                    option(value=measure.measure_id)=measure.measure_type
+                                        td
+                                            input(type='text' class='input' name='indicatorgoalthreechoice1')
+                                        td
+                                            input(type='number' class='input' name='previousyearscoregoalthreechoice1')
+                                        td
+                                            input(type='number' class='input' name='currentyearscoregoalthreechoice1')
+                                    tr 
+                                        td
+                                            select(class='select' name='measuretypeindicatorthreechoice2')
+                                                for measure in measures
+                                                    option=measure.measure_type
+                                        td
+                                            input(type='text' class='input' name='indicatorgoalthreechoice2')
+                                        td
+                                            input(type='number' class='input' name='previousyearscoregoalthreechoice2')
+                                        td
+                                            input(type='number' class='input' name='currentyearscoregoalthreechoice2')
+                                    tr 
+                                        td
+                                            select(class='select' name='measuretypeindicatorthreechoice3')
+                                                for measure in measures
+                                                    option=measure.measure_type
+                                        td
+                                            input(type='text' class='input' name='indicatorgoalthreechoice3')
+                                        td
+                                            input(type='number' class='input' name='previousyearscoregoalthreechoice3')
+                                        td
+                                            input(type='number' class='input' name='currentyearscoregoalthreechoice3')
+                                    tr 
+                                        td
+                                            select(class='select' name='measuretypeindicatorthreechoice4')
+                                                for measure in measures
+                                                    option=measure.measure_type
+                                        td
+                                            input(type='text' class='input' name='indicatorgoalthreechoice4')
+                                        td
+                                            input(type='number' class='input' name='previousyearscoregoalthreechoice4')
+                                        td
+                                            input(type='number' class='input' name='currentyearscoregoalthreechoice4')
+                                    tr 
+                                        td
+                                            select(class='select' name='measuretypeindicatorthreechoice5')
+                                                for measure in measures
+                                                    option=measure.measure_type
+                                        td
+                                            input(type='text' class='input' name='indicatorgoalthreechoice5')
+                                        td
+                                            input(type='number' class='input' name='previousyearscoregoalthreechoice5')
+                                        td
+                                            input(type='number' class='input' name='currentyearscoregoalthreechoice5')
+                                    tr 
+                                        td
+                                            select(class='select' name='measuretypeindicatorthreechoice6')
+                                                for measure in measures
+                                                    option=measure.measure_type
+                                        td
+                                            input(type='text' class='input' name='indicatorgoalthreechoice6')
+                                        td
+                                            input(type='number' class='input' name='previousyearscoregoalthreechoice6')
+                                        td
+                                            input(type='number' class='input' name='currentyearscoregoalthreechoice6')
+                                    tr 
+                                        td
+                                            select(class='select' name='measuretypeindicatorthreechoice7')
+                                                for measure in measures
+                                                    option=measure.measure_type
+                                        td
+                                            input(type='text' class='input' name='indicatorgoalthreechoice7')
+                                        td
+                                            input(type='number' class='input' name='previousyearscoregoalthreechoice7')
+                                        td
+                                            input(type='number' class='input' name='currentyearscoregoalthreechoice7')
+                            div(class='notification is-info is-light')
+                                p Evidence of progress toward implementation:  Please provide a detailed description of how the expenditure of funds has improved your program, improved outcomes for children, increased your skill level as a teacher, and/or created sustainable change in the quality of child care in Coös County. 
+                            p(class='help has-text-centered') This is for the Quality Improvement Award #{currentYear}
+                            div(class='field')
+                                label(class='label') Narrative for Goal #3:
+                                textarea(class='textarea' name='narrativeforgoalthree' rows=15)
+                            div(class='field')
+                                button(type='submit' class='button is-primary') Submit Form
