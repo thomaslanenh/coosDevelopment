@@ -1,0 +1,284 @@
+extends layout
+
+block content
+    -console.log(companyDetails)
+    section(class='section' style="flex: 1 0 auto;")
+        div(class='columns is-mobile is-multiline is-centered')
+            div(class='column is-full')
+                h1(class='has-text-centered has-text-weight-bold is-size-2') DETAILED BUDGET #{currentYear}
+            div(class='column is-full')
+                form(action='' method='POST')
+                    div(class='field')
+                        label(class='label') Program Name:
+                        input(type='text' class='input' value= companyDetails.company_name name='programname' disabled)
+                    div(class='field')
+                        label(class='label') Director Name:
+                        input(type='text' class='input' value=companyDetails.first_name + " " + companyDetails.last_name name='directorname' disabled)
+                    div(class='field')
+                        label(class='label') Date:
+                        input(type='date' class='input')
+                    br
+                    div(class='field')
+                        div(class='card')
+                            header(class='card-header' style='background-color: #e6ffff') 
+                                p(class='card-header-title is-italic') Number of Children
+                            div(class='card-content')
+                                div(class='content') Licensed For:
+                                input(type='number' class='input' name='licensedchildren' value=0)
+                            div(class='card-content')
+                                div(class='content') Currently Serving:
+                                input(type='number' class='input' name='currentchildren' value=0)
+                    br
+                    div(class='field')
+                        table(class='table is-bordered is-striped is-hoverable is-narrow')
+                            thead
+                                tr(style='font-size: 12px; background-color: #e6ffff')
+                                    th Goal
+                                        p (On #{currentYear} CIP)
+                                    th Description of Need
+                                        p  (materials, training, etc.)
+                                    th Item #
+                                    th Item Description
+                                    th How Many?
+                                    th Vendor
+                                    th Estimated Cost Per Item
+                                    th Estimated Total Cost
+                                    th Estimated Shipping Cost
+                                    th Actual Cost Per Item
+                                    th Total Actual Cost
+                                    th Total Actual Shipping
+                                    th Purchased Date
+                                    th Receipt Submitted
+                            tbody
+                                tr
+                                    td
+                                        input(type='text' class='input' name='goal1')
+                                    td 
+                                        input(type='text' class='input' name='descriptionofneed1')
+                                    td
+                                        input(type='text' class='input' name='itemnumber1')
+                                    td
+                                        input(type='text' class='input' name='itemdescription1')
+                                    td
+                                        input(type='number' class='input' name='howmany1')
+                                    td
+                                        input(type='text' class='input' name='vendor1')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedcost1')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedtotalcost1')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedshippingcost1')
+                                    td 
+                                        input(type="number" min="0" class='input' step="any"  name='actualcost1')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='totalactualcost1')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='totalactualshipping1')
+                                    td
+                                        input(type='date' class='input' name='purchasedate1')
+                                    td
+                                        div(class='select')
+                                            select(name='receiptsubmitted1' class='select')
+                                                option(value='Yes') Yes
+                                                option(value='No' selected) No
+                                tr
+                                    td
+                                        input(type='text' class='input' name='goal2')
+                                    td 
+                                        input(type='text' class='input' name='descriptionofneed2')
+                                    td
+                                        input(type='text' class='input' name='itemnumber2')
+                                    td
+                                        input(type='text' class='input' name='itemdescription2')
+                                    td
+                                        input(type='number' class='input' name='howmany2')
+                                    td
+                                        input(type='text' class='input' name='vendor2')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedcost2')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedtotalcost2')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedshippingcost2')
+                                    td 
+                                        input(type="number" min="0" class='input' step="any"  name='actualcost2')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='totalactualcost2')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='totalactualshipping2')
+                                    td
+                                        input(type='date' class='input' name='purchasedate2')
+                                    td
+                                        div(class='select')
+                                            select(name='receiptsubmitted2' class='select')
+                                                option(value='Yes') Yes
+                                                option(value='No' selected) No
+                                tr
+                                    td
+                                        input(type='text' class='input' name='goal3')
+                                    td 
+                                        input(type='text' class='input' name='descriptionofneed3')
+                                    td
+                                        input(type='text' class='input' name='itemnumber3')
+                                    td
+                                        input(type='text' class='input' name='itemdescription3')
+                                    td
+                                        input(type='number' class='input' name='howmany3')
+                                    td
+                                        input(type='text' class='input' name='vendor3')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedcost3')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedtotalcost3')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedshippingcost3')
+                                    td 
+                                        input(type="number" min="0" class='input' step="any"  name='actualcost3')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='totalactualcost3')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='totalactualshipping3')
+                                    td
+                                        input(type='date' class='input' name='purchasedate3')
+                                    td
+                                        div(class='select')
+                                            select(name='receiptsubmitted3' class='select')
+                                                option(value='Yes') Yes
+                                                option(value='No' selected) No
+                                tr
+                                    td
+                                        input(type='text' class='input' name='goal4')
+                                    td 
+                                        input(type='text' class='input' name='descriptionofneed4')
+                                    td
+                                        input(type='text' class='input' name='itemnumber4')
+                                    td
+                                        input(type='text' class='input' name='itemdescription4')
+                                    td
+                                        input(type='number' class='input' name='howmany4')
+                                    td
+                                        input(type='text' class='input' name='vendor4')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedcost4')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedtotalcost4')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedshippingcost4')
+                                    td 
+                                        input(type="number" min="0" class='input' step="any"  name='actualcost4')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='totalactualcost4')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='totalactualshipping4')
+                                    td
+                                        input(type='date' class='input' name='purchasedate4')
+                                    td
+                                        div(class='select')
+                                            select(name='receiptsubmitted4' class='select')
+                                                option(value='Yes') Yes
+                                                option(value='No' selected) No
+                                tr
+                                    td
+                                        input(type='text' class='input' name='goal5')
+                                    td 
+                                        input(type='text' class='input' name='descriptionofneed5')
+                                    td
+                                        input(type='text' class='input' name='itemnumber5')
+                                    td
+                                        input(type='text' class='input' name='itemdescription5')
+                                    td
+                                        input(type='number' class='input' name='howmany5')
+                                    td
+                                        input(type='text' class='input' name='vendor5')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedcost5')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedtotalcost5')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedshippingcost5')
+                                    td 
+                                        input(type="number" min="0" class='input' step="any"  name='actualcost5')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='totalactualcost5')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='totalactualshipping5')
+                                    td
+                                        input(type='date' class='input' name='purchasedate5')
+                                    td
+                                        div(class='select')
+                                            select(name='receiptsubmitted5' class='select')
+                                                option(value='Yes') Yes
+                                                option(value='No' selected) No
+                                tr
+                                    td
+                                        input(type='text' class='input' name='goal6')
+                                    td 
+                                        input(type='text' class='input' name='descriptionofneed6')
+                                    td
+                                        input(type='text' class='input' name='itemnumber6')
+                                    td
+                                        input(type='text' class='input' name='itemdescription6')
+                                    td
+                                        input(type='number' class='input' name='howmany6')
+                                    td
+                                        input(type='text' class='input' name='vendor6')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedcost6')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedtotalcost6')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedshippingcost6')
+                                    td 
+                                        input(type="number" min="0" class='input' step="any"  name='actualcost6')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='totalactualcost6')
+                                    td
+                                        input(type="number" min="0" class='input' step="any"  name='totalactualshipping6')
+                                    td
+                                        input(type='date' class='input' name='purchasedate6')
+                                    td
+                                        div(class='select')
+                                            select(name='receiptsubmitted6' class='select')
+                                                option(value='Yes') Yes
+                                                option(value='No' selected) No
+                    br
+                    div(class='field')
+                        p(class='help has-text-centered has-text-weight-bold') If you would like to make any changes to the items you budgeted to buy, or would like to purchase additional items for any reason you must first get authorization from the QIA Approval Committee.
+                        table(class='table is-bordered is-striped is-hoverable is-narrow')
+                            thead
+                                tr(style='font-size: 12px; background-color: #e6ffff')
+                                    th QIA #{currentYear} Amount Awarded: $
+                                    th QIA #{currentYear} Amount Spent: $
+                                    th Total Estimated Cost
+                                    th Total Estimated Shipping Cost
+                                    th Total Actual Cost
+                                    th Total Shipping Cost
+                                    th All Items Purchased
+                                    th All Receipts Submitted
+                            tbody
+                                tr
+                                    td
+                                        input(type='number' min='0' class='input' step='any' name='amountawarded')
+                                    td
+                                        input(type='number' min='0' class='input' step='any' name='amountspent')
+                                    td
+                                        input(type='number' min='0' class='input' step='any' name='totalestimatedcost')
+                                    td
+                                        input(type='number' min='0' class='input' step='any' name='totalestimatedshippingcost')
+                                    td
+                                        input(type='number' min='0' class='input' step='any' name='totalactualcost')
+                                    td
+                                        input(type='number' min='0' class='input' step='any' name='totalshippingcost')
+                                    td
+                                        div(class='select')
+                                            select(class='select' name='allitemspurchased')
+                                                option(value='No' selected) No
+                                                option(value='Yes') Yes
+                                    td
+                                        div(class='select')
+                                            select( name='allreceiptssubmitted')
+                                                option(value='No' selected) No
+                                                option(value='Yes') Yes
+                    div(class='field')
+                        button(class='button is-primary' type='Submit') Submit Form

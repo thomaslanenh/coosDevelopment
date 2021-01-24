@@ -7,6 +7,7 @@ const app = require("../app");
 const db = require("../db");
 var currentYear = new Date().getFullYear();
 var previousYear = new Date().getFullYear() - 1;
+var todaysDate = new Date(); 
 const pgp = require("pg-promise")({
   /* initialization options */
   capSQL: true, // capitalize all generated SQL
@@ -516,3 +517,26 @@ exports.qiaoutcome_post = function (req, res, next) {
       res.redirect("/");
     });
 };
+
+
+// QIA Detailed Budget
+exports.detailedbudget = function(req,res,next) {
+
+  db.tx(async(t) => {
+    const companydetails = t.one('SELECT company_name, first_name, last_name FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1', [req.user.user])
+    return companydetails
+  }).then((results) => {
+    res.render('./forms/qiabudget', {
+      user: req.user,
+      currentYear,
+      previousYear,
+      companyDetails: results,
+      todaysDate
+    })
+  }).catch((error) => {
+    if (error) {
+      req.flash('error', 'There was a error. Please try again or submit a support ticket.')
+      res.redirect('/')
+    }
+  })
+}

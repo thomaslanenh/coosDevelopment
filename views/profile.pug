@@ -55,6 +55,15 @@ block content
                                             td ✓
                                         else
                                             td=' '
+                                tr
+                                    td
+                                        a(class='is-link' href='/forms/qiabudget')
+                                            p(class='has-text-weight-bold') QIA Detailed Budget Form
+                                        if todaysDate
+                                            if todaysDate === 'Yes'
+                                                td ✓
+                                            else
+                                                td=' '
                 div(class='column is-narrow')
                     section(class='section')
                         h3(class='has-text-weight-semibold has-text-centered is-size-5') Recently Completed Forms:

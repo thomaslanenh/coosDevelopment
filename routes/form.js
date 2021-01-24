@@ -158,11 +158,19 @@ router.get(
   ensureAuthentication,
   formcreate_controller.qiaoutcome
 );
+
 router.post(
   "/forms/qiaoutcome",
   ensureAuthentication,
   formcreate_controller.qiaoutcome_post
 );
+
+// QIA Detailed Budget Form
+router.get(
+  '/forms/qiabudget', ensureAuthentication,
+  formcreate_controller.detailedbudget
+)
+
 
 // form submit thank you page
 router.get("/thanks", function (req, res, next) {
