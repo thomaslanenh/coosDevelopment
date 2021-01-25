@@ -16,7 +16,7 @@ block content
                         input(type='text' class='input' value=companyDetails.first_name + " " + companyDetails.last_name name='directorname' disabled)
                     div(class='field')
                         label(class='label') Date:
-                        input(type='date' class='input')
+                        input(type='date' class='input' name='date' required)
                     br
                     div(class='field')
                         div(class='card')
@@ -24,10 +24,10 @@ block content
                                 p(class='card-header-title is-italic') Number of Children
                             div(class='card-content')
                                 div(class='content') Licensed For:
-                                input(type='number' class='input' name='licensedchildren' value=0)
+                                input(type='number' class='input' name='licensedchildren' value=0 required)
                             div(class='card-content')
                                 div(class='content') Currently Serving:
-                                input(type='number' class='input' name='currentchildren' value=0)
+                                input(type='number' class='input' name='currentchildren' value=0 required)
                     br
                     div(class='field')
                         table(class='table is-bordered is-striped is-hoverable is-narrow')
@@ -52,31 +52,31 @@ block content
                             tbody
                                 tr
                                     td
-                                        input(type='text' class='input' name='goal1')
+                                        input(type='text' class='input' name='goal1' required)
                                     td 
-                                        input(type='text' class='input' name='descriptionofneed1')
+                                        input(type='text' class='input' name='descriptionofneed1' required)
                                     td
-                                        input(type='text' class='input' name='itemnumber1')
+                                        input(type='text' class='input' name='itemnumber1' required)
                                     td
-                                        input(type='text' class='input' name='itemdescription1')
+                                        input(type='text' class='input' name='itemdescription1' required)
                                     td
-                                        input(type='number' class='input' name='howmany1')
+                                        input(type='number' class='input' name='howmany1' required)
                                     td
-                                        input(type='text' class='input' name='vendor1')
+                                        input(type='text' class='input' name='vendor1' required)
                                     td
-                                        input(type="number" min="0" class='input' step="any"  name='estimatedcost1')
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedcost1' required)
                                     td
-                                        input(type="number" min="0" class='input' step="any"  name='estimatedtotalcost1')
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedtotalcost1' required)
                                     td
-                                        input(type="number" min="0" class='input' step="any"  name='estimatedshippingcost1')
+                                        input(type="number" min="0" class='input' step="any"  name='estimatedshippingcost1' required)
                                     td 
-                                        input(type="number" min="0" class='input' step="any"  name='actualcost1')
+                                        input(type="number" min="0" class='input' step="any"  name='actualcost1' required)
                                     td
-                                        input(type="number" min="0" class='input' step="any"  name='totalactualcost1')
+                                        input(type="number" min="0" class='input' step="any"  name='totalactualcost1' required)
                                     td
-                                        input(type="number" min="0" class='input' step="any"  name='totalactualshipping1')
+                                        input(type="number" min="0" class='input' step="any"  name='totalactualshipping1' required)
                                     td
-                                        input(type='date' class='input' name='purchasedate1')
+                                        input(type='date' class='input' name='purchasedate1' required)
                                     td
                                         div(class='select')
                                             select(name='receiptsubmitted1' class='select')
@@ -259,17 +259,17 @@ block content
                             tbody
                                 tr
                                     td
-                                        input(type='number' min='0' class='input' step='any' name='amountawarded')
+                                        input(type='number' min='0' class='input' step='any' name='amountawarded' required)
                                     td
-                                        input(type='number' min='0' class='input' step='any' name='amountspent')
+                                        input(type='number' min='0' class='input' step='any' name='amountspent' required) 
                                     td
-                                        input(type='number' min='0' class='input' step='any' name='totalestimatedcost')
+                                        input(type='number' min='0' class='input' step='any' name='totalestimatedcost' required)
                                     td
-                                        input(type='number' min='0' class='input' step='any' name='totalestimatedshippingcost')
+                                        input(type='number' min='0' class='input' step='any' name='totalestimatedshippingcost' required)
                                     td
-                                        input(type='number' min='0' class='input' step='any' name='totalactualcost')
+                                        input(type='number' min='0' class='input' step='any' name='totalactualcostfinal' required)
                                     td
-                                        input(type='number' min='0' class='input' step='any' name='totalshippingcost')
+                                        input(type='number' min='0' class='input' step='any' name='totalshippingcostfinal' required)
                                     td
                                         div(class='select')
                                             select(class='select' name='allitemspurchased')

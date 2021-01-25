@@ -171,6 +171,10 @@ router.get(
   formcreate_controller.detailedbudget
 )
 
+router.post(
+  '/forms/qiabudget', formcreate_controller.detailedbudgetpost
+)
+
 
 // form submit thank you page
 router.get("/thanks", function (req, res, next) {
