@@ -546,211 +546,210 @@ exports.detailedbudget = function (req, res, next) {
     });
 };
 
-exports.detailedbudgetpost = function (req, res, next) {
+exports.detailedbudgetpost = async function (req, res, next) {
+  const companyDetails = await db.one(
+    "SELECT company_name, c.id, first_name, last_name FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1",
+    [req.user.user]
+  );
+
+  const insertedForm = await db.one(
+    "INSERT INTO formresponse(company_id, form_id) VALUES ($1, 3) RETURNING response_id",
+    [companyDetails.id]
+  );
+
+  const cs = new pgp.helpers.ColumnSet(["attrib_id", "value", "response_id"], {
+    table: "formquestionresponse",
+  });
+
+  const values = [
+    {
+      attrib_id: 20,
+      value: companyDetails.company_name,
+      response_id: insertedForm.response_id,
+    },
+    {
+      attrib_id: 19,
+      value: companyDetails.first_name + " " + companyDetails.last_name,
+      response_id: insertedForm.response_id,
+    },
+    {
+      attrib_id: 18,
+      value: req.body.date,
+      response_id: insertedForm.response_id,
+    },
+    {
+      attrib_id: 21,
+      value: req.body.licensedchildren,
+      response_id: insertedForm.response_id,
+    },
+    {
+      attrib_id: 22,
+      value: req.body.currentchildren,
+      response_id: insertedForm.response_id,
+    },
+    {
+      attrib_id: 37,
+      value: req.body.totalestimatedcost,
+      response_id: insertedForm.response_id,
+    },
+    {
+      attrib_id: 38,
+      value: req.body.totalestimatedshippingcost,
+      response_id: insertedForm.response_id,
+    },
+    {
+      attrib_id: 39,
+      value: req.body.amountawarded,
+      response_id: insertedForm.response_id,
+    },
+    {
+      attrib_id: 40,
+      value: req.body.amountspent,
+      response_id: insertedForm.response_id,
+    },
+    {
+      attrib_id: 41,
+      value: req.body.totalactualcostfinal,
+      response_id: insertedForm.response_id,
+    },
+    {
+      attrib_id: 42,
+      value: req.body.totalshippingcostfinal,
+      response_id: insertedForm.response_id,
+    },
+    {
+      attrib_id: 44,
+      value: req.body.allitemspurchased,
+      response_id: insertedForm.response_id,
+    },
+    {
+      attrib_id: 43,
+      value: req.body.allreceiptssubmitted,
+      response_id: insertedForm.response_id,
+    },
+  ];
+
   const arrayCheck = () => {
-    for (var y = 1; y >= 7; y++) {
-      var x = y.toString();
-      if (isEmpty(req.body.goal + x) == false) {
+    console.log('Array Check Hit?')
+    for (var x = 1; x >= 7; x++) {
+      console.log('for looop hit')
+      if (isEmpty(req.body[`goal${x}`]) == false) {
+        console.log('first is empty hit')
         values.push({
           attrib_id: 23,
-          value: req.body.goal + x,
+          value: req.body[`goal${x}`],
           response_id: insertedForm.response_id,
         });
       }
-
-      if (isEmpty(req.body.descriptionofneed + x) == false) {
+  
+      if (isEmpty(req.body[`descriptionofneed${x}`]) == false) {
         values.push({
           attrib_id: 24,
-          value: req.body.descriptionofneed + x,
+          value: req.body[`descriptionofneed${x}`],
           response_id: insertedForm.response_id,
         });
       }
-
-      if (isEmpty(req.body.itemnumber + x) == false) {
+  
+      if (isEmpty(req.body[`itemnumber${x}`]) == false) {
         values.push({
           attrib_id: 25,
-          value: req.body.itemnumber + x,
+          value: req.body[`itemnumber${x}`],
           response_id: insertedForm.response_id,
         });
       }
-
-      if (isEmpty(req.body.itemdescription + x) == false) {
+  
+      if (isEmpty(req.body[`itemdescription${x}`] + x) == false) {
         values.push({
           attrib_id: 26,
           value: req.body.itemdescription + x,
           response_id: insertedForm.response_id,
         });
       }
-
-      if (isEmpty(req.body.howmany + x) == false) {
+  
+      if (isEmpty(req.body[`howmany${x}`]) == false) {
         values.push({
           attrib_id: 27,
-          value: req.body.howmany + x,
+          value: req.body[`howmany${x}`],
           response_id: insertedForm.response_id,
         });
       }
-
-      if (isEmpty(req.body.vendor + x) == false) {
+  
+      if (isEmpty(req.body[`vendor${x}`]) == false) {
         values.push({
           attrib_id: 28,
-          value: req.body.vendor + x,
+          value: req.body[`vendor${x}`],
           response_id: insertedForm.response_id,
         });
       }
-
-      if (isEmpty(req.body.estimatedcost + x) == false) {
+  
+      if (isEmpty(req.body[`estimatedcost${x}`]) == false) {
         values.push({
           attrib_id: 29,
-          value: req.body.estimatedcost + x,
+          value: req.body[`estimatedcost${x}`],
           response_id: insertedForm.response_id,
         });
       }
-
-      if (isEmpty(req.body.estimatedtotalcost + x) == false) {
+  
+      if (isEmpty(req.body[`estimatedtotalcost${x}`]) == false) {
         values.push({
           attrib_id: 30,
-          value: req.body.estimatedtotalcost + x,
+          value: req.body[`estimatedtotalcost${x}`],
           response_id: insertedForm.response_id,
         });
       }
-
-      if (isEmpty(req.body.estimatedshippingcost + x) == false) {
+  
+      if (isEmpty(req.body[`estimatedshippingcost${x}`]) == false) {
         values.push({
           attrib_id: 31,
-          value: req.body.estimatedshippingcost + x,
+          value: req.body[`estimatedshippingcost${x}`],
           response_id: insertedForm.response_id,
         });
       }
-
-      if (isEmpty(req.body.actualcost + x) == false) {
+  
+      if (isEmpty(req.body[`actualcost${x}`]) == false) {
         values.push({
           attrib_id: 32,
-          value: req.body.actualcost + x,
+          value: req.body[`actualcost${x}`],
           response_id: insertedForm.response_id,
         });
       }
-
-      if (isEmpty(req.body.totalactualcost + x) == false) {
+  
+      if (isEmpty(req.body[`totalactualcost${x}`]) == false) {
         values.push({
           attrib_id: 33,
-          value: req.body.totalactualcost + x,
+          value: req.body[`totalactualcost${x}`],
           response_id: insertedForm.response_id,
         });
       }
-
-      if (isEmpty(req.body.totalactualshipping + x) == false) {
+  
+      if (isEmpty(req.body[`totalactualshipping${x}`]) == false) {
         values.push({
           attrib_id: 34,
-          value: req.body.totalactualshipping + x,
+          value: req.body[`totalactualshipping${x}`],
           response_id: insertedForm.response_id,
         });
       }
-
-      if (isEmpty(req.body.purchasedate + x) == false) {
+  
+      if (isEmpty(req.body[`purchasedate${x}`]) == false) {
         values.push({
           attrib_id: 35,
-          value: req.body.purchasedate + x,
+          value: req.body[`purchasedate${x}`],
           response_id: insertedForm.response_id,
         });
       }
-
-      if (isEmpty(req.body.receiptsubmitted + x) == false) {
+  
+      if (isEmpty(req.body[`receiptsubmitted${x}`]) == false) {
         values.push({
           attrib_id: 36,
-          value: req.body.receiptsubmitted + x,
+          value: req.body[`receiptsubmitted${x}`],
           response_id: insertedForm.response_id,
         });
       }
     }
+  
   }
+   arrayCheck();
   db.tx(async (t) => {
-    const companyDetails = await t.one(
-      "SELECT company_name, c.id, first_name, last_name FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1",
-      [req.user.user]
-    );
-
-    const insertedForm = await t.one(
-      "INSERT INTO formresponse(company_id, form_id) VALUES ($1, 3) RETURNING response_id",
-      [companyDetails.id]
-    );
-
-    const cs = new pgp.helpers.ColumnSet(
-      ["attrib_id", "value", "response_id"],
-      {
-        table: "formquestionresponse",
-      }
-    );
-
-    const values = [
-      {
-        attrib_id: 20,
-        value: companyDetails.company_name,
-        response_id: insertedForm.response_id,
-      },
-      {
-        attrib_id: 19,
-        value: companyDetails.first_name + " " + companyDetails.last_name,
-        response_id: insertedForm.response_id,
-      },
-      {
-        attrib_id: 18,
-        value: req.body.date,
-        response_id: insertedForm.response_id,
-      },
-      {
-        attrib_id: 21,
-        value: req.body.licensedchildren,
-        response_id: insertedForm.response_id,
-      },
-      {
-        attrib_id: 22,
-        value: req.body.currentchildren,
-        response_id: insertedForm.response_id,
-      },
-      {
-        attrib_id: 37,
-        value: req.body.totalestimatedcost,
-        response_id: insertedForm.response_id,
-      },
-      {
-        attrib_id: 38,
-        value: req.body.totalestimatedshippingcost,
-        response_id: insertedForm.response_id,
-      },
-      {
-        attrib_id: 39,
-        value: req.body.amountawarded,
-        response_id: insertedForm.response_id,
-      },
-      {
-        attrib_id: 40,
-        value: req.body.amountspent,
-        response_id: insertedForm.response_id,
-      },
-      {
-        attrib_id: 41,
-        value: req.body.totalactualcostfinal,
-        response_id: insertedForm.response_id,
-      },
-      {
-        attrib_id: 42,
-        value: req.body.totalshippingcostfinal,
-        response_id: insertedForm.response_id,
-      },
-      {
-        attrib_id: 44,
-        value: req.body.allitemspurchased,
-        response_id: insertedForm.response_id
-      },
-      {
-        attrib_id: 43,
-        value: req.body.allreceiptssubmitted,
-        response_id: insertedForm.response_id
-      }
-    ];
-
-    arrayCheck()
-
     const query = pgp.helpers.insert(values, cs);
     const recordsResponse = await t.none(query);
   })
