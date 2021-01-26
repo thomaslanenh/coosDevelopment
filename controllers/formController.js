@@ -547,10 +547,8 @@ exports.detailedbudget = function (req, res, next) {
 };
 
 exports.detailedbudgetpost = function (req, res, next) {
-  const arrayCheck = async(values, formresponse) => {
-    console.log("Array Check Hit?");
-    console.log(values)
-    console.log(formresponse)
+  const arrayCheck = async (values, formresponse) => {
+    // validation for loop
     for (var x = 1; x <= 7; x++) {
       console.log("for looop hit");
       if (isEmpty(req.body[`goal${x}`]) == false) {
@@ -578,10 +576,10 @@ exports.detailedbudgetpost = function (req, res, next) {
         });
       }
 
-      if (isEmpty(req.body[`itemdescription${x}`] + x) == false) {
+      if (isEmpty(req.body[`itemdescription${x}`]) == false) {
         values.push({
           attrib_id: 26,
-          value: req.body.itemdescription + x,
+          value: req.body[`itemdescription${x}`],
           response_id: formresponse,
         });
       }
@@ -673,17 +671,17 @@ exports.detailedbudgetpost = function (req, res, next) {
   });
 
   db.tx(async (t) => {
-    const companyDetails = await db.one(
+    const companyDetails = await t.one(
       "SELECT company_name, c.id, first_name, last_name FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1",
       [req.user.user]
     );
 
-    const insertedForm = await db.one(
+    const insertedForm = await t.one(
       "INSERT INTO formresponse(company_id, form_id) VALUES ($1, 3) RETURNING response_id",
       [companyDetails.id]
     );
 
-    return {companyDetails, insertedForm}
+    return { companyDetails, insertedForm };
   })
     .then((results) => {
       const values = [
@@ -694,7 +692,10 @@ exports.detailedbudgetpost = function (req, res, next) {
         },
         {
           attrib_id: 19,
-          value: results.companyDetails.first_name + " " + results.companyDetails.last_name,
+          value:
+            results.companyDetails.first_name +
+            " " +
+            results.companyDetails.last_name,
           response_id: results.insertedForm.response_id,
         },
         {
@@ -767,5 +768,186 @@ exports.detailedbudgetpost = function (req, res, next) {
         "An error has occured. Please try again or submit a support ticket."
       );
       res.redirect("/");
+    });
+};
+
+// center improvement
+
+exports.centerimprovement = function (req, res, next) {
+  db.tx(async (t) => {
+    const companyDetails = await t.one(
+      "SELECT c.id, company_name, address, email, phone_number FROM company c INNER JOIN useraccount u ON c.id = u.company_id WHERE u.username = $1",
+      [req.user.user]
+    );
+
+    const qualityMeasures = await t.many("SELECT * from qualitymeasures");
+    return { companyDetails, qualityMeasures };
+  })
+    .then((results) => {
+      res.render("./forms/qiacenterimprovement", {
+        user: req.user,
+        currentYear,
+        previousYear,
+        companyDetails: results.companyDetails,
+        qualityMeasures: results.qualityMeasures,
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      if (error) {
+        req.flash(
+          "error",
+          "An error occured. Please try again or submit a support ticket."
+        );
+        res.redirect("/");
+      }
+    });
+};
+
+exports.centerimprovementpost = function (req, res, next) {
+  const arrayLoop = (values, formresponse) => {
+    for (var x = 1; x <= 8; x++) {
+      if (isEmpty(req.body[`dateofqualitymeasure${x}`]) == false) {
+        values.push({
+          attrib_id: 52,
+          value: req.body[`dateofqualitymeasure${x}`],
+          response_id: formresponse,
+        });
+      }
+      if (isEmpty(req.body[`qualitymeasure${x}`]) == false) {
+        values.push({
+          attrib_id: 53,
+          value: req.body[`qualitymeasure${x}`],
+          response_id: formresponse,
+        });
+      }
+      if (isEmpty(req.body[`strengths${x}`]) == false) {
+        values.push({
+          attrib_id: 54,
+          value: req.body[`strengths${x}`],
+          response_id: formresponse,
+        });
+      }
+      if (isEmpty(req.body[`weaknesses${x}`]) == false) {
+        values.push({
+          attrib_id: 55,
+          value: req.body[`weaknesses${x}`],
+          response_id: formresponse,
+        });
+      }
+      if (isEmpty(req.body[`items${x}`]) == false) {
+        values.push({
+          attrib_id: 56,
+          value: req.body[`items${x}`],
+          response_id: formresponse,
+        });
+      }
+      if (isEmpty(req.body[`goal${x}`]) == false) {
+        values.push({
+          attrib_id: 57,
+          value: req.body[`goal${x}`],
+          response_id: formresponse,
+        });
+      }
+      if (isEmpty(req.body[`priority${x}`]) == false) {
+        values.push({
+          attrib_id: 58,
+          value: req.body[`priority${x}`],
+          response_id: formresponse,
+        });
+      }
+      if (isEmpty(req.body[`resourcesneeded${x}`]) == false) {
+        values.push({
+          attrib_id: 59,
+          value: req.body[`resourcesneeded${x}`],
+          response_id: formresponse,
+        });
+      }
+      if (isEmpty(req.body[`cost${x}`]) == false) {
+        values.push({
+          attrib_id: 60,
+          value: req.body[`cost${x}`],
+          response_id: formresponse,
+        });
+      }
+      if (isEmpty(req.body[`expectedcompletion${x}`]) == false) {
+        values.push({
+          attrib_id: 61,
+          value: req.body[`expectedcompletion${x}`],
+          response_id: formresponse,
+        });
+      }
+      if (isEmpty(req.body[`followup${x}`]) == false) {
+        values.push({
+          attrib_id: 62,
+          value: req.body[`followup${x}`],
+          response_id: formresponse,
+        });
+      }
+    }
+    return values;
+  };
+
+  const cs = new pgp.helpers.ColumnSet(["attrib_id", "value", "response_id"], {
+    table: "formquestionresponse",
+  });
+
+  db.tx(async (t) => {
+    const companyid = await t.one(
+      "SELECT c.id, c.company_name, c.address, c.phone_number, u.email from company c INNER JOIN useraccount u on c.id = u.company_id where u.username = $1",
+      [req.user.user]
+    );
+    const formResponse = await t.one(
+      "INSERT INTO formresponse(company_id, form_id) values($1, 4) RETURNING response_id",
+      [companyid.id]
+    );
+
+    return { companyid, formResponse };
+  })
+    .then((results) => {
+      const values = [
+        {
+          attrib_id: 45,
+          value: results.companyid.company_name,
+          response_id: results.formResponse.response_id,
+        },
+        {
+          attrib_id: 46,
+          value: req.body.nameofpersoncompleting,
+          response_id: results.formResponse.response_id,
+        },
+        {
+          attrib_id: 47,
+          value: results.companyid.address,
+          response_id: results.formResponse.response_id,
+        },
+        {
+          attrib_id: 48,
+          value: results.companyid.phone_number,
+          response_id: results.formResponse.response_id,
+        },
+        {
+          attrib_id: 49,
+          value: results.companyid.email,
+          response_id: results.formResponse.response_id,
+        },
+      ];
+
+      const arrayed = arrayLoop(values, results.formResponse.response_id);
+      const query = pgp.helpers.insert(values, cs);
+      const recordsResponse = db.none(query);
+
+      req.flash('info', 'Form succesfully submitted.')
+      res.redirect('/')
+    })
+    .catch((error) => {
+      if (error) {
+        console.log(error)
+        req.flash(
+          "error",
+          "An error occured. Try again or please submit a support ticket."
+        );
+        res.redirect("/");
+      }
     });
 };

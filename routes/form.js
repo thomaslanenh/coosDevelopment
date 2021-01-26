@@ -175,6 +175,16 @@ router.post(
   '/forms/qiabudget', formcreate_controller.detailedbudgetpost
 )
 
+// QIA Center Improvement Plan Form
+router.get(
+  '/forms/qiacenterimprovement', ensureAuthentication,
+  formcreate_controller.centerimprovement
+)
+
+router.post(
+  '/forms/qiacenterimprovement', ensureAuthentication,
+  formcreate_controller.centerimprovementpost
+)
 
 // form submit thank you page
 router.get("/thanks", function (req, res, next) {

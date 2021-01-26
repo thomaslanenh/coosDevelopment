@@ -1,0 +1,329 @@
+extends layout
+
+block content
+    -console.log(qualityMeasures)
+     section(class='section' style="flex: 1 0 auto;")
+        div(class='columns is-mobile is-centered is-multiline')
+            div(class='column is-full')
+                h1(class='has-text-centered has-text-weight-bold is-size-2') QIA #{currentYear} CENTER IMPROVEMENT PLAN
+            div(class='column is-full')
+                form(action='' method='POST')
+                    div(class='field')
+                        label(class='label') Program Name:
+                        input(disabled class='input' value=companyDetails.company_name)
+                    div(class='field')
+                        label(class='label') Address:
+                        input(disabled class='input' value=companyDetails.address)
+                    div(class='field')
+                        label(class='label') Phone:
+                        input(disabled class='input' value=companyDetails.phone_number)
+                    div(class='field')
+                        label(class='label') E-Mail Address:
+                        input(disabled class='input' value=companyDetails.email)
+                        p(class='help') Not the right company name or details? Submit a support ticket.
+                    div(class='field')
+                        label(class='label') Name of Person Completing Form:
+                        input(class='input' type='text' name='nameofpersoncompleting' required) 
+                    div(class='field')
+                        label(class='label') Last CIP Completed:
+                        input(class='input' type='date' name='lastcipcompleted' required)
+                    div(class='field')
+                        label(class='label') CIP Start Date:
+                        input(class='input' type='date' name='cipstartdate' required)
+                    div(class='field')
+                        table(class='table')
+                            thead
+                                tr
+                                    th Date of Quality Measure
+                                    th Quality Measure
+                                    th Strengths
+                                    th Weaknesses
+                                    th Item / Indicator
+                                    th Goal
+                                    th Priority
+                                    th Resoures Needed
+                                    th Cost
+                                    th Expected Completion Date
+                                    th Follow Up
+                            tbody
+                                tr
+                                    td
+                                        input(type='date' class='input' required name='dateofqualitymeasure1')
+                                    td
+                                        div(class='select')
+                                            select(name='qualitymeasure1' required)
+                                                each quality in qualityMeasures
+                                                    option(value=quality.measure_id)=quality.measure_type
+                                    td
+                                        input(type='text' class='input' name='strengths1' required)
+                                    td
+                                        input(type='text' class='input' name='weaknesses1' required)
+                                    td
+                                        input(type='text' class='input' name='items1' required)
+                                    td
+                                        input(type='text' class='input' name='goal1' required)
+                                    td
+                                        div(class='select')
+                                            select(name='priority1' required)
+                                                option(value=1 selected) High
+                                                option(value=2) Medium
+                                                option(value=3) Low
+                                    td
+                                        input(type='text' class='input' name='resourcesneeded1' required)
+                                    td
+                                        div(class='select')
+                                            select(name='cost1' required)
+                                                option(value='High' selected) High
+                                                option(value='Medium') Medium
+                                                option(value='Low') Low
+                                    td
+                                        input(class='input' type='date' name='expectedcompletion1' required)
+                                    td
+                                        input(class='input' type='text' name='followup1' required)
+                                    // row 2
+                                tr
+                                    td
+                                        input(type='date' class='input' name='dateofqualitymeasure2')
+                                    td
+                                        div(class='select')
+                                            select(name='qualitymeasure2' required)
+                                                each quality in qualityMeasures
+                                                    option(value=quality.measure_id)=quality.measure_type
+                                    td
+                                        input(type='text' class='input' name='strengths2')
+                                    td
+                                        input(type='text' class='input' name='weaknesses2')
+                                    td
+                                        input(type='text' class='input' name='items2')
+                                    td
+                                        input(type='text' class='input' name='goal2')
+                                    td
+                                        div(class='select')
+                                            select(name='priority2')
+                                                option(value=1 selected) High
+                                                option(value=2) Medium
+                                                option(value=3) Low
+                                    td
+                                        input(type='text' class='input' name='resourcesneeded2' )
+                                    td
+                                        div(class='select')
+                                            select(name='cost2' )
+                                                option(value='High' selected) High
+                                                option(value='Medium') Medium
+                                                option(value='Low') Low
+                                    td
+                                        input(class='input' type='date' name='expectedcompletion2' )
+                                    td
+                                        input(class='input' type='text' name='followup2')
+                                // row 3
+                                tr
+                                    td
+                                        input(type='date' class='input' name='dateofqualitymeasure3')
+                                    td
+                                        div(class='select')
+                                            select(name='qualitymeasure3')
+                                                each quality in qualityMeasures
+                                                    option(value=quality.measure_id)=quality.measure_type
+                                    td
+                                        input(type='text' class='input' name='strengths3')
+                                    td
+                                        input(type='text' class='input' name='weaknesses3')
+                                    td
+                                        input(type='text' class='input' name='items3')
+                                    td
+                                        input(type='text' class='input' name='goal3')
+                                    td
+                                        div(class='select')
+                                            select(name='priority3')
+                                                option(value=1 selected) High
+                                                option(value=2) Medium
+                                                option(value=3) Low
+                                    td
+                                        input(type='text' class='input' name='resourcesneeded3')
+                                    td
+                                        div(class='select')
+                                            select(name='cost3')
+                                                option(value='High' selected) High
+                                                option(value='Medium') Medium
+                                                option(value='Low') Low
+                                    td
+                                        input(class='input' type='date' name='expectedcompletion3')
+                                    td
+                                        input(class='input' type='text' name='followup3')
+                                // row four
+                                tr
+                                    td
+                                        input(type='date' class='input' name='dateofqualitymeasure4')
+                                    td
+                                        div(class='select')
+                                            select(name='qualitymeasure4' )
+                                                each quality in qualityMeasures
+                                                    option(value=quality.measure_id)=quality.measure_type
+                                    td
+                                        input(type='text' class='input' name='strengths4')
+                                    td
+                                        input(type='text' class='input' name='weaknesses4' )
+                                    td
+                                        input(type='text' class='input' name='items4')
+                                    td
+                                        input(type='text' class='input' name='goal4')
+                                    td
+                                        div(class='select')
+                                            select(name='priority4' )
+                                                option(value=1 selected) High
+                                                option(value=2) Medium
+                                                option(value=3) Low
+                                    td
+                                        input(type='text' class='input' name='resourcesneeded4' )
+                                    td
+                                        div(class='select')
+                                            select(name='cost4')
+                                                option(value='High' selected) High
+                                                option(value='Medium') Medium
+                                                option(value='Low') Low
+                                    td
+                                        input(class='input' type='date' name='expectedcompletion4' )
+                                    td
+                                        input(class='input' type='text' name='followup4')
+                                // row five
+                                tr
+                                    td
+                                        input(type='date' class='input' name='dateofqualitymeasure5')
+                                    td
+                                        div(class='select')
+                                            select(name='qualitymeasure5' )
+                                                each quality in qualityMeasures
+                                                    option(value=quality.measure_id)=quality.measure_type
+                                    td
+                                        input(type='text' class='input' name='strengths5' )
+                                    td
+                                        input(type='text' class='input' name='weaknesses5' )
+                                    td
+                                        input(type='text' class='input' name='items5' )
+                                    td
+                                        input(type='text' class='input' name='goal5' )
+                                    td
+                                        div(class='select')
+                                            select(name='priority5' )
+                                                option(value=1 selected) High
+                                                option(value=2) Medium
+                                                option(value=3) Low
+                                    td
+                                        input(type='text' class='input' name='resourcesneeded5' )
+                                    td
+                                        div(class='select')
+                                            select(name='cost5' )
+                                                option(value='High' selected) High
+                                                option(value='Medium') Medium
+                                                option(value='Low') Low
+                                    td
+                                        input(class='input' type='date' name='expectedcompletion5')
+                                    td
+                                        input(class='input' type='text' name='followup5')
+                                // row six
+                                tr
+                                    td
+                                        input(type='date' class='input'  name='dateofqualitymeasure6')
+                                    td
+                                        div(class='select')
+                                            select(name='qualitymeasure6')
+                                                each quality in qualityMeasures
+                                                    option(value=quality.measure_id)=quality.measure_type
+                                    td
+                                        input(type='text' class='input' name='strengths6' )
+                                    td
+                                        input(type='text' class='input' name='weaknesses6')
+                                    td
+                                        input(type='text' class='input' name='items6' )
+                                    td
+                                        input(type='text' class='input' name='goal6' )
+                                    td
+                                        div(class='select')
+                                            select(name='priority6' )
+                                                option(value=1 selected) High
+                                                option(value=2) Medium
+                                                option(value=3) Low
+                                    td
+                                        input(type='text' class='input' name='resourcesneeded6' )
+                                    td
+                                        div(class='select')
+                                            select(name='cost6')
+                                                option(value='High' selected) High
+                                                option(value='Medium') Medium
+                                                option(value='Low') Low
+                                    td
+                                        input(class='input' type='date' name='expectedcompletion6')
+                                    td
+                                        input(class='input' type='text' name='followup6')
+                                // row 7
+                                tr
+                                    td
+                                        input(type='date' class='input' name='dateofqualitymeasure7')
+                                    td
+                                        div(class='select')
+                                            select(name='qualitymeasure7')
+                                                each quality in qualityMeasures
+                                                    option(value=quality.measure_id)=quality.measure_type
+                                    td
+                                        input(type='text' class='input' name='strengths7' )
+                                    td
+                                        input(type='text' class='input' name='weaknesses7' )
+                                    td
+                                        input(type='text' class='input' name='items7' )
+                                    td
+                                        input(type='text' class='input' name='goal7' )
+                                    td
+                                        div(class='select')
+                                            select(name='priority7')
+                                                option(value=1 selected) High
+                                                option(value=2) Medium
+                                                option(value=3) Low
+                                    td
+                                        input(type='text' class='input' name='resourcesneeded7' )
+                                    td
+                                        div(class='select')
+                                            select(name='cost7')
+                                                option(value='High' selected) High
+                                                option(value='Medium') Medium
+                                                option(value='Low') Low
+                                    td
+                                        input(class='input' type='date' name='expectedcompletion7' )
+                                    td
+                                        input(class='input' type='text' name='followup7')
+                                // row eight
+                                tr
+                                td
+                                    input(type='date' class='input' name='dateofqualitymeasure8')
+                                td
+                                    div(class='select')
+                                        select(name='qualitymeasure8')
+                                            each quality in qualityMeasures
+                                                option(value=quality.measure_id)=quality.measure_type
+                                td
+                                    input(type='text' class='input' name='strengths8' )
+                                td
+                                    input(type='text' class='input' name='weaknesses8')
+                                td
+                                    input(type='text' class='input' name='items8')
+                                td
+                                    input(type='text' class='input' name='goal8')
+                                td
+                                    div(class='select')
+                                        select(name='priority8')
+                                            option(value=1 selected) High
+                                            option(value=2) Medium
+                                            option(value=3) Low
+                                td
+                                    input(type='text' class='input' name='resourcesneeded8' )
+                                td
+                                    div(class='select')
+                                        select(name='cost8' )
+                                            option(value='High' selected) High
+                                            option(value='Medium') Medium
+                                            option(value='Low') Low
+                                td
+                                    input(class='input' type='date' name='expectedcompletion8' )
+                                td
+                                    input(class='input' type='text' name='followup8')
+                        div(class='field')
+                            button(class='button is-primary' type='Submit') Submit Form
