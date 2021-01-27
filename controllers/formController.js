@@ -315,7 +315,7 @@ exports.qiaoutcome_post = function (req, res, next) {
     ];
 
     // loop for response one indicator section
-    for (var x = 1; x > 7; x++) {
+    for (var x = 1; x < 7; x++) {
       if (req.body.measuretypeindicatoronechoice[x] != 8) {
         values.push(
           {
@@ -347,7 +347,7 @@ exports.qiaoutcome_post = function (req, res, next) {
     }
 
     //loop for response two indicator section
-    for (var x = 0; x > 7; x++) {
+    for (var x = 0; x < 7; x++) {
       if (req.body.measuretypeindicatortwochoice[x] != 8) {
         values.push(
           {
