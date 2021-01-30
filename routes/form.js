@@ -83,10 +83,14 @@ router.get("/support", ensureAuthentication, support_controller.index);
 router.post("/support", support_controller.indexpost);
 
 // Support Messages Routes
-router.get('/messages', ensureAuthentication, support_controller.messages)
-// Support Message Detail 
-router.get('/messages/:messageid', ensureAuthentication, support_controller.messagedetail)
-router.post('/messages/:messageid', support_controller.messagedetailpost)
+router.get("/messages", ensureAuthentication, support_controller.messages);
+// Support Message Detail
+router.get(
+  "/messages/:messageid",
+  ensureAuthentication,
+  support_controller.messagedetail
+);
+router.post("/messages/:messageid", support_controller.messagedetailpost);
 // Route to Create a Company
 router.get(
   "/createcompany",
@@ -167,24 +171,37 @@ router.post(
 
 // QIA Detailed Budget Form
 router.get(
-  '/forms/qiabudget', ensureAuthentication,
+  "/forms/qiabudget",
+  ensureAuthentication,
   formcreate_controller.detailedbudget
-)
+);
 
-router.post(
-  '/forms/qiabudget', formcreate_controller.detailedbudgetpost
-)
+router.post("/forms/qiabudget", formcreate_controller.detailedbudgetpost);
 
 // QIA Center Improvement Plan Form
 router.get(
-  '/forms/qiacenterimprovement', ensureAuthentication,
+  "/forms/qiacenterimprovement",
+  ensureAuthentication,
   formcreate_controller.centerimprovement
-)
+);
 
 router.post(
-  '/forms/qiacenterimprovement', ensureAuthentication,
+  "/forms/qiacenterimprovement",
+  ensureAuthentication,
   formcreate_controller.centerimprovementpost
-)
+);
+
+// staff meeting tracker form
+router.get(
+  "/forms/staffmeetingtracker",
+  ensureAuthentication,
+  formcreate_controller.staffmeetingtracker
+);
+
+router.post(
+  "/forms/staffmeetingtracker",
+  formcreate_controller.staffmeetingtrackerpost
+);
 
 // form submit thank you page
 router.get("/thanks", function (req, res, next) {

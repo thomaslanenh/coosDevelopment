@@ -315,7 +315,7 @@ exports.qiaoutcome_post = function (req, res, next) {
     ];
 
     // loop for response one indicator section
-    for (var x = 1; x < 7; x++) {
+    for (var x = 1; x > 7; x++) {
       if (req.body.measuretypeindicatoronechoice[x] != 8) {
         values.push(
           {
@@ -347,7 +347,7 @@ exports.qiaoutcome_post = function (req, res, next) {
     }
 
     //loop for response two indicator section
-    for (var x = 0; x < 7; x++) {
+    for (var x = 0; x > 7; x++) {
       if (req.body.measuretypeindicatortwochoice[x] != 8) {
         values.push(
           {
@@ -937,12 +937,12 @@ exports.centerimprovementpost = function (req, res, next) {
       const query = pgp.helpers.insert(values, cs);
       const recordsResponse = db.none(query);
 
-      req.flash('info', 'Form succesfully submitted.')
-      res.redirect('/')
+      req.flash("info", "Form succesfully submitted.");
+      res.redirect("/");
     })
     .catch((error) => {
       if (error) {
-        console.log(error)
+        console.log(error);
         req.flash(
           "error",
           "An error occured. Try again or please submit a support ticket."
@@ -950,4 +950,25 @@ exports.centerimprovementpost = function (req, res, next) {
         res.redirect("/");
       }
     });
+};
+
+// staff meeting tracker form
+exports.staffmeetingtracker = function (req, res, next) {
+  db.tx(async t => {
+    const companyDetails = t.one(
+      'SELECT * from company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1', 
+      [req.user.user]
+    )
+    return {companyDetails}
+  }).then(results => {
+  res.render("./forms/staffmeetingtracker", {
+    user: req.user,
+    currentYear,
+    previousYear,
+    programDetails: results.companyDetails
+  });}
+)}
+
+exports.staffmeetingtrackerpost = function (req, res, next) {
+  res.send("NYI");
 };

@@ -69,10 +69,19 @@ block content
                                         a(class='is-link' href='/forms/qiacenterimprovement')
                                             p(class='has-text-weight-bold') QIA Center Improvement Plan Form
                                         if todaysDate
-                                            if todaysDate = 'Yes'
+                                            if todaysDate === 'Yes'
                                                 td ✓
                                             else
                                                 td=' '
+                                tr
+                                    td
+                                        a(class='is-link' href='/forms/staffmeetingtracker')
+                                            p(class='has-text-weight-bold') DN Staff Meeting Tracker Form
+                                        if todaysDate
+                                            if todaysDate === 'Yes'
+                                                td ✓
+                                            else
+                                                td= ' '
                 div(class='column is-narrow')
                     section(class='section')
                         h3(class='has-text-weight-semibold has-text-centered is-size-5') Recently Completed Forms:

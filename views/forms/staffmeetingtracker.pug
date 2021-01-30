@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    -console.log(programDetails)
+    section(class='section' style="flex: 1 0 auto;")
+        div(class='columns is-mobile is-multiline is-centered')
+            div(class='column is-full')
+                form(action='' method='POST')
+                    div(class='field')
+                        label(class='label') Program:
+                        input(type='text' disabled value=programDetails.company_name class='input')
+                    div(class='field')
+                        label(class='label') Director Name:
+                        input(type='text' disabled value=programDetails.first_name + " " + programDetails.last_name class='input')
+                    div(class='field')
+                        label(class='label') Other Name:
+                        input(type='text' class='input' name='othername')
+
