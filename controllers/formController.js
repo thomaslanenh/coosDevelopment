@@ -8,6 +8,7 @@ const db = require("../db");
 var currentYear = new Date().getFullYear();
 var previousYear = new Date().getFullYear() - 1;
 var isEmpty = require("lodash.isempty");
+const { ColumnSet } = require("pg-promise");
 var todaysDate = new Date();
 const pgp = require("pg-promise")({
   /* initialization options */
@@ -971,18 +972,103 @@ exports.staffmeetingtracker = function (req, res, next) {
 };
 
 exports.staffmeetingtrackerpost = function (req, res, next) {
+  const cs = new pgp.helpers.ColumnSet(["attrib_id", "value", "response_id"], {
+    table: "formquestionresponse",
+  });
+
   db.tx(async (t) => {
     const useraccount = await t.one(
-      "SELECT company_id from useraccount where username = $1", [req.user.user]
-    )
+      "SELECT u.company_id, c.company_name, c.first_name, c.last_name from company c inner join useraccount u on c.id = u.company_id where u.username = $1",
+      [req.user.user]
+    );
     const formresponse = await t.one(
-      "INSERT INTO formresponse(form_id, company_id), VALUES (6, $1) RETURNING response_id",
+      "INSERT INTO formresponse(form_id, company_id) VALUES (6, $1) RETURNING response_id",
       [useraccount.company_id]
-    )
-    
+    );
+
     return { useraccount, formresponse };
   })
     .then((results) => {
+      const values = [
+        {
+          attrib_id: 63,
+          value: useraccount.company_name,
+          response_id: results.formresponse.response_id,
+        },
+        {
+          attrib_id: 64,
+          value: useraccount.first_name + " " + useraccount.last_name,
+          response_id: results.formresponse.response_id,
+        },
+        {
+          attrib_id: 65,
+          value: req.body.othername,
+          response_id: results.formresponse.response_id,
+        },
+        {
+          attrib_id: 66,
+          value: req.body.januarydates,
+          response_id: results.formresponse.response_id,
+        },
+        {
+          attrib_id: 67,
+          alue: req.body.februarydates,
+          response_id: results.formresponse.response_id,
+        },
+        {
+          attrib_id: 68,
+          value: req.body.marchdates,
+          response_id: results.formresponse.response_id,
+        },
+        {
+          attrib_id: 69,
+          value: req.body.aprildates,
+          response_id: results.formresponse.response_id,
+        },
+        {
+          attrib_id: 70,
+          value: req.body.maydates,
+          response_id: results.formresponse.response_id,
+        },
+        {
+          attrib_id: 71,
+          value: req.body.junedates,
+          response_id: results.formresponse.response_id,
+        },
+        {
+          attrib_id: 72,
+          value: req.body.julydates,
+          response_id: results.formresponse.response_id,
+        },
+        {
+          attrib_id: 73,
+          value: req.body.augustdates,
+          response_id: results.formresponse.response_id,
+        },
+        {
+          attrib_id: 74,
+          value: req.body.septemberdates,
+          response_id: results.formresponse.response_id,
+        },
+        {
+          attrib_id: 75,
+          value: req.body.octoberdates,
+          response_id: results.formresponse.response_id,
+        },
+        {
+          attrib_id: 76,
+          value: req.body.novemberdates,
+          response_id: results.formresponse.response_id,
+        },
+        {
+          attrib_id: 77,
+          value: req.body.decemberdates,
+          response_id: results.formresponse.response_id,
+        },
+      ];
+      const query = pgp.helpers.insert(values, cs);
+      const recordsresponse = db.none(query);
+
       req.flash("success", "Form has been submitted. Thank you.");
       res.redirect("/");
     })
