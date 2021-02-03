@@ -954,21 +954,45 @@ exports.centerimprovementpost = function (req, res, next) {
 
 // staff meeting tracker form
 exports.staffmeetingtracker = function (req, res, next) {
-  db.tx(async t => {
-    const companyDetails = t.one(
-      'SELECT * from company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1', 
+  db.tx(async (t) => {
+    const companyDetails = await t.one(
+      "SELECT * from company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1",
       [req.user.user]
-    )
-    return {companyDetails}
-  }).then(results => {
-  res.render("./forms/staffmeetingtracker", {
-    user: req.user,
-    currentYear,
-    previousYear,
-    programDetails: results.companyDetails
-  });}
-)}
+    );
+    return { companyDetails };
+  }).then((results) => {
+    res.render("./forms/staffmeetingtracker", {
+      user: req.user,
+      currentYear,
+      previousYear,
+      programDetails: results.companyDetails,
+    });
+  });
+};
 
 exports.staffmeetingtrackerpost = function (req, res, next) {
-  res.send("NYI");
+  db.tx(async (t) => {
+    const useraccount = await t.one(
+      "SELECT company_id from useraccount where username = $1", [req.user.user]
+    )
+    const formresponse = await t.one(
+      "INSERT INTO formresponse(form_id, company_id), VALUES (6, $1) RETURNING response_id",
+      [useraccount.company_id]
+    )
+    
+    return { useraccount, formresponse };
+  })
+    .then((results) => {
+      req.flash("success", "Form has been submitted. Thank you.");
+      res.redirect("/");
+    })
+    .catch((error) => {
+      if (error) {
+        req.flash(
+          "error",
+          "There has been a error. Try again or submit a support ticket."
+        );
+        res.redirect("/");
+      }
+    });
 };
