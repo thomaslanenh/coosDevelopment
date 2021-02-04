@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    section(class='section' style="flex: 1 0 auto;")
+        div(class='columns is-mobile is-multiline is-centered')
+            div(class='column is-full')
+                h1 DN ECE Credit Tracking Form
+            div(class='column is-full')
+                form(action='' method='POST')
+                    div(class='field')
+                        label(class='label') Center Name:
+                        input(type='text')

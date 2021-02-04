@@ -10,6 +10,15 @@ var previousYear = new Date().getFullYear() - 1;
 var isEmpty = require("lodash.isempty");
 const { ColumnSet } = require("pg-promise");
 var todaysDate = new Date();
+
+function inputSkipper(column){
+  console.log(column.value)
+  if (isEmpty(column.value)){
+    return column.value === 'null'
+  }
+  return column
+}
+
 const pgp = require("pg-promise")({
   /* initialization options */
   capSQL: true, // capitalize all generated SQL
@@ -972,9 +981,25 @@ exports.staffmeetingtracker = function (req, res, next) {
 };
 
 exports.staffmeetingtrackerpost = function (req, res, next) {
-  const cs = new pgp.helpers.ColumnSet(["attrib_id", "value", "response_id"], {
-    table: "formquestionresponse",
-  });
+  const cs = new pgp.helpers.ColumnSet(
+    [
+      {
+        name: "attrib_id",
+      },
+      {
+        name: 'value',
+        skip(col) {
+          return col.value === null || col.value === undefined;
+        },
+      },
+      {
+        name: "response_id",
+      },
+    ],
+    {
+      table: "formquestionresponse",
+    }
+  );
 
   db.tx(async (t) => {
     const useraccount = await t.one(
@@ -989,15 +1014,42 @@ exports.staffmeetingtrackerpost = function (req, res, next) {
     return { useraccount, formresponse };
   })
     .then((results) => {
+      var linesJanuary = req.body.januarydates;
+
+      var linesFebruary = req.body.februarydates;
+
+      var linesMarch = req.body.marchdates;
+
+      var linesApril = req.body.aprildates;
+
+      var linesMay = req.body.maydates;
+
+      var linesJune = req.body.junedates;
+
+      var linesJuly = req.body.julydates;
+
+      var linesAugust = req.body.augustdates;
+
+      var linesSeptember = req.body.septemberdates;
+
+      var linesOctober = req.body.octoberdates;
+
+      var linesNovember = req.body.novemberdates;
+
+      var linesDecember = req.body.decemberdates;
+
       const values = [
         {
           attrib_id: 63,
-          value: useraccount.company_name,
+          value: results.useraccount.company_name,
           response_id: results.formresponse.response_id,
         },
         {
           attrib_id: 64,
-          value: useraccount.first_name + " " + useraccount.last_name,
+          value:
+            results.useraccount.first_name +
+            " " +
+            results.useraccount.last_name,
           response_id: results.formresponse.response_id,
         },
         {
@@ -1007,72 +1059,74 @@ exports.staffmeetingtrackerpost = function (req, res, next) {
         },
         {
           attrib_id: 66,
-          value: req.body.januarydates,
+          value: linesJanuary,
           response_id: results.formresponse.response_id,
         },
         {
           attrib_id: 67,
-          alue: req.body.februarydates,
+          value: linesFebruary,
           response_id: results.formresponse.response_id,
         },
         {
           attrib_id: 68,
-          value: req.body.marchdates,
+          value: linesMarch,
           response_id: results.formresponse.response_id,
         },
         {
           attrib_id: 69,
-          value: req.body.aprildates,
+          value: linesApril,
           response_id: results.formresponse.response_id,
         },
         {
           attrib_id: 70,
-          value: req.body.maydates,
+          value: linesMay,
           response_id: results.formresponse.response_id,
         },
         {
           attrib_id: 71,
-          value: req.body.junedates,
+          value: linesJune,
           response_id: results.formresponse.response_id,
         },
         {
           attrib_id: 72,
-          value: req.body.julydates,
+          value: linesJuly,
           response_id: results.formresponse.response_id,
         },
         {
           attrib_id: 73,
-          value: req.body.augustdates,
+          value: linesAugust,
           response_id: results.formresponse.response_id,
         },
         {
           attrib_id: 74,
-          value: req.body.septemberdates,
+          value: linesSeptember,
           response_id: results.formresponse.response_id,
         },
         {
           attrib_id: 75,
-          value: req.body.octoberdates,
+          value: linesOctober,
           response_id: results.formresponse.response_id,
         },
         {
           attrib_id: 76,
-          value: req.body.novemberdates,
+          value: linesNovember,
           response_id: results.formresponse.response_id,
         },
         {
           attrib_id: 77,
-          value: req.body.decemberdates,
+          value: linesDecember,
           response_id: results.formresponse.response_id,
         },
       ];
+
       const query = pgp.helpers.insert(values, cs);
-      const recordsresponse = db.none(query);
+      const recordsResponse = db.none(query);
 
       req.flash("success", "Form has been submitted. Thank you.");
       res.redirect("/");
     })
     .catch((error) => {
+      console.log(error);
       if (error) {
         req.flash(
           "error",
