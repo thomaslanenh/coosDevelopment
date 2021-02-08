@@ -9,14 +9,15 @@ var currentYear = new Date().getFullYear();
 var previousYear = new Date().getFullYear() - 1;
 var isEmpty = require("lodash.isempty");
 const { ColumnSet } = require("pg-promise");
+const { NULL } = require("node-sass");
 var todaysDate = new Date();
 
-function inputSkipper(column){
-  console.log(column.value)
-  if (isEmpty(column.value)){
-    return column.value === 'null'
+function inputSkipper(column) {
+  console.log(column.value);
+  if (isEmpty(column.value)) {
+    return column.value === "null";
   }
-  return column
+  return column;
 }
 
 const pgp = require("pg-promise")({
@@ -987,7 +988,7 @@ exports.staffmeetingtrackerpost = function (req, res, next) {
         name: "attrib_id",
       },
       {
-        name: 'value',
+        name: "value",
         skip(col) {
           return col.value === null || col.value === undefined;
         },
@@ -1014,29 +1015,65 @@ exports.staffmeetingtrackerpost = function (req, res, next) {
     return { useraccount, formresponse };
   })
     .then((results) => {
-      var linesJanuary = req.body.januarydates;
+      var linesJanuary =
+        req.body.januarydates.length > 0
+          ? req.body.januarydates.split(", " || ",")
+          : null;
 
-      var linesFebruary = req.body.februarydates;
+      var linesFebruary =
+        req.body.februarydates.length > 0
+          ? req.body.februarydates.split(", " || ",")
+          : null;
 
-      var linesMarch = req.body.marchdates;
+      var linesMarch =
+        req.body.marchdates.length > 0
+          ? req.body.marchdates.split(", " || ",")
+          : null;
 
-      var linesApril = req.body.aprildates;
+      var linesApril =
+        req.body.aprildates.length > 0
+          ? req.body.aprildates.split(", " || ",")
+          : null;
 
-      var linesMay = req.body.maydates;
+      var linesMay =
+        req.body.maydates.length > 0
+          ? req.body.maydates.split(", " || ",")
+          : null;
 
-      var linesJune = req.body.junedates;
+      var linesJune =
+        req.body.junedates.length > 0
+          ? req.body.junedates.split(", " || ",")
+          : null;
 
-      var linesJuly = req.body.julydates;
+      var linesJuly =
+        req.body.julydates.length > 0
+          ? req.body.julydates.split(", " || ",")
+          : null;
 
-      var linesAugust = req.body.augustdates;
+      var linesAugust =
+        req.body.augustdates.length > 0
+          ? req.body.augustdates.split(", " || ",")
+          : null;
 
-      var linesSeptember = req.body.septemberdates;
+      var linesSeptember =
+        req.body.septemberdates.length > 0
+          ? req.body.septemberdates.split(", " || ",")
+          : null;
 
-      var linesOctober = req.body.octoberdates;
+      var linesOctober =
+        req.body.octoberdates.length > 0
+          ? req.body.septemberdates.split(", " || ",")
+          : null;
 
-      var linesNovember = req.body.novemberdates;
+      var linesNovember =
+        req.body.novemberdates.length > 0
+          ? req.body.novemberdates.split(", " || ",")
+          : null;
 
-      var linesDecember = req.body.decemberdates;
+      var linesDecember =
+        req.body.decemberdates.length > 0
+          ? req.body.decemberdates.split(", " || ",")
+          : null;
 
       const values = [
         {
@@ -1119,7 +1156,8 @@ exports.staffmeetingtrackerpost = function (req, res, next) {
         },
       ];
 
-      const query = pgp.helpers.insert(values, cs);
+      const condition = pgp.as.format(" WHERE value IS NOT null", values);
+      const query = pgp.helpers.insert(values, cs) + condition;
       const recordsResponse = db.none(query);
 
       req.flash("success", "Form has been submitted. Thank you.");
