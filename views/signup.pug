@@ -16,6 +16,8 @@ block content
         div(class="columns is-mobile")
             div(class="column is-3")
             div(class="column is-7")
+                -console.log(degreeTypes)
+                -console.log('Degrees: ' + degrees)
                 form(action='' method="Post")
                     div(class="field")
                         label(class="label") Username
@@ -29,13 +31,52 @@ block content
                         label(class="label") E-Mail Address
                         input(class="input" id="email" name="email" type="text" required)
                         p(class="help") Enter a email address for the user here.
+                    hr(class='solid')
+                    p(class='is-italic has-text-centered is-size-5') Personal Information
+                    div(class='field')
+                        label(class='label') First Name 
+                        input(class='input' type='text' name='firstname' required)
+                    div(class='field')
+                        label(class='label') Last Name 
+                        input(class='input' type='text' name='lastname' required)
+                    hr(class='solid')
+                    p(class='is-italic has-text-centered is-size-5') Education Information
+                    div(class='field')
+                        label(class='label') Degree Type 
+                        p(class='help') Choose the level of the degree here. Cert = Certificate.
+                    div(class='field')
+                        div(class='control')
+                            select(class='select' name='radiodegreetype')
+                                each dtype in degreeTypes
+                                    option(value=dtype.type_id)=dtype.degree_type
+                    div(class='field')
+                        label(class='label') Degree Earned 
+                    div(class='field')
+                        div(class='control')
+                            select(class='select' name='radiodegree')
+                                each degree in degrees 
+                                    option(value=degree.degree_id)=degree.degree
+                    div(class='field')
+                        label(class='label is-size-7 is-italic') If 'Other', Enter Degree Here: 
+                        input(type='text' class='input' name='otherdegree')
+                    hr(class='solid')
+                    p(class='is-italic has-text-centered is-size-5') Center Information
                     div(class="field")
                         label(class="label") Associated Company:
-                            p(class="help") Select the associated company for this user.
+                        p(class="help") Select the associated company for this user. If company not found please create it.
                     div(class='field')
                         div(class="control")
                             select(class='select' name='companyradio')
                                 each company in companys
                                         option(value=company.id)=company.company_name
+                    div(class='field')
+                        label(class='label') User Type: 
+                        p(class='help') Select the user type for this user.
+                    div(class='field')
+                        div(class='control')
+                            select(class='select' name='typeradio')
+                                each usertype in userTypes
+                                    option(value=usertype.type_ref)=usertype.type
+                    hr(class='solid')
                     div(class="field")
-                        button(type="Submit" class="button is-link") Submit
+                        button(type="Submit" class="button is-link") Create User

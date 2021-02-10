@@ -7,6 +7,7 @@ const app = require("../app");
 const db = require("../db");
 var currentYear = new Date().getFullYear();
 var previousYear = new Date().getFullYear() - 1;
+var nextYear = new Date().getFullYear() + 1;
 var isEmpty = require("lodash.isempty");
 const { ColumnSet } = require("pg-promise");
 const { NULL } = require("node-sass");
@@ -24,6 +25,8 @@ const pgp = require("pg-promise")({
   /* initialization options */
   capSQL: true, // capitalize all generated SQL
 });
+
+// QIA Progress
 
 exports.qiaprogress = function (req, res, next) {
   // dynamically sets the form reporting year in a loop from 2020 up to existing year.
@@ -126,6 +129,8 @@ exports.qiaprogress_post = async function (req, res, next) {
       next(error);
     });
 };
+
+// QIA Outcome
 
 exports.qiaoutcome = function (req, res, next) {
   let measures = db
@@ -529,6 +534,7 @@ exports.qiaoutcome_post = function (req, res, next) {
 };
 
 // QIA Detailed Budget
+
 exports.detailedbudget = function (req, res, next) {
   db.tx(async (t) => {
     const companydetails = await t.one(
@@ -1017,62 +1023,62 @@ exports.staffmeetingtrackerpost = function (req, res, next) {
     .then((results) => {
       var linesJanuary =
         req.body.januarydates.length > 0
-          ? req.body.januarydates.split(", " || ",")
+          ? req.body.januarydates.split(", " || "," || " ")
           : null;
 
       var linesFebruary =
         req.body.februarydates.length > 0
-          ? req.body.februarydates.split(", " || ",")
+          ? req.body.februarydates.split(", " || "," || " ")
           : null;
 
       var linesMarch =
         req.body.marchdates.length > 0
-          ? req.body.marchdates.split(", " || ",")
+          ? req.body.marchdates.split(", " || "," || " ")
           : null;
 
       var linesApril =
         req.body.aprildates.length > 0
-          ? req.body.aprildates.split(", " || ",")
+          ? req.body.aprildates.split(", " || "," || " ")
           : null;
 
       var linesMay =
         req.body.maydates.length > 0
-          ? req.body.maydates.split(", " || ",")
+          ? req.body.maydates.split(", " || "," || " ")
           : null;
 
       var linesJune =
         req.body.junedates.length > 0
-          ? req.body.junedates.split(", " || ",")
+          ? req.body.junedates.split(", " || "," || " ")
           : null;
 
       var linesJuly =
         req.body.julydates.length > 0
-          ? req.body.julydates.split(", " || ",")
+          ? req.body.julydates.split(", " || "," || " ")
           : null;
 
       var linesAugust =
         req.body.augustdates.length > 0
-          ? req.body.augustdates.split(", " || ",")
+          ? req.body.augustdates.split(", " || "," || " ")
           : null;
 
       var linesSeptember =
         req.body.septemberdates.length > 0
-          ? req.body.septemberdates.split(", " || ",")
+          ? req.body.septemberdates.split(", " || "," || " ")
           : null;
 
       var linesOctober =
         req.body.octoberdates.length > 0
-          ? req.body.septemberdates.split(", " || ",")
+          ? req.body.septemberdates.split(", " || "," || " ")
           : null;
 
       var linesNovember =
         req.body.novemberdates.length > 0
-          ? req.body.novemberdates.split(", " || ",")
+          ? req.body.novemberdates.split(", " || "," || " ")
           : null;
 
       var linesDecember =
         req.body.decemberdates.length > 0
-          ? req.body.decemberdates.split(", " || ",")
+          ? req.body.decemberdates.split(", " || "," || " ")
           : null;
 
       const values = [
@@ -1156,11 +1162,15 @@ exports.staffmeetingtrackerpost = function (req, res, next) {
         },
       ];
 
-      const condition = pgp.as.format(" WHERE value IS NOT null", values);
-      const query = pgp.helpers.insert(values, cs) + condition;
+      const query = pgp.helpers.insert(values, cs);
       const recordsResponse = db.none(query);
 
-      req.flash("success", "Form has been submitted. Thank you.");
+      const deletenull = db.none(
+        "DELETE from formquestionresponse where value is null and response_id = $1",
+        [parseInt(results.formresponse.response_id)]
+      );
+
+      req.flash("info", "Form has been submitted. Thank you.");
       res.redirect("/");
     })
     .catch((error) => {
@@ -1173,4 +1183,43 @@ exports.staffmeetingtrackerpost = function (req, res, next) {
         res.redirect("/");
       }
     });
+};
+
+// ECE Credit Tracking
+
+exports.ececredittracking = function (req, res, next) {
+  db.tx(async (t) => {
+    const companyDetails = await t.one(
+      "SELECT * from company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1",
+      [req.user.user]
+    );
+    const classTypes = await t.manyOrNone('SELECT * from classtypes');
+    const staffMembers = await t.manyOrNone('SELECT u.first_name, u.last_name, u.id, d.degree, dt.degree_type from useraccount u INNER JOIN degree_types dt on u.degree_type = dt.type_id INNER JOIN degrees d on dt.type_id = d.degree_id INNER JOIN company c on u.company_id = c.id WHERE c.id = $1',[companyDetails.company_id])
+    return { companyDetails, staffMembers, classTypes };
+  })
+    .then((results) => {
+      res.render("./forms/ececredittracking", {
+        user: req.user,
+        companyName: results.companyDetails,
+        staffMembers: results.staffMembers,
+        currentYear,
+        previousYear,
+        nextYear,
+        classTypes: results.classTypes
+      });
+    })
+    .catch((error) => {
+      if (error) {
+        console.log(error)
+        req.flash(
+          "error",
+          "There has been a error. Your company may not have any Staff Members. Try again or submit a Support Ticket."
+        );
+        res.redirect("/");
+      }
+    });
+};
+
+exports.ececredittrackingpost = function (req, res, next) {
+  res.send("NYI");
 };

@@ -21,12 +21,18 @@ exports.logout = function (req, res, next) {
 exports.signup = function (req, res) {
   db.tx(async (t) => {
     const companys = await t.any("SELECT company_name, id FROM company");
-    return { companys };
+    const userTypes = await t.any("SELECT * from usertypes");
+    const degreeTypes = await t.any("SELECT * from degree_types");
+    const degrees = await t.any("SELECT * from degrees");
+    return { companys, userTypes, degreeTypes, degrees };
   })
     .then((data) => {
       res.render("signup", {
         title: "Sign Up",
         companys: data.companys,
+        userTypes: data.userTypes,
+        degreeTypes: data.degreeTypes,
+        degrees: data.degrees,
         user: req.user,
         currentYear,
       });
@@ -40,10 +46,10 @@ exports.signup = function (req, res) {
 
 exports.signup_post = [
   body("username")
-  .isLength({ min: 1, max: 25})
-  .withMessage("Username must be under 25 characters.")
-  .custom(value => !/\s/.test(value))
-  .withMessage("Username must not have spaces"),
+    .isLength({ min: 1, max: 25 })
+    .withMessage("Username must be under 25 characters.")
+    .custom((value) => !/\s/.test(value))
+    .withMessage("Username must not have spaces"),
   body("email")
     .isEmail()
     .withMessage("E-mail Address must be a valid e-mail address."),
@@ -61,16 +67,47 @@ exports.signup_post = [
         }
 
         db.tx(async (t) => {
-          const companys = await t.any(
-            "SELECT company_name, id FROM company"
-          );
-          const insertion = await t.none(
-            "INSERT INTO useraccount(username, password,email, company_id) VALUES ($1, $2, $3, $4)",
-            [req.body.username, hash, req.body.email, req.body.companyradio]
-          );
+          const companys = await t.any("SELECT company_name, id FROM company");
+
+          if (req.body.radiodegree == "7") {
+            const otherDegree = await t.one(
+              "insert into degrees (degree) values ($1) returning degree_id",
+              [req.body.otherdegree]
+            );
+            const useraccount = await t.one(
+              "INSERT INTO useraccount(username, password,email, company_id, user_type, first_name, last_name, degree_type, degree) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id",
+              [
+                req.body.username,
+                hash,
+                req.body.email,
+                req.body.companyradio,
+                req.body.typeradio,
+                req.body.firstname,
+                req.body.lastname,
+                req.body.radiodegreetype,
+                otherDegree.degree_id,
+              ]
+            );
+          } else {
+            const useraccount = await t.one(
+              "INSERT INTO useraccount(username, password,email, company_id, user_type, first_name, last_name, degree_type, degree) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id",
+              [
+                req.body.username,
+                hash,
+                req.body.email,
+                req.body.companyradio,
+                req.body.typeradio,
+                req.body.firstname,
+                req.body.lastname,
+                req.body.radiodegreetype,
+                req.body.radiodegree,
+              ]
+            );
+          }
           return companys;
         })
           .then((data) => {
+            req.flash("info", "Thank you for signing up!");
             res.redirect("/thanks");
           })
           .catch((err) => {
@@ -83,15 +120,14 @@ exports.signup_post = [
             }
           });
       });
-    }}
+    }
+  },
 ];
-
-
-
 
 exports.companyhome = function (req, res, next) {
   db.one("select * from company where id = $1", [req.params.id])
     .then((data) => {
+      console.log(req.user);
       res.render("companypage", {
         companylist: data,
         title: "Company Profile",
@@ -155,6 +191,33 @@ exports.profile = async function (req, res, next) {
     .catch((error) => {
       if (error) {
         next(error);
+      }
+    });
+};
+
+exports.staffmembers = function (req, res, next) {
+  db.tx(async (t) => {
+    const staffMembers = await t.any(
+      "select u.first_name, u.last_name, c.company_name from useraccount u inner join company c on u.company_id = c.id where u.company_id = $1",
+      [req.params.companyid]
+    );
+
+    return { staffMembers };
+  })
+    .then((results) => {
+      res.render("staffmembers", {
+        user: req.user,
+        currentYear,
+        staffMembers: results.staffMembers,
+      });
+    })
+    .catch((error) => {
+      if (error) {
+        req.flash(
+          "error",
+          "There was a error, please try again or submit a support ticket."
+        );
+        res.redirect("/");
       }
     });
 };

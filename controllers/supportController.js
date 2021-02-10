@@ -40,16 +40,18 @@ exports.indexpost = function (req, res, next) {
       [req.user.user]
     );
 
+    // sets the message receipients depending on what type of support is selected. 
     const websiteAdmin = await t.one(
       "select id from useraccount WHERE username = $1",
       ["scAdmin"]
     );
-    console.log(websiteAdmin);
+
     const ccdnAdmin = await t.one(
       "select id from useraccount WHERE username = $1",
       ["CCDNAnn"]
     );
 
+    // This is what sets the corresponding ID to the support type. Website Support issues go to the Website Admin, defined above.
     let useID = "";
     req.body.support_type == 2
       ? (useID = websiteAdmin.id)
@@ -106,11 +108,11 @@ exports.messages = function (req, res, next) {
 exports.messagedetail = function (req, res, next) {
   db.tx(async (t) => {
     const messageinfo = await t.one(
-      "SELECT subject_title, ticketid, message, TO_CHAR(date_submitted, 'MON-DD-YYYY HH12:MIPM'), username, email, user_type, company_name from helptickets h INNER JOIN useraccount u on h.sender_id = u.id INNER JOIN company c on u.company_id = c.id where ticketid = $1",
+      "SELECT subject_title, ticketid, message, TO_CHAR(date_submitted, 'MON-DD-YYYY HH12:MIPM'), username, email, user_type, type ut, company_name from helptickets h INNER JOIN useraccount u on h.sender_id = u.id INNER JOIN usertypes ut on u.user_type = ut.type_ref  INNER JOIN company c on u.company_id = c.id where ticketid = $1",
       [req.params.messageid]
     );
     const messageloop = await t.manyOrNone(
-      'SELECT * from messages m INNER JOIN useraccount u on m.sender_id = u.id WHERE master_id = $1', [req.params.messageid]
+      'SELECT * from messages m INNER JOIN useraccount u on m.sender_id = u.id INNER JOIN usertypes ut on u.user_type = ut.type_ref WHERE master_id = $1', [req.params.messageid]
     )
     return {messageinfo, messageloop};
   })

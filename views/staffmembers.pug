@@ -1,0 +1,11 @@
+extends layout 
+block content 
+    section(class="section" style="flex: 1 0 auto; padding: 20px;")
+        div(class="columns is-mobile is-centered is-multiline")
+            div(class='column is-full' style='padding-top: 50px;')
+                h1(class='has-text-weight-bold is-size-2 has-text-centered') #{staffMembers[0].company_name} Staff Members
+            div(class='column is-full')
+                p(class='has-text-centered is-italic is-size-5') These are the currently assigned staff members for #{staffMembers[0].company_name}:
+                    div(class='column is-full')
+                        for member in staffMembers
+                            p(class='has-text-centered') #{member.first_name} #{member.last_name}

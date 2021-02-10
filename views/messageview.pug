@@ -17,7 +17,7 @@ block content
                                 a(href=`mailto:`+messageinfo.email)
                                     strong=messageinfo.username+" "
                                 small(class='is-italic')=messageinfo.company_name+" "
-                                small=messageinfo.user_type + " "
+                                small=messageinfo.ut + " "
                                 small=messageinfo.to_char
                             p
                                 p(class='is-italic is-size-7')=messageinfo.subject_title
@@ -31,7 +31,7 @@ block content
                                     p
                                         a(href=`mailto:`+message.email)
                                             strong=message.username+" "
-                                        small=message.user_type + " "
+                                        small=message.type + " "
                                         small=message.to_char
                                     p
                                         p=message.message

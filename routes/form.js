@@ -43,7 +43,7 @@ function ensureAuthentication(req, res, next) {
 // ensures user is a administrator AND authenticated before letting them to a ADMIN area.
 function administratorCheck(req, res, next) {
   console.log(req.user);
-  if (req.isAuthenticated() && req.user.user_type === "ADMIN") {
+  if (req.isAuthenticated() && req.user.user_type === '2' ) {
     next();
   } else {
     req.session.error = "You must be a administrator to see this page.";
@@ -56,7 +56,7 @@ router.get("/", homepage_controller.index);
 //dynamically assign a company page to their ID.
 router.get("/company/:id", useraccount_controller.companyhome);
 
-// user account stuff
+// user account sections
 router.get("/login", useraccount_controller.index);
 router.post(
   "/login",
@@ -77,6 +77,13 @@ router.get(
   ensureAuthentication,
   useraccount_controller.profile
 );
+
+// Company Staff Members
+router.get(
+  '/:companyid/staffMembers',
+  ensureAuthentication,
+  useraccount_controller.staffmembers
+)
 
 // Support Routes
 router.get("/support", ensureAuthentication, support_controller.index);
@@ -202,6 +209,12 @@ router.post(
   "/forms/staffmeetingtracker",
   formcreate_controller.staffmeetingtrackerpost
 );
+
+// ece credit tracking
+router.get('/forms/ececredittracking', ensureAuthentication, formcreate_controller.ececredittracking)
+
+router.post('/forms/ececredittracking', formcreate_controller.ececredittrackingpost)
+// FORM POST SECTION
 
 // form submit thank you page
 router.get("/thanks", function (req, res, next) {

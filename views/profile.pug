@@ -9,6 +9,8 @@ block content
                     a(href="/" class="is-italic") Home
                 li
                     a(href=`/${userinfo.username}/forms/${userinfo.company_id}/all` class='is-italic') Completed Forms
+                li 
+                    a(href=`/${userinfo.company_id}/staffMembers` class='is-italic') Staff Members
         div(class='columns is-mobile is-centered is-multiline')
             div(class="column is-narrow")
                 section(class="section")
@@ -81,6 +83,15 @@ block content
                                             if todaysDate === 'Yes'
                                                 td ✓
                                             else
+                                                td= ' '
+                                tr 
+                                    td 
+                                        a(class='is-link' href='/forms/ececredittracking')
+                                            p(class='has-text-weight-bold') ECE Credit Tracking Form 
+                                        if todaysDate 
+                                            if todaysDate === 'Yes'
+                                                td ✓
+                                            else 
                                                 td= ' '
                 div(class='column is-narrow')
                     section(class='section')

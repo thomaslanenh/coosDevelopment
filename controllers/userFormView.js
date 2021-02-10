@@ -52,7 +52,7 @@ exports.index = async function (req, res, next) {
       // renders page.
       res.render("userformview", {
         companyForm: results,
-        users: req.users,
+        user: req.user,
         currentYear,
       });
     })
