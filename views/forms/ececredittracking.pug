@@ -18,39 +18,39 @@ block content
                         p(class='help') Please use this form to Staff college courses for credit only.
                     div(class='field')
                         if staffMembers
-                            table(class='table has-text-centered is-bordered is-striped is-narrow is-hoverable')
-                                thead 
-                                    tr 
-                                        th 
-                                            p(class='help') Staff Member 
-                                        th
-                                            p(class='help') Current Education
-                                        th 
-                                            p(class='help') Type of Credits 
-                                tbody
-                                    for member in staffMembers
+                            each member in staffMembers
+                                table(class='table has-text-centered is-bordered is-striped is-narrow is-hoverable')
+                                    thead 
                                         tr 
-                                            td #{member.first_name} #{member.last_name} 
-                                            td #{member.degree_type} #{member.degree}
-                                            td
-                                                table
-                                                    thead 
-                                                        tr 
-                                                            th 
-                                                                p(class='help') Type of Credit
-                                                            th 
-                                                                p(class='help') #{currentYear}
-                                                                    p(class='help has-text-warning-dark') Current
-                                                            th 
-                                                                p(class='help') Scholarship Accessed
-                                                    each classtype in classTypes 
-                                                        tr
-                                                            th 
-                                                                p(class='has-text-left') #{classtype.class_type}
-                                                            th
-                                                                input(type='number' class='input' name=`${classtype.class_type}${currentYear}credits` value=0)
-                                                            th 
-                                                                input(type='text' class='input' name='${classtype.class_type}scholarshipaccessed' value=0)
+                                            th 
+                                                p(class='help') Staff Member 
+                                            th 
+                                                p(class='help') Type of Credits 
+                                    tbody
+                                            tr 
+                                                td
+                                                    select(class='select' name='staffmember')
+                                                        option(value=null selected name='nostaff') None
+                                                            option(value=`${member.first_name} ${member.last_name}`) #{member.first_name} #{member.last_name}
+                                                td
+                                                    table
+                                                        thead 
+                                                            tr 
+                                                                th 
+                                                                    p(class='help') Type of Credit
+                                                                th 
+                                                                    p(class='help') #{currentYear}
+                                                                        p(class='help has-text-warning-dark') Current
+                                                                th 
+                                                                    p(class='help') Scholarship Accessed
+                                                        each classtype in classTypes 
+                                                            tr
+                                                                th 
+                                                                    p(class='has-text-left') #{classtype.class_type}
+                                                                th
+                                                                    input(type='number' class='input' name=`${member.first_name}${member.last_name}${classtype.class_type}credits` value=0)
+                                                                th 
+                                                                    input(type='text' class='input' name=`${member.first_name}${member.last_name}${classtype.class_type}scholarshipaccessed`)
                         else 
                             h2 No Staff Members found for this company. Please create atleast one!
                     div(class='field')

@@ -1193,8 +1193,11 @@ exports.ececredittracking = function (req, res, next) {
       "SELECT * from company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1",
       [req.user.user]
     );
-    const classTypes = await t.manyOrNone('SELECT * from classtypes');
-    const staffMembers = await t.manyOrNone('SELECT u.first_name, u.last_name, u.id, d.degree, dt.degree_type from useraccount u INNER JOIN degree_types dt on u.degree_type = dt.type_id INNER JOIN degrees d on dt.type_id = d.degree_id INNER JOIN company c on u.company_id = c.id WHERE c.id = $1',[companyDetails.company_id])
+    const classTypes = await t.manyOrNone("SELECT * from classtypes");
+    const staffMembers = await t.manyOrNone(
+      "SELECT u.first_name, u.last_name, u.id, d.degree, dt.degree_type from useraccount u INNER JOIN degree_types dt on u.degree_type = dt.type_id INNER JOIN degrees d on dt.type_id = d.degree_id INNER JOIN company c on u.company_id = c.id WHERE c.id = $1",
+      [companyDetails.company_id]
+    );
     return { companyDetails, staffMembers, classTypes };
   })
     .then((results) => {
@@ -1205,12 +1208,12 @@ exports.ececredittracking = function (req, res, next) {
         currentYear,
         previousYear,
         nextYear,
-        classTypes: results.classTypes
+        classTypes: results.classTypes,
       });
     })
     .catch((error) => {
       if (error) {
-        console.log(error)
+        console.log(error);
         req.flash(
           "error",
           "There has been a error. Your company may not have any Staff Members. Try again or submit a Support Ticket."
@@ -1221,5 +1224,79 @@ exports.ececredittracking = function (req, res, next) {
 };
 
 exports.ececredittrackingpost = function (req, res, next) {
-  res.send("NYI");
+  db.tx(async (t) => {
+    const companyAccount = await t.one(
+      "SELECT c.id, c.company_name from company c INNER JOIN useraccount u on c.id = u.company_id where u.username = $1",
+      [req.user.user]
+    );
+    const staffMembers = await t.manyOrNone(
+      "SELECT u.first_name, u.last_name, u.id, d.degree, dt.degree_type from useraccount u INNER JOIN degree_types dt on u.degree_type = dt.type_id INNER JOIN degrees d on dt.type_id = d.degree_id INNER JOIN company c on u.company_id = c.id WHERE c.id = $1",
+      [companyAccount.company_id]
+    );
+    const insertForm = await t.one(
+      "INSERT INTO formresponse(form_id, company_id) values (7, $1) returning response_id",
+      [companyAccount.company_id]
+    );
+    return { companyAccount, staffMembers, insertForm };
+  })
+    .then((result) => {
+      const cs = new pgp.helpers.ColumnSet([
+        {
+          name: "attrib_id",
+        },
+        {
+          name: 'value',
+        },
+        {
+          name: 'response_id',
+        },
+      ],
+      {
+        table: 'formquestionresponse',
+      })
+
+      const values = [
+        {
+          attrib_id: 78,
+          value: result.companyAccount.company_name,
+          response_id: result.insertForm.response_id
+        },
+        {
+          attrib_id: 79,
+          value: req.body.date,
+          response_id: result.insertForm.response_id
+        }
+      ]
+
+      staffMember.map(member => {
+        if (isEmpty(req.body[`${member.first_name}${member.last_name}ECEcredits`]) == false){
+          values.push({
+            attrib_id: 82,
+            value: req.body[`${member.first_name}${member.last_name}ECEcredits`],
+            response_id: result.insertForm.response_id
+          })
+        }
+        if (isEmpty(req.body[`${member.first_name}${member.last_name}Elementarycredits`]) == false){
+          values.push({
+            attrib_id: 83,
+            value: req.body[`${member.first_name}${member.last_name}Elementarycredits`],
+            response_id: result.insertForm.response_id
+          })
+        }
+
+        // FINISH THIS TOMORROW WITH THE REST OF THE FIELDS!
+      })
+      req.flash("info", "Thank you for your form submission.");
+      res.redirect("/");
+    })
+    .catch((e) => {
+      if (error) {
+        console.log(error);
+        req.flash(
+          "error",
+          "There has been a error. Try again or submit a support ticket."
+        );
+        res.redirect("/");
+      }
+    });
 };
