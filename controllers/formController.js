@@ -1226,7 +1226,7 @@ exports.ececredittracking = function (req, res, next) {
 exports.ececredittrackingpost = function (req, res, next) {
   db.tx(async (t) => {
     const companyAccount = await t.one(
-      "SELECT c.id, c.company_name from company c INNER JOIN useraccount u on c.id = u.company_id where u.username = $1",
+      "SELECT c.id, u.company_id, c.company_name from company c INNER JOIN useraccount u on c.id = u.company_id where u.username = $1",
       [req.user.user]
     );
     const staffMembers = await t.manyOrNone(
@@ -1240,56 +1240,328 @@ exports.ececredittrackingpost = function (req, res, next) {
     return { companyAccount, staffMembers, insertForm };
   })
     .then((result) => {
-      const cs = new pgp.helpers.ColumnSet([
+      const cs = new pgp.helpers.ColumnSet(
+        [
+          {
+            name: "attrib_id",
+          },
+          {
+            name: "value",
+          },
+          {
+            name: "response_id",
+          },
+        ],
         {
-          name: "attrib_id",
-        },
-        {
-          name: 'value',
-        },
-        {
-          name: 'response_id',
-        },
-      ],
-      {
-        table: 'formquestionresponse',
-      })
+          table: "formquestionresponse",
+        }
+      );
 
       const values = [
         {
           attrib_id: 78,
           value: result.companyAccount.company_name,
-          response_id: result.insertForm.response_id
+          response_id: result.insertForm.response_id,
         },
         {
           attrib_id: 79,
           value: req.body.date,
-          response_id: result.insertForm.response_id
-        }
-      ]
+          response_id: result.insertForm.response_id,
+        },
+      ];
 
-      staffMember.map(member => {
-        if (isEmpty(req.body[`${member.first_name}${member.last_name}ECEcredits`]) == false){
-          values.push({
-            attrib_id: 82,
-            value: req.body[`${member.first_name}${member.last_name}ECEcredits`],
-            response_id: result.insertForm.response_id
-          })
+      const staffMembers = result.staffMembers
+      staffMembers.map((member) => {
+        if (
+          isEmpty(
+            req.body[`${member.first_name}${member.last_name}ECEcredits`]
+          ) == false
+        ) {
+          values.push(
+            {
+              attrib_id: 82,
+              value:
+                req.body[`${member.first_name}${member.last_name}ECEcredits`],
+              response_id: result.insertForm.response_id,
+            },
+            {
+              attrib_id: 80,
+              value: `${member.first_name} ${member.last_name}`,
+              response_id: result.insertForm.response_id,
+            }
+          );
+          
         }
-        if (isEmpty(req.body[`${member.first_name}${member.last_name}Elementarycredits`]) == false){
-          values.push({
-            attrib_id: 83,
-            value: req.body[`${member.first_name}${member.last_name}Elementarycredits`],
-            response_id: result.insertForm.response_id
-          })
+        if (
+          isEmpty(
+            req.body[`${member.first_name}${member.last_name}Elementarycredits`]
+          ) == false
+        ) {
+          values.push(
+            {
+              attrib_id: 83,
+              value:
+                req.body[
+                  `${member.first_name}${member.last_name}Elementarycredits`
+                ],
+              response_id: result.insertForm.response_id,
+            },
+            {
+              attrib_id: 80,
+              value: `${member.first_name} ${member.last_name}`,
+              response_id: result.insertForm.response_id,
+            }
+          );
+          
+        }
+        if (
+          isEmpty(
+            req.body[`${member.first_name}${member.last_name}ECE Admincredits`]
+          ) == false
+        ) {
+          values.push(
+            {
+              attrib_id: 84,
+              value:
+                req.body[
+                  `${member.first_name}${member.last_name}ECE Admincredits`
+                ],
+              response_id: result.insertForm.response_id,
+            },
+            {
+              attrib_id: 80,
+              value: `${member.first_name} ${member.last_name}`,
+              response_id: result.insertForm.response_id,
+            }
+          );
+          
+        }
+        if (
+          isEmpty(
+            req.body[`${member.first_name}${member.last_name}Psychologycredits`]
+          ) == false
+        ) {
+          values.push(
+            {
+              attrib_id: 85,
+              value:
+                req.body[
+                  `${member.first_name}${member.last_name}Psychologycredits`
+                ],
+              response_id: result.insertForm.response_id,
+            },
+            {
+              attrib_id: 80,
+              value: `${member.first_name} ${member.last_name}`,
+              response_id: result.insertForm.response_id,
+            }
+          );
+         
+        }
+        if (
+          isEmpty(
+            req.body[
+              `${member.first_name}${member.last_name}Other ECE Relatedcredits`
+            ]
+          ) == false
+        ) {
+          values.push(
+            {
+              attrib_id: 86,
+              value:
+                req.body[
+                  `${member.first_name}${member.last_name}Other ECE Relatedcredits`
+                ],
+              response_id: result.insertForm.response_id,
+            },
+            {
+              attrib_id: 80,
+              value: `${member.first_name} ${member.last_name}`,
+              response_id: result.insertForm.response_id,
+            }
+          );
+          
+        }
+        if (
+          isEmpty(
+            req.body[
+              `${member.first_name}${member.last_name}Other Non-ECE Relatedcredits`
+            ]
+          ) == false
+        ) {
+          values.push(
+            {
+              attrib_id: 87,
+              value:
+                req.body[
+                  `${member.first_name}${member.last_name}Other Non-ECE Relatedcredits`
+                ],
+              response_id: result.insertForm.response_id,
+            },
+            {
+              attrib_id: 80,
+              value: `${member.first_name} ${member.last_name}`,
+              response_id: result.insertForm.response_id,
+            }
+          );
+          
+        }
+        if (
+          isEmpty(
+            req.body[
+              `${member.first_name}${member.last_name}ECEscholarshipaccessed`
+            ]
+          ) == false
+        ) {
+          values.push(
+            {
+              attrib_id: 88,
+              value: [
+                req.body[
+                  `${member.first_name}${member.last_name}ECEscholarshipaccessed`
+                ],
+              ],
+              response_id: result.insertForm.response_id,
+            },
+            {
+              attrib_id: 80,
+              value: `${member.first_name} ${member.last_name}`,
+              response_id: result.insertForm.response_id,
+            }
+          );
+         
         }
 
-        // FINISH THIS TOMORROW WITH THE REST OF THE FIELDS!
-      })
+        if (
+          isEmpty(
+            req.body[
+              `${member.first_name}${member.last_name}Elementaryscholarshipaccessed`
+            ]
+          ) == false
+        ) {
+          values.push(
+            {
+              attrib_id: 89,
+              value:
+                req.body[
+                  `${member.first_name}${member.last_name}Elementaryscholarshipaccessed`
+                ],
+              response_id: result.insertForm.response_id,
+            },
+            {
+              attrib_id: 80,
+              value: `${member.first_name} ${member.last_name}`,
+              response_id: result.insertForm.response_id,
+            }
+          );
+         
+        }
+        if (
+          isEmpty(
+            req.body[
+              `${member.first_name}${member.last_name}ECE Adminscholarshipaccessed`
+            ]
+          ) == false
+        ) {
+          values.push(
+            {
+              attrib_id: 90,
+              value:
+                req.body[
+                  `${member.first_name}${member.last_name}ECE Adminscholarshipaccessed`
+                ],
+              response_id: result.insertForm.response_id,
+            },
+            {
+              attrib_id: 80,
+              value: `${member.first_name} ${member.last_name}`,
+              response_id: result.insertForm.response_id,
+            }
+          );
+         
+        }
+        if (
+          isEmpty(
+            req.body[
+              `${member.first_name}${member.last_name}Psychologyscholarshipaccessed`
+            ]
+          ) == false
+        ) {
+          values.push(
+            {
+              attrib_id: 91,
+              value:
+                req.body[
+                  `${member.first_name}${member.last_name}Psychologyscholarshipaccessed`
+                ],
+              response_id: result.insertForm.response_id,
+            },
+            {
+              attrib_id: 80,
+              value: `${member.first_name} ${member.last_name}`,
+              response_id: result.insertForm.response_id,
+            }
+          );
+         
+        }
+        if (
+          isEmpty(
+            req.body[
+              `${member.first_name}${member.last_name}Other ECE Relatedscholarshipaccessed`
+            ]
+          ) == false
+        ) {
+          values.push(
+            {
+              attrib_id: 92,
+              value:
+                req.body[
+                  `${member.first_name}${member.last_name}Other ECE Relatedscholarshipaccessed`
+                ],
+              response_id: result.insertForm.response_id,
+            },
+            {
+              attrib_id: 80,
+              value: `${member.first_name} ${member.last_name}`,
+              response_id: result.insertForm.response_id,
+            }
+          );
+          
+        }
+        if (
+          isEmpty(
+            req.body[
+              `${member.first_name}${member.last_name}Other Non-ECE Relatedscholarshipaccessed`
+            ]
+          ) == false
+        ) {
+          values.push(
+            {
+              attrib_id: 93,
+              value:
+                req.body[
+                  `${member.first_name}${member.last_name}Other Non-ECE Relatedscholarshipaccessed`
+                ],
+              response_id: result.insertForm.response_id,
+            },
+            {
+              attrib_id: 80,
+              value: `${member.first_name} ${member.last_name}`,
+              response_id: result.insertForm.response_id,
+            }
+          );
+          
+        }
+        return values;
+      });
+
+      const query = pgp.helpers.insert(values, cs);
+      const recordsResponse = db.none(query);
+
       req.flash("info", "Thank you for your form submission.");
       res.redirect("/");
     })
-    .catch((e) => {
+    .catch((error) => {
       if (error) {
         console.log(error);
         req.flash(
