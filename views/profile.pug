@@ -39,6 +39,15 @@ block content
                                     th Form Name
                                     th #{currentYear}
                             tbody
+                                tr 
+                                    td 
+                                        a(class='is-link' href='/forms/annualreport')
+                                            p(class='has-text-weight-bold') Annual Report 
+                                    if todaysDate
+                                        if todaysDate === "Yes"
+                                            td ✓
+                                        else 
+                                            td = " "
                                 tr  
                                     td
                                         a(class='is-link' href='/forms/qiaprogress')
@@ -93,6 +102,7 @@ block content
                                                 td ✓
                                             else 
                                                 td= ' '
+                                
                 div(class='column is-narrow')
                     section(class='section')
                         h3(class='has-text-weight-semibold has-text-centered is-size-5') Recently Completed Forms:

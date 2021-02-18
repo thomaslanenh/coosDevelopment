@@ -538,7 +538,7 @@ exports.qiaoutcome_post = function (req, res, next) {
 exports.detailedbudget = function (req, res, next) {
   db.tx(async (t) => {
     const companydetails = await t.one(
-      "SELECT company_name, c.id, first_name, last_name FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1",
+      "SELECT company_name, c.id, u.first_name, u.last_name FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1",
       [req.user.user]
     );
     return companydetails;
@@ -1270,7 +1270,7 @@ exports.ececredittrackingpost = function (req, res, next) {
         },
       ];
 
-      const staffMembers = result.staffMembers
+      const staffMembers = result.staffMembers;
       staffMembers.map((member) => {
         if (
           isEmpty(
@@ -1290,7 +1290,6 @@ exports.ececredittrackingpost = function (req, res, next) {
               response_id: result.insertForm.response_id,
             }
           );
-          
         }
         if (
           isEmpty(
@@ -1312,7 +1311,6 @@ exports.ececredittrackingpost = function (req, res, next) {
               response_id: result.insertForm.response_id,
             }
           );
-          
         }
         if (
           isEmpty(
@@ -1334,7 +1332,6 @@ exports.ececredittrackingpost = function (req, res, next) {
               response_id: result.insertForm.response_id,
             }
           );
-          
         }
         if (
           isEmpty(
@@ -1356,7 +1353,6 @@ exports.ececredittrackingpost = function (req, res, next) {
               response_id: result.insertForm.response_id,
             }
           );
-         
         }
         if (
           isEmpty(
@@ -1380,7 +1376,6 @@ exports.ececredittrackingpost = function (req, res, next) {
               response_id: result.insertForm.response_id,
             }
           );
-          
         }
         if (
           isEmpty(
@@ -1404,7 +1399,6 @@ exports.ececredittrackingpost = function (req, res, next) {
               response_id: result.insertForm.response_id,
             }
           );
-          
         }
         if (
           isEmpty(
@@ -1429,7 +1423,6 @@ exports.ececredittrackingpost = function (req, res, next) {
               response_id: result.insertForm.response_id,
             }
           );
-         
         }
 
         if (
@@ -1454,7 +1447,6 @@ exports.ececredittrackingpost = function (req, res, next) {
               response_id: result.insertForm.response_id,
             }
           );
-         
         }
         if (
           isEmpty(
@@ -1478,7 +1470,6 @@ exports.ececredittrackingpost = function (req, res, next) {
               response_id: result.insertForm.response_id,
             }
           );
-         
         }
         if (
           isEmpty(
@@ -1502,7 +1493,6 @@ exports.ececredittrackingpost = function (req, res, next) {
               response_id: result.insertForm.response_id,
             }
           );
-         
         }
         if (
           isEmpty(
@@ -1526,7 +1516,6 @@ exports.ececredittrackingpost = function (req, res, next) {
               response_id: result.insertForm.response_id,
             }
           );
-          
         }
         if (
           isEmpty(
@@ -1550,7 +1539,6 @@ exports.ececredittrackingpost = function (req, res, next) {
               response_id: result.insertForm.response_id,
             }
           );
-          
         }
         return values;
       });
@@ -1571,4 +1559,46 @@ exports.ececredittrackingpost = function (req, res, next) {
         res.redirect("/");
       }
     });
+};
+
+// Annual Report
+
+exports.annualreport = function (req, res, next) {
+  db.tx(async (t) => {
+    const companyDetails = await t.one(
+      "SELECT u.company_id, c.company_name, c.first_name,c.last_name, c.town, l.license_type from company c INNER JOIN license l ON c.license_type = l.id INNER JOIN useraccount u ON c.id = u.company_id WHERE u.username = $1",
+      [req.user.user]
+    );
+    const agesServed = await t.many(
+      'SELECT * FROM agerange a INNER JOIN companyages ca ON a.id = ca.age_id WHERE ca.company_id = $1',
+    [
+      companyDetails.company_id
+    ]
+    )
+    return { companyDetails, agesServed };
+  })
+    .then((results) => {
+      res.render("./forms/annualreport", {
+        companyDetails: results.companyDetails,
+        agesServed: results.agesServed,
+        user: req.user,
+        currentYear,
+        previousYear,
+        nextYear,
+      });
+    })
+    .catch((e) => {
+      if (e) {
+        console.log(e)
+        req.flash(
+          "error",
+          "An error has occured. Try again or submit a support ticket"
+        );
+        res.redirect("/");
+      }
+    });
+};
+
+exports.annualreportpost = function (req, res, next) {
+  res.send("NYI");
 };

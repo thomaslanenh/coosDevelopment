@@ -151,6 +151,10 @@ router.post("/createcompany", compUploader, function (req, res, next) {
 
 // starting forms
 
+// annual report
+router.get('/forms/annualreport', ensureAuthentication, formcreate_controller.annualreport);
+router.post('/forms/annualreport', formcreate_controller.annualreportpost)
+
 // QIA Progress Form
 router.get(
   "/forms/qiaprogress",

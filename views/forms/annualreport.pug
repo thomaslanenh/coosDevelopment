@@ -1,0 +1,115 @@
+extends layout 
+
+block content 
+    section(class='section' style="flex: 1 0 auto;")
+        -console.log(companyDetails)
+        -console.log(agesServed)
+        div(class='columns is-mobile is-centered is-multiline')
+            div(class='column is-full')
+                h1(class='has-text-centered has-text-weight-bold is-size-2') ANNUAL REPORT #{currentYear} FORM
+            div(class="column is-full")
+                p(class='has-text-centered') The purpose of the Coos County Director Network Annual Report is to consolidate information and data on targeted elements to demonstrate progress in center development and quality improvements over a particular 12 month period. This information will be used to demonstrate effectiveness of the Early Childhood Initiative to funders and to document and track individual center’s activities and progress. This Annual Report is also necessary to be eligible for the Quality Improvement Award (QIA) for the recorded year.
+            div(class='column is-full')
+                form(action='' method='POST')
+                    label(class='label') Date 
+                    input(class='input' type='date' name='date' required)
+            div(class='column is-5')
+                p Licensing Information
+                table(class='table is-bordered is-striped is-hoverable is-fullwidth') 
+                    tbody 
+                        tr 
+                            th 
+                                p(class='is-size-6') # children licensed to serve 
+                            td 
+                                input(class='input' type='number' name='numberofchildrenserved')
+                        tr 
+                            th 
+                                p(class='is-size-6') Ages of children licensed to serve 
+                            td 
+                                input(class='input' type='text' name='agesofchildrenserved')
+            div(class='column is-5')
+                p Numbers of Children Served
+                table(class='table is-bordered is-striped is-hoverable is-fullwidth')
+                    thead 
+                        tr 
+                            th 
+                                p Age Range 
+                            th 
+                                p In Coos 
+                            th 
+                                p Out of Coos
+                    tbody 
+                       each agegroup in agesServed 
+                            tr 
+                                th 
+                                    p(class='is-size-6') #{agegroup.range_description} - #{agegroup.age_range}
+                                td 
+                                    input(class='input' type='number' name=`${companyDetails.company_id}${agegroup.id}coosnumber`)
+                                td 
+                                    input(class='input' type='number' name=`${companyDetails.company_id}${agegroup.id}outofcoosnumber`)
+            div(class='column is-5')
+                p Typical Enrollment 
+                table(class='table is-bordered is-striped is-hoverable is-fullwidth')
+                    thead 
+                        tr 
+                            th 
+                                p Age Range 
+                            th 
+                                p In Coos 
+                            th 
+                                p Out of Coos
+                    tbody 
+                        tr 
+                            th 
+                                p Birth - Pre-K 
+                            td 
+                                input(class='input' type='number' name='birthenrollmentcoos')
+                            td 
+                                input(class='input' type='number' name='birthenrollmentoutofcoos')
+                        tr
+                            th 
+                                p Kindergarten 
+                            td 
+                                input(class='input' type='number' name='kindergartenenrollmentcoos')
+                            td 
+                                input(class='input' type='number' name='kindergartenenrollmentoutofcoos')
+                        tr
+                            th 
+                                p Before / After School
+                            td 
+                                input(class='input' type='number' name='beforeafterenrollmentcoos')
+                            td 
+                                input(class='input' type='number' name='beforeafterenrollmentoutofcoos')
+            div(class='column is-5')
+                p Average Daily Attendance
+                table(class='table is-bordered is-striped is-hoverable is-fullwidth')
+                    thead 
+                        tr 
+                            th 
+                                p Age Range 
+                            th 
+                                p In Coos 
+                            th 
+                                p Out of Coos 
+                    tbody 
+                        tr 
+                            th 
+                                p Birth - Pre-K 
+                            td 
+                                input(class='input' type='number' name='birthenrollmentcoos')
+                            td 
+                                input(class='input' type='number' name='birthenrollmentoutofcoos')
+                        tr
+                            th 
+                                p Kindergarten 
+                            td 
+                                input(class='input' type='number' name='kindergartenenrollmentcoos')
+                            td 
+                                input(class='input' type='number' name='kindergartenenrollmentoutofcoos')
+                        tr
+                            th 
+                                p Before / After School
+                            td 
+                                input(class='input' type='number' name='beforeafterenrollmentcoos')
+                            td 
+                                input(class='input' type='number' name='beforeafterenrollmentoutofcoos')
