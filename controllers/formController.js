@@ -1570,11 +1570,9 @@ exports.annualreport = function (req, res, next) {
       [req.user.user]
     );
     const agesServed = await t.many(
-      'SELECT * FROM agerange a INNER JOIN companyages ca ON a.id = ca.age_id WHERE ca.company_id = $1',
-    [
-      companyDetails.company_id
-    ]
-    )
+      "SELECT * FROM agerange a INNER JOIN companyages ca ON a.id = ca.age_id WHERE ca.company_id = $1",
+      [companyDetails.company_id]
+    );
     return { companyDetails, agesServed };
   })
     .then((results) => {
@@ -1589,7 +1587,7 @@ exports.annualreport = function (req, res, next) {
     })
     .catch((e) => {
       if (e) {
-        console.log(e)
+        console.log(e);
         req.flash(
           "error",
           "An error has occured. Try again or submit a support ticket"
@@ -1600,5 +1598,15 @@ exports.annualreport = function (req, res, next) {
 };
 
 exports.annualreportpost = function (req, res, next) {
+  // not real code.
+  db.tx(async (t) => {
+    const formresponseid = await t
+      .one("SELECT id FROM formresponse WHERE id = $1", [req.user.id])
+      .then((results) => {
+        res.json(results);
+      });
+  });
+
+  // real code.
   res.send("NYI");
 };

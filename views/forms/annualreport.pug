@@ -9,107 +9,717 @@ block content
                 h1(class='has-text-centered has-text-weight-bold is-size-2') ANNUAL REPORT #{currentYear} FORM
             div(class="column is-full")
                 p(class='has-text-centered') The purpose of the Coos County Director Network Annual Report is to consolidate information and data on targeted elements to demonstrate progress in center development and quality improvements over a particular 12 month period. This information will be used to demonstrate effectiveness of the Early Childhood Initiative to funders and to document and track individual center’s activities and progress. This Annual Report is also necessary to be eligible for the Quality Improvement Award (QIA) for the recorded year.
-            div(class='column is-full')
-                form(action='' method='POST')
-                    label(class='label') Date 
-                    input(class='input' type='date' name='date' required)
-            div(class='column is-5')
-                p Licensing Information
-                table(class='table is-bordered is-striped is-hoverable is-fullwidth') 
-                    tbody 
-                        tr 
-                            th 
-                                p(class='is-size-6') # children licensed to serve 
-                            td 
-                                input(class='input' type='number' name='numberofchildrenserved')
-                        tr 
-                            th 
-                                p(class='is-size-6') Ages of children licensed to serve 
-                            td 
-                                input(class='input' type='text' name='agesofchildrenserved')
-            div(class='column is-5')
-                p Numbers of Children Served
-                table(class='table is-bordered is-striped is-hoverable is-fullwidth')
-                    thead 
-                        tr 
-                            th 
-                                p Age Range 
-                            th 
-                                p In Coos 
-                            th 
-                                p Out of Coos
-                    tbody 
-                       each agegroup in agesServed 
+        div(class='columns is-mobile is-centered is-multiline')
+            form(action='' method='POST')
+                div(class='mt-5 columns is-mobile is-responsive is-multiline')
+                    div(class='mt-5 column is-full')
+                        label(class='label is-size-4') Date 
+                        input(class='input' type='date' name='date' required)
+                    div(class='column is-half')
+                        label(class='label is-size-4') Licensing Information
+                        table(class='table is-bordered is-striped is-hoverable is-fullwidth') 
+                            tbody 
+                                tr 
+                                    th 
+                                        p(class='is-size-6') # children licensed to serve 
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='numberofchildrenserved')
+                                tr 
+                                    th 
+                                        p(class='is-size-6') Ages of children licensed to serve 
+                                    td 
+                                        input(class='input' type='text' name='agesofchildrenserved')
+                    div(class='column is-half')
+                        label(class='label is-size-4') Numbers of Children Served
+                        table(class='table is-bordered is-striped is-hoverable is-fullwidth')
+                            thead 
+                                tr 
+                                    th 
+                                        p Age Range 
+                                    th 
+                                        p In Coos 
+                                    th 
+                                        p Out of Coos
+                            tbody 
+                                each agegroup in agesServed 
+                                    tr 
+                                        th 
+                                            p(class='is-size-6') #{agegroup.range_description} - #{agegroup.age_range}
+                                        td 
+                                            input(class='input' type='number' placeholder=0 name=`${companyDetails.company_id}${agegroup.id}coosnumber`)
+                                        td 
+                                            input(class='input' type='number' placeholder=0 name=`${companyDetails.company_id}${agegroup.id}outofcoosnumber`)
+                div(class='mt-5 columns is-mobile is-responsive is-multiline')
+                    div(class='column is-half')
+                        label(class='label is-size-4') Typical Enrollment 
+                        table(class='table is-bordered is-striped is-hoverable is-fullwidth')
+                            thead 
+                                tr 
+                                    th 
+                                        p Age Range 
+                                    th 
+                                        p In Coos 
+                                    th 
+                                        p Out of Coos
+                            tbody 
+                                tr 
+                                    th 
+                                        p Birth - Pre-K 
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='birthenrollmentcoos')
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='birthenrollmentoutofcoos')
+                                tr
+                                    th 
+                                        p Kindergarten 
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='kindergartenenrollmentcoos')
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='kindergartenenrollmentoutofcoos')
+                                tr
+                                    th 
+                                        p Before / After School
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='beforeafterenrollmentcoos')
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='beforeafterenrollmentoutofcoos')
+                    div(class='column is-half')
+                        label(class='label is-size-4') Average Daily Attendance
+                        table(class='table is-bordered is-striped is-hoverable is-fullwidth')
+                            thead 
+                                tr 
+                                    th 
+                                        p Age Range 
+                                    th 
+                                        p In Coos 
+                                    th 
+                                        p Out of Coos 
+                            tbody 
+                                tr 
+                                    th 
+                                        p Birth - Pre-K 
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='birthdailyattendancecoos')
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='birthdailyattendanceoutofcoos')
+                                tr
+                                    th 
+                                        p Kindergarten 
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='kindergarteneattendancecoos')
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='kindergartenattendanceoutofcoos')
+                                tr
+                                    th 
+                                        p Before / After School
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='beforeafterattendancecoos')
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='beforeafterattendanceoutofcoos')
+                div(class='mt-5 columns is-mobile is-responsive is-multiline')
+                    div(class='column is-half')
+                        label(class='label is-size-4') # of Children with Special Needs 
+                        table(class='table is-bordered is-striped is-hoverable is-fullwidth')
+                            thead 
+                                tr 
+                                    th
+                                        p Age Range 
+                                    th
+                                        p In Coos 
+                                    th 
+                                        p Out of Coos 
+                            tbody 
+                                tr 
+                                    th 
+                                        p Birth - Pre-K 
+                                    td 
+                                        input(class="input" type='number' placeholder=0 name="birthspecialneedscoos")
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='birthspecialneedsoutofcoos')
+                                tr 
+                                    th 
+                                        p Kindergarten 
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='kindergartenspecialneedscoos')
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='kindergartenspecialneedsoutofcoos')
+                                tr
+                                    th 
+                                        p Before / After School
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='beforeafterenrollmentcoos')
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='beforeafterenrollmentoutofcoos')
+                    div(class='column is-half')
+                        label(class='label is-size-4') Total # of Children At/Below the Poverty Level
+                        table(class='table is-bordered is-striped is-hoverable is-fullwidth')
+                            thead 
+                                tr 
+                                    th
+                                        p Age Range 
+                                    th 
+                                        p In Coos 
+                                    th 
+                                        p Out of Coos 
+                            tbody 
+                                tr 
+                                    th 
+                                        p Birth - Pre-K 
+                                    td 
+                                        input(class="input" type='number' placeholder=0 name="birthpovertylevelcoos")
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='birthpovertyleveloutofcoos')
+                                tr 
+                                    th 
+                                        p Kindergarten 
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='kindergartenpovertycoos')
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='kindergartenpovertyoutofcoos')
+                                tr
+                                    th 
+                                        p Before / After School
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='beforeafterpovertycoos')
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='beforeafterpovertyoutofcoos')
+                div(class='column is-5')
+                    label(class='label is-size-4') # of Children on State Scholarship
+                    table(class='table is-bordered is-striped is-hoverable is-fullwidth')
+                        thead 
+                            tr 
+                                th
+                                    p Age Range 
+                                th 
+                                    p In Coos 
+                                th 
+                                    p Out of Coos 
+                        tbody 
                             tr 
                                 th 
-                                    p(class='is-size-6') #{agegroup.range_description} - #{agegroup.age_range}
+                                    p Birth - Pre-K 
                                 td 
-                                    input(class='input' type='number' name=`${companyDetails.company_id}${agegroup.id}coosnumber`)
+                                    input(class="input" type='number' placeholder=0 name="birthstatescholarshipcoos")
                                 td 
-                                    input(class='input' type='number' name=`${companyDetails.company_id}${agegroup.id}outofcoosnumber`)
-            div(class='column is-5')
-                p Typical Enrollment 
-                table(class='table is-bordered is-striped is-hoverable is-fullwidth')
-                    thead 
-                        tr 
+                                    input(class='input' type='number' placeholder=0 name='birthstatescholarshipoutofcoos')
+                            tr 
+                                th 
+                                    p Kindergarten 
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='kindergartenstatescholarshipcoos')
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='kindergartenstatescholarshipoutofcoos')
+                            tr
+                                th 
+                                    p Before / After School
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='beforeafterstatescholarshipcoos')
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='beforeafterstatescholarshipoutofcoos')
+                hr(class='solid')
+                div(class='columns is-mobile is-responsive is-multiline')
+                    div(class='column is-full')
+                        h2(class='has-text-centered has-text-weight-bold is-size-2') Staffing Numbers
+                    div(class='column is-half')
+                        h3(class='has-text-centered has-text-weight-bold is-size-4') Staff Numbers
+                        table(class='mt-5 table is-bordered is-striped is-hoverable is-fullwidth')
+                            thead 
+                                tr 
+                                    th
+                                        p Staff Numbers
+                                    th 
+
+                            tbody 
+                                tr 
+                                    th 
+                                        p Total # of Staff
+                                    td 
+                                        input(class="input" type='number' placeholder=0 name="totalnumberofstaff")
+                                tr 
+                                    th 
+                                        p # of Full Time Staff
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='numberoffulltimestaff')
+                                tr
+                                    th 
+                                        p # of Part Time Staff
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='numberofparttimestaff')
+                    div(class='column is-half')
+                        h3(class='has-text-centered has-text-weight-bold is-size-4') Staff Training Numbers
+                        table(class='mt-5 table is-bordered is-striped is-hoverable is-fullwidth')
+                            thead 
+                                tr 
+                                    th
+                                        p Program / Practice
+                                    th 
+                                        p # of Staff Trained
+                            tbody 
+                                tr 
+                                    th 
+                                        p ASQ 
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='asqstafftrained')
+                                tr 
+                                    th 
+                                        p Pyramid ModelFace to Face Models
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='pyramidmodelfacestafftrained')
+                                tr 
+                                    th 
+                                        p Pyramid ModelOnline Modules
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='pyramidmodelonlinestafftrained')
+                                tr 
+                                    th 
+                                        p Pyramid ModelPLC Cohort with Modules
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='pyramidmodelplcstafftrained')
+                                tr 
+                                    th 
+                                        p TS Gold
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='tsgoldstafftrained')
+                                tr 
+                                    th 
+                                        p COR
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='corstafftrained')
+                                tr 
+                                    th 
+                                        p DRDP
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='drdpstafftrained')
+                                tr 
+                                    th 
+                                        p Creative Curriculum
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='creativecurriculumstafftrained')
+                                tr 
+                                    th 
+                                        p HighScope
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='highscopestafftrained')
+                                tr 
+                                    th 
+                                        p Strengthening Families
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='strengtheningfamiliesstafftrained')
+                                tr 
+                                    th 
+                                        p NCPMI Behavior Incident Reports
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name='ncpmistafftrained')
+                                tr 
+                                    th 
+                                        p Early Learning Standards
+                                    td 
+                                        input(class='input' type='number' placeholder=0  name='earlylearningstandardsstafftrained')
+                hr(class='solid')
+                div(class='column is-full')
+                    h2(class='has-text-centered has-text-weight-bold is-size-2') Additional Questions
+                div(class='column is-full')
+                    table(class='mt-5 table is-bordered is-striped is-hoverable is-fullwidth')
+                        tbody 
+                            tr 
+                                th
+                                    p Do you offer families educational materials on Vroom? How?
+                                td 
+                                    textarea(class='textarea' type='textarea' name='familymaterialsvroom')
+                            tr 
+                                th 
+                                    p Do you offer Parent/Teacher conferences? How often?
+                                td 
+                                    textarea(class='textarea' type='textarea' name='parentteacherconferences')
+                            tr 
+                                th 
+                                    p How are you engaging families?
+                                    p(class='help is-italic has-text-info') Hold CTRL or CMD to select multiple options.
+                                td  
+                                    div(class='select is-multiple')
+                                        select(multiple name='engagingfamilies' size='8')
+                                            option(value='openhouse') Open House 
+                                            option(value='parentblog') Parent Blog 
+                                            option(value='facebookpage') Facebook Page 
+                                            option(value='picturesaction') Share Pictures of Children in Action 
+                                            option(value='signupevents') Signup Sheets for Events
+                                            option(value='socialevents') Social Events for Families to Get to Know Each Other 
+                                            option(value='familycallpositive') Call Families with Positive News 
+                                            option(value='familyprojects') Family Projects 
+                                            option(value='advancednoticeevents') Advanced Notice of Special Events 
+                                            option(value='familysurvey') Family Survey of Interest & Skills They Can Offer 
+                                tr 
+                                    th 
+                                        p Are you offering other ways of engaging families?
+                                    td 
+                                        div(class='control')
+                                            label(class='radio') Yes
+                                                input(type='radio' class='yesbox' name='otherengagingways' value='yes' checked)
+                                            label(class='radio') No
+                                                input(type='radio' name='otherengagingways' value='no')
+                                tr 
+                                    th 
+                                        p Other Ways of Engaging Families: 
+                                        p(class='help is-italic is-info') Please list all the other ways you engage families in here if it applies, otherwise do not fill this field out.
+                                    th
+                                        textarea(class='textarea' name='otherwaysofengagingfamily')
+                hr(class='solid')
+                div(class='column is-full')
+                    h2(class='has-text-centered has-text-weight-bold is-size-2') ECE Credentials
+                div(class='column is-full')
+                    table(class='mt-5 table is-bordered is-striped is-hoverable is-fullwidth')
+                        thead 
+                            p(class='has-text-centered is-italic is-size-6') Please record the number of staff who hold a valid NH ECE Credential as of Dec.31 of #{currentYear}.
+                        tbody 
+                            tr 
+                                th 
+                                    p Total Number of Staff Who Are Eligible to Apply for a Credential:
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='staffeligibletoapplyforcredential')
+                            tr
+                                th 
+                                    p Total Number of Staff with a Valid NH Credential: 
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='staffwithavalidnhcredential')
+                            tr 
+                                th 
+                                    p Total Number of Staff Receiving a NEW Credential This Reporting Year:
+                                        p(class='help') Staff Who've Never Have Been Credentialed in That Area
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='staffwithnewcredential')
+                div(class='column is-full')
+                    table(class='mt-5 table is-bordered is-striped is-hoverable is-fullwidth')
+                        thead 
+                            p(class='has-text-centered is-italic is-size-6') Total Number of Staff That Hold a Valid NH Credential in the Following Areas: 
                             th 
-                                p Age Range 
+                                p Area of Credential 
                             th 
-                                p In Coos 
-                            th 
-                                p Out of Coos
+                                p Number of Staff Who Hold a Credential in Area 
+                        tbody 
+                            tr 
+                                th 
+                                    p Family Child Care
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='staffwithfamilychildcarecredential')
+                            tr
+                                th 
+                                    p Early Childhood Teacher
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='staffwithearlychildhoodteachercredential')
+                            tr
+                                th 
+                                    p Early Childhood Master Teacher
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='staffwithearlychildhoodmasterteachercredential')
+                            tr
+                                th 
+                                    p Early Childhood Administrator
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='staffwithearlychildhoodadministratorcredential')
+                            tr
+                                th 
+                                    p Early Childhood Master Professional
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='staffwithearlychildhoodmasterprofessionalcredential')
+                            tr
+                                th 
+                                    p Early Childhood Infant & Toddler
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='staffwithearlychildhoodinfanttoddlercredential')
+                hr(class='solid')
+                div(class='column is-full')
+                    h2(class='has-text-centered has-text-weight-bold is-size-2') Staff Education & Training 
+                    table(class='mt-5 table is-bordered is-striped is-hoverable is-fullwidth')
                     tbody 
-                        tr 
-                            th 
-                                p Birth - Pre-K 
-                            td 
-                                input(class='input' type='number' name='birthenrollmentcoos')
-                            td 
-                                input(class='input' type='number' name='birthenrollmentoutofcoos')
-                        tr
-                            th 
-                                p Kindergarten 
-                            td 
-                                input(class='input' type='number' name='kindergartenenrollmentcoos')
-                            td 
-                                input(class='input' type='number' name='kindergartenenrollmentoutofcoos')
-                        tr
-                            th 
-                                p Before / After School
-                            td 
-                                input(class='input' type='number' name='beforeafterenrollmentcoos')
-                            td 
-                                input(class='input' type='number' name='beforeafterenrollmentoutofcoos')
-            div(class='column is-5')
-                p Average Daily Attendance
-                table(class='table is-bordered is-striped is-hoverable is-fullwidth')
-                    thead 
-                        tr 
-                            th 
-                                p Age Range 
-                            th 
-                                p In Coos 
-                            th 
-                                p Out of Coos 
-                    tbody 
-                        tr 
-                            th 
-                                p Birth - Pre-K 
-                            td 
-                                input(class='input' type='number' name='birthenrollmentcoos')
-                            td 
-                                input(class='input' type='number' name='birthenrollmentoutofcoos')
-                        tr
-                            th 
-                                p Kindergarten 
-                            td 
-                                input(class='input' type='number' name='kindergartenenrollmentcoos')
-                            td 
-                                input(class='input' type='number' name='kindergartenenrollmentoutofcoos')
-                        tr
-                            th 
-                                p Before / After School
-                            td 
-                                input(class='input' type='number' name='beforeafterenrollmentcoos')
-                            td 
-                                input(class='input' type='number' name='beforeafterenrollmentoutofcoos')
+                    tr
+                        th
+                            p(class='is-italic mb-5') In the area of staff education, please explain any increase, lack of increase, or decreases in staff education for this reporting year. Describe any barries that limit staff education. This should reflect information indicated on the ECE Credit Tracker.
+                        td 
+                            textarea(class='textarea' rows='20' name='staffeducationbarriers')
+                    tr 
+                        th 
+                            p(class='is-italic mt-5 mb-5') Did you mentor other Directors for this year? If so, please share some stores.
+                        td 
+                            textarea(class='textarea' rows='20' name='stafftrainingstories')
+                hr(class='solid')
+                div(class='column is-full')
+                    h2(class='has-text-centered has-text-weight-bold is-size-2') Director Network (NAEYC) Self-Study
+                    p(class='has-text-centered is-italic') Using the Self-Study Quarterly Progress Reports, Please Record the Criteria Totals for Each Quarter in this Reporting Year.
+                    table(class='mt-5 table is-bordered is-striped is-hoverable is-fullwidth')
+                        thead 
+                            tr  
+                                th
+                                    p Quarter 
+                                th 
+                                    p Not Attempted 
+                                th 
+                                    p In Progress 
+                                th 
+                                    p Completed with 80% Minimum 
+                                th 
+                                    p Number of Criteria Completed This Reporting Period 
+                        tbody 
+                            tr 
+                                th 
+                                    p 1st Quarter
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='1stquarternotattempted')
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='1stquarterinprogress')
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='1stquartercompletedwith80minimum')
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='1stquartertotalcriteriacompleted')
+                            tr 
+                                th 
+                                    p 2nd Quarter
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='2ndquarternotattempted')
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='2ndquarterinprogress')
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='2ndquartercompletedwith80minimum')
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='2ndquartertotalcriteriacompleted')
+                            tr 
+                                th 
+                                    p 3rd Quarter
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='3rdquarternotattempted')
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='3rdquarterinprogress')
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='3rdquartercompletedwith80minimum')
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='3rdquartertotalcriteriacompleted')
+                            tr 
+                                th 
+                                    p 4th Quarter
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='4thquarternotattempted')
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='4thquarterinprogress')
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='4thquartercompletedwith80minimum')
+                                td 
+                                    input(class='input' type='number' placeholder=0 name='4thquartertotalcriteriacompleted')
+                hr.solid
+                div(class='column is-full')
+                    h2(class='has-text-centered has-text-weight-bold is-size-2') Program Implementation Criteria 
+                    div(class='card')
+                        header(class='card-header has-background-grey-lighter') 
+                            a(name='programimplementationcriteria')
+                                p(class='card-header-title is-italic') Program Implementation Criteria
+                        div(class='card-content has-background-white-ter')
+                            div(class='content')
+                                p(class='is-italic has-text-centered mb-5') Use this chart to determine your programs implementation of the programs/practices listed below.
+                                table(class='mt-5 table is-bordered is-striped is-hoverable is-fullwidth')
+                                    thead 
+                                        tr(class='has-text-centered') 
+                                            th In-Training 
+                                            th Adoption 
+                                            th Partial Implementation 
+                                            th Full Implementation 
+                                            th Fidelity
+                                    tbody 
+                                        tr
+                                            td 
+                                                p Staff training has just begun; you are not using elements of the program/practice in your center 
+                                            td 
+                                                p Some of your staff have been trained; your center has adopted the program/practice and is beginning implementation of some elements in at least one program in your center 
+                                            td 
+                                                p Most of your staff have been trained, and you are using some elements of the program/practice in one or more programs in your center 
+                                            td 
+                                                p 100% of your staff have been trained, and you are using some elements of the program/practice across all programs and are working towards using it to fidelity.
+                                            td 
+                                                p 100% of your staff have been trained, and you are using all elements of the program/practice across all programs in your center the way it was meant to be used.
+                            div(class='content has-text-centered mt-5 mb-5')
+                                figure(class='image is-inline-block')
+                                    img(src='/evidencebasedpractices.png' alt='Evidence Based Practices - An evidence-based practice can be defined as an instructional strategy, intervention, or teaching program that has resulted in consistent positve results when experimentally tested (Mesibov & Shea, 2011; Simpson, 2005)')
+                div(class='column is-full')
+                    h3(class='has-text-centered has-text-weight-bold is-size-4 mt-5') Developmental Screenings
+                    header(class='card-header has-background-info-light mt-5') 
+                        p(class='card-header-title is-italic') Ages / Stages Questionnaire
+                    div(class='card-content has-background-white-ter')
+                        div(class='content')
+                            p(class='is-italic') Comment on current ASQ related participation (increases/decreases), needs and/or barriers that you encountered during this reporting year.
+                            textarea(class='textarea' rows='10' name='currentasqparticipationneeds')
+                            hr.grey
+                            table(class='mt-5 table is-bordered is-striped is-hoverable is-fullwidth')
+                                tbody
+                                    tr 
+                                        td 
+                                            p # of Children referred who received follow up assesment / services: 
+                                        td 
+                                            input(type='number' placeholder=0 class='input' name='childrenwhoreceivedfollowupassesment')
+                                    tr
+                                        td 
+                                            p Please indicate how many students participated in any other screenings during this reported year (i.e. DIAL):
+                                        td 
+                                            input(type='number' placeholder=0 class='input' name='studentsparticipatedinotherscreenings')
+                    div(class='content')
+                        p(class='is-italic mt-5') Describe any trainings related to Developmental Screenings that were attended by staff in this reporting year: 
+                        textarea(class='textarea' rows='15' name='developmentalscreeningstraining')
+                div(class='column is-full')
+                    p(class='is-italic mt-5') Use the following chart to indicate the level of fidelity of implementation of ASQ's: 
+                    table(class='mt-5 table is-bordered is-striped is-hoverable is-fullwidth')
+                        thead 
+                            tr(class='has-text-centered') 
+                                th In-Training 
+                                th Adoption 
+                                th Partial Implementation 
+                                th Full Implementation 
+                                th Fidelity
+                        tbody 
+                            tr 
+                                td 
+                                    input(type='number' class='input' placeholder=0 name='asqintrainingfidelity')
+                                td 
+                                    input(type='number' class='input' placeholder=0 name='asqadoptionfidelity')
+                                td 
+                                    input(type='number' class='input' placeholder=0 name='asqpartialimplementationfidelity')
+                                td 
+                                    input(type='number' class='input' placeholder=0 name='asqfullimplementationfidelity')
+                                td 
+                                    input(type='number' class='input' placeholder=0 name='asqfidelityfidelity')
+                    a(href='#programimplementationcriteria') 
+                        p(class='has-text-centered') Program Implementation Criteria
+                    div(class='content')
+                        p(class='is-italic mt-5') What support is needed to reach the next stage of implementation?
+                        textarea(class='textarea' rows='5' name='asqsupportneeded')
+                hr.grey
+                div(class='column is-full')
+                    h3(class='has-text-centered has-text-weight-bold is-size-4 mt-5') Behavior Incident Reports (BIR)
+                    div(class='content')
+                        p(class='is-italic mt-5')  Describe any trainings related to Behavior Incident Reports (BIR) that were attended by staff in this reporting year: 
+                        textarea(class='textarea' rows='15' name='birtrainingdescription')
+                div(class='column is-full')
+                    p(class='is-italic mt-5') Use the following chart to indicate the level of fidelity of implementation of the NCPMI Behavior Incident Reports within your program: 
+                    table(class='mt-5 table is-bordered is-striped is-hoverable is-fullwidth')
+                        thead 
+                            tr(class='has-text-centered') 
+                                th In-Training 
+                                th Adoption 
+                                th Partial Implementation 
+                                th Full Implementation 
+                                th Fidelity
+                        tbody 
+                            tr 
+                                td 
+                                    input(type='number' class='input' placeholder=0 name='birintrainingfidelity')
+                                td 
+                                    input(type='number' class='input' placeholder=0 name='biradoptionfidelity')
+                                td 
+                                    input(type='number' class='input' placeholder=0 name='birpartialimplementationfidelity')
+                                td 
+                                    input(type='number' class='input' placeholder=0 name='birfullimplementationfidelity')
+                                td 
+                                    input(type='number' class='input' placeholder=0 name='birfidelityfidelity')
+                    a(href='#programimplementationcriteria') 
+                        p(class='has-text-centered') Program Implementation Criteria
+                    div(class='content')
+                        p(class='is-italic mt-5') What support is needed to reach the next stage of implementation?
+                        textarea(class='textarea' rows='5' name='birsupportneeded')
+                    div(class='content')
+                        p(class='is-italic mt-5') Use this space to further describe how your Center is using the NCPMI Behavior Incident Reports, and if you are not using this particular BIR, please describe what your Center is doing. Please also describe any success or challenges to using the BIR's that you have encountered.
+                        textarea(class='textarea' rows='25' name='birreportusages')
+                hr.grey
+                div(class='column is-full')
+                    h3(class='has-text-centered has-text-weight-bold is-size-4 mt-5') Evidence-Based Assessment Systems
+                    div(class='content')
+                        p(class='is-italic mt-5')  Describe any trainings related to Evidence-Based Assessment Systems that were attended by staff in this reporting year (i.e. TS Gold, Child Observation Record (COR), DRDP): 
+                        textarea(class='textarea' rows='15' name='ebastrainingdescription')
+                div(class='column is-full')
+                    p(class='is-italic mt-5') Use the following chart to indicate the level of fidelity of implementation of the NCPMI Behavior Incident Reports within your program: 
+                    table(class='mt-5 table is-bordered is-striped is-hoverable is-fullwidth')
+                        thead 
+                            tr(class='has-text-centered') 
+                                th In-Training 
+                                th Adoption 
+                                th Partial Implementation 
+                                th Full Implementation 
+                                th Fidelity
+                        tbody 
+                            tr 
+                                td 
+                                    input(type='number' class='input' placeholder=0 name='ebasintrainingfidelity')
+                                td 
+                                    input(type='number' class='input' placeholder=0 name='ebasadoptionfidelity')
+                                td 
+                                    input(type='number' class='input' placeholder=0 name='ebaspartialimplementationfidelity')
+                                td 
+                                    input(type='number' class='input' placeholder=0 name='ebasfullimplementationfidelity')
+                                td 
+                                    input(type='number' class='input' placeholder=0 name='ebasfidelityfidelity')
+                    a(href='#programimplementationcriteria') 
+                        p(class='has-text-centered') Program Implementation Criteria
+                    div(class='content')
+                        p(class='is-italic mt-5') What support is needed to reach the next stage of implementation?
+                        textarea(class='textarea' rows='5' name='ebassupportneeded')
+                    div(class='content')
+                        p(class='is-italic mt-5') Do you use the results of these evidence-based assessments to inform your curriculum planning? If so, how?
+                        textarea(class='textarea' rows='5' name='ebasresultsinform')
+                    div(class='content')
+                        p(class='is-italic mt-5') Use this space to further describe the use of any Evidence-Based Assessment Systems used at your center in this reporting year.
+                        textarea(class='textarea' rows='25' name='ebasreportusages')
+                hr.solid
+                div(class='column is-full mt-6')
+                    h2(class='has-text-centered has-text-weight-bold is-size-2') Staff Turnover
+                    div(class='content')
+                        p(class='is-italic mt-5') Have you experienced any staff turnover in #{previousYear}?
+                        table(class='table mt-5 is-bordered is-striped is-hoverable is-fullwidth')
+                            tbody 
+                                tr 
+                                    td 
+                                        p # of Staff Left in #{previousYear}
+                                    td
+                                        input(type='number' class='input' placeholder=0 name='staffleftpreviousyear')
+                                tr  
+                                    td 
+                                        p # of Staff Hired to Replace Staff Left in #{previousYear}
+                                    td 
+                                        input(type='number' class='input' placeholder=0 name='staffhiredreplacedpreviousyear')
+                                tr 
+                                    td 
+                                        p # of Staff Hired to New Positions in #{previousYear}
+                                    td 
+                                        input(type='number' class='input' placeholder=0 name='staffhirednewpositionpreviousyear')
+                                tr 
+                                    td 
+                                        p # of Positions Remaining Unfilled in #{previousYear}
+                                    td 
+                                        input(type='number' class='input' placeholder=0 name='positionsremaininginpreviousyear')
+                        p(class='is-italic mt-5') Was the staff turnover rate you had this year typical of years past or did COVID have an additional impact on your turnover rate?
+                        textarea(class='textarea' rows='5' name='covideffectonstaffturnover')
+                        p(class='is-italic mt-5') Please describe the reasons you experienced staff turnover in #{previousYear}, as well as any concerns of difficulties you had with retaining/hiring staff.
+                        textarea(class='textarea' rows='25' name='reasonsstaffleftinpreviousyear')
+                hr.solid
+                div(class='column is-full mt-6')
+                    h2(class='has-text-centered has-text-weight-bold is-size-2') COVID Impacts 
+                    div(class='content')
+                        p(class='is-italic mt-5') Please describe how COVID has impacted your program: 
+                        textarea(class='textarea' rows='30' name='covidimpactonprogram')
+                        table(class='table mt-5 is-bordered is-striped is-hoverable is-fullwidth')
+                            tbody
+                                tr 
+                                    th 
+                                        p Were you able to take advantage of any CARES Act or any other funding to help you sustain your operations?
+                        
+                                        p(class='help is-italic is-info') Hold CTRL or CMD to select multiple options.
+                                    td 
+                                        div(class='select is-multiple')
+                                            select(multiple size='8' name='extrafundingsources')
+                                                option(value='pppfunding') PPP 
+                                                option(value='eidlfunding') EIDL 
+                                                option(value='ccrspfunding') CCRSP 
+                                                option(value='ccasfunding') CCAS 
+                                                option(value='nhcharitablefunding') NH Charitable Foundation 
+                                                option(value='familiesfirstfunding') Families First Coronavirus Response Act: Employee Paid Leave 
+                                                option(value='otherfunding') Other
+                        p(class='is-italic mt-5') If other funding received, please describe: 
+                        textarea(class='textarea' rows='3' name='otherfundingreceivedcorona')
+                        p(class='is-italic mt-5') How did the funding you received help your program?
+                        textarea(class='textarea' rows='25' name='fundingreceivedhelpprogram')
+                div(class='column is-full mt-6')
+                    div(class='field')
+                        button(type='submit' class='button is-primary') Submit Form 
