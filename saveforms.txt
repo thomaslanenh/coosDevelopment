@@ -1,0 +1,21 @@
+Here is the important info to add save form functionality:
+
+       div(class='column is-full mt-6')
+                    div(class='field')
+                        button(type='submit' class='button is-primary') Submit Form
+                        button(type='button' class='ml-5 button is-info js-button' ) Save Form Data
+                        button(type='button' class='ml-5 button is-danger js-clearbutton' ) Clear Form Data
+    script(src='https://unpkg.com/form-storage@1.2.0/build/form-storage.js')
+    script. 
+        var formStorage = new FormStorage('.js-form');
+        formStorage.apply();
+        var button = document.querySelector('.js-button');
+        var button2 = document.querySelector('.js-clearbutton')
+        button.addEventListener('click', function(){
+            formStorage.save();
+            location.reload(true);
+        });
+        button2.addEventListener('click', function(){
+            formStorage.clear();
+            location.reload(true);
+        })

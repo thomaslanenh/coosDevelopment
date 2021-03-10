@@ -1,6 +1,6 @@
 extends layout 
 
-block content 
+block content
     section(class='section' style="flex: 1 0 auto;")
         -console.log(companyDetails)
         -console.log(agesServed)
@@ -10,7 +10,7 @@ block content
             div(class="column is-full")
                 p(class='has-text-centered') The purpose of the Coos County Director Network Annual Report is to consolidate information and data on targeted elements to demonstrate progress in center development and quality improvements over a particular 12 month period. This information will be used to demonstrate effectiveness of the Early Childhood Initiative to funders and to document and track individual center’s activities and progress. This Annual Report is also necessary to be eligible for the Quality Improvement Award (QIA) for the recorded year.
         div(class='columns is-mobile is-centered is-multiline')
-            form(action='' method='POST')
+            form(action='' method='POST' class='js-form')
                 div(class='mt-5 columns is-mobile is-responsive is-multiline')
                     div(class='mt-5 column is-full')
                         label(class='label is-size-4') Date 
@@ -147,9 +147,9 @@ block content
                                     th 
                                         p Before / After School
                                     td 
-                                        input(class='input' type='number' placeholder=0 name='beforeafterenrollmentcoos')
+                                        input(class='input' type='number' placeholder=0 name='beforeafterspecialneedscoos')
                                     td 
-                                        input(class='input' type='number' placeholder=0 name='beforeafterenrollmentoutofcoos')
+                                        input(class='input' type='number' placeholder=0 name='beforeafterspecialneedsoutofcoos')
                     div(class='column is-half')
                         label(class='label is-size-4') Total # of Children At/Below the Poverty Level
                         table(class='table is-bordered is-striped is-hoverable is-fullwidth')
@@ -630,7 +630,7 @@ block content
                         p(class='is-italic mt-5')  Describe any trainings related to Evidence-Based Assessment Systems that were attended by staff in this reporting year (i.e. TS Gold, Child Observation Record (COR), DRDP): 
                         textarea(class='textarea' rows='15' name='ebastrainingdescription')
                 div(class='column is-full')
-                    p(class='is-italic mt-5') Use the following chart to indicate the level of fidelity of implementation of the NCPMI Behavior Incident Reports within your program: 
+                    p(class='is-italic mt-5') Use the following chart to indicate the level of fidelity of implementation of the Evidence-Based Assessment Systems  within your program: 
                     table(class='mt-5 table is-bordered is-striped is-hoverable is-fullwidth')
                         thead 
                             tr(class='has-text-centered') 
@@ -683,7 +683,7 @@ block content
                                     td 
                                         p # of Staff Hired to New Positions in #{previousYear}
                                     td 
-                                        input(type='number' class='input' placeholder=0 name='staffhirednewpositionpreviousyear')
+                                        input(type='number' required class='input' placeholder=0 name='staffhirednewpositionpreviousyear')
                                 tr 
                                     td 
                                         p # of Positions Remaining Unfilled in #{previousYear}
@@ -719,7 +719,23 @@ block content
                         p(class='is-italic mt-5') If other funding received, please describe: 
                         textarea(class='textarea' rows='3' name='otherfundingreceivedcorona')
                         p(class='is-italic mt-5') How did the funding you received help your program?
-                        textarea(class='textarea' rows='25' name='fundingreceivedhelpprogram')
+                        textarea(class='textarea js-inquiry' rows='25' name='fundingreceivedhelpprogram')
                 div(class='column is-full mt-6')
                     div(class='field')
-                        button(type='submit' class='button is-primary') Submit Form 
+                        button(type='submit' class='button is-primary') Submit Form
+                        button(type='button' class='ml-5 button is-info js-button' ) Save Form Data
+                        button(type='button' class='ml-5 button is-danger js-clearbutton' ) Clear Form Data
+    script(src='https://unpkg.com/form-storage@1.2.0/build/form-storage.js')
+    script. 
+        var formStorage = new FormStorage('.js-form');
+        formStorage.apply();
+        var button = document.querySelector('.js-button');
+        var button2 = document.querySelector('.js-clearbutton')
+        button.addEventListener('click', function(){
+            formStorage.save();
+            location.reload(true);
+        });
+        button2.addEventListener('click', function(){
+            formStorage.clear();
+            location.reload(true);
+        })

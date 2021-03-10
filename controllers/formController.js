@@ -1,27 +1,27 @@
-var async = require("async");
-var bcrypt = require("bcrypt");
-var passport = require("passport");
-var session = require("express-session");
-const LocalStrategy = require("passport-local").Strategy;
-const app = require("../app");
-const db = require("../db");
+var async = require('async');
+var bcrypt = require('bcrypt');
+var passport = require('passport');
+var session = require('express-session');
+const LocalStrategy = require('passport-local').Strategy;
+const app = require('../app');
+const db = require('../db');
 var currentYear = new Date().getFullYear();
 var previousYear = new Date().getFullYear() - 1;
 var nextYear = new Date().getFullYear() + 1;
-var isEmpty = require("lodash.isempty");
-const { ColumnSet } = require("pg-promise");
-const { NULL } = require("node-sass");
+var isEmpty = require('lodash.isempty');
+const { ColumnSet } = require('pg-promise');
+const { NULL } = require('node-sass');
 var todaysDate = new Date();
 
 function inputSkipper(column) {
   console.log(column.value);
   if (isEmpty(column.value)) {
-    return column.value === "null";
+    return column.value === 'null';
   }
   return column;
 }
 
-const pgp = require("pg-promise")({
+const pgp = require('pg-promise')({
   /* initialization options */
   capSQL: true, // capitalize all generated SQL
 });
@@ -40,7 +40,7 @@ exports.qiaprogress = function (req, res, next) {
   }
 
   // renders the form
-  res.render("./forms/qiaprogress", {
+  res.render('./forms/qiaprogress', {
     user: req.user,
     years: options,
     currentYear,
@@ -50,8 +50,8 @@ exports.qiaprogress = function (req, res, next) {
 exports.qiaprogress_post = async function (req, res, next) {
   // takes the itemsbought text field and turns it into a array of lines.
   var lines = req.body.itemsbought
-    .replace(/\r\n/g, "\n")
-    .split("\n")
+    .replace(/\r\n/g, '\n')
+    .split('\n')
     .filter((line) => line);
 
   // sets username to useraccount variable in order to grab company ID.
@@ -59,7 +59,7 @@ exports.qiaprogress_post = async function (req, res, next) {
 
   db.tx(async (t) => {
     let associatedCompany = await t.one(
-      "SELECT company_id from useraccount WHERE username = $1",
+      'SELECT company_id from useraccount WHERE username = $1',
       [useraccount]
     );
     let formresponseID = await db.one(
@@ -80,15 +80,15 @@ exports.qiaprogress_post = async function (req, res, next) {
     console.log(formresponseID);
     // deal with the weird array from text box thing.
     let arrayinput = await t.none(
-      "INSERT INTO formquestionresponse (attrib_id, value, response_id) VALUES (3, unnest(array[$1:csv]), $2)",
+      'INSERT INTO formquestionresponse (attrib_id, value, response_id) VALUES (3, unnest(array[$1:csv]), $2)',
       [lines, formresponseID.response_id]
     );
 
     // sets the use of the ColumnSet feature of PG Promise allowing multiple entries at once.
     const cs = new pgp.helpers.ColumnSet(
-      ["attrib_id", "value", "response_id"],
+      ['attrib_id', 'value', 'response_id'],
       {
-        table: "formquestionresponse",
+        table: 'formquestionresponse',
       }
     );
 
@@ -123,7 +123,7 @@ exports.qiaprogress_post = async function (req, res, next) {
   })
     .then((data) => {
       console.log(data);
-      res.redirect("../thanks");
+      res.redirect('../thanks');
     })
     .catch((error) => {
       next(error);
@@ -134,9 +134,9 @@ exports.qiaprogress_post = async function (req, res, next) {
 
 exports.qiaoutcome = function (req, res, next) {
   let measures = db
-    .any("SELECT * from qualitymeasures ORDER BY measure_id desc")
+    .any('SELECT * from qualitymeasures ORDER BY measure_id desc')
     .then((results) => {
-      res.render("./forms/qiaoutcome", {
+      res.render('./forms/qiaoutcome', {
         user: req.user,
         currentYear,
         previousYear,
@@ -146,10 +146,10 @@ exports.qiaoutcome = function (req, res, next) {
     .catch((error) => {
       if (error) {
         req.flash(
-          "error",
-          "There was a error, please try again or submit a support ticket."
+          'error',
+          'There was a error, please try again or submit a support ticket.'
         );
-        res.redirect("/");
+        res.redirect('/');
       }
     });
 };
@@ -157,18 +157,18 @@ exports.qiaoutcome = function (req, res, next) {
 exports.qiaoutcome_post = function (req, res, next) {
   // turn items bought entries into seperate fields
   var linesone = req.body.itemsboughtgoalone
-    .replace(/\r\n/g, "\n")
-    .split("\n")
+    .replace(/\r\n/g, '\n')
+    .split('\n')
     .filter((line) => line);
 
   var linestwo = req.body.itemsboughtgoaltwo
-    .replace(/\r\n/g, "\n")
-    .split("\n")
+    .replace(/\r\n/g, '\n')
+    .split('\n')
     .filter((line) => line);
 
   var linesthree = req.body.itemsboughtgoalthree
-    .replace(/\r\n/g, "\n")
-    .split("\n")
+    .replace(/\r\n/g, '\n')
+    .split('\n')
     .filter((line) => line);
 
   // set arrays up for measurements
@@ -201,19 +201,19 @@ exports.qiaoutcome_post = function (req, res, next) {
       // now for the arrays of items bought
       if (linesone.length > 1 && arraygoalone.length > 1) {
         let arrayinsertOne = await t.none(
-          "INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,unnest(array[$4:csv]))",
+          'INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,unnest(array[$4:csv]))',
           [10, linesone, formid, arraygoalone]
         );
       } else if (linesone.length === 1 && arraygoalone.length > 1) {
         let arrayinsertOne = await t.none(
-          "INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,unnest(array[$4:csv]))",
+          'INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,unnest(array[$4:csv]))',
           [10, linesone, formid, arraygoalone]
         );
       } else if (linesone.length === 0) {
         return;
       } else {
         let arrayinsertOne = await t.none(
-          "INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,$4)",
+          'INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,$4)',
           [10, linesone, formid, arraygoalone]
         );
       }
@@ -221,19 +221,19 @@ exports.qiaoutcome_post = function (req, res, next) {
       // line two
       if (linestwo.length > 1 && arraygoaltwo.length > 1) {
         let arrayinserttwo = await t.none(
-          "INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,unnest(array[$4:csv]))",
+          'INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,unnest(array[$4:csv]))',
           [10, linestwo, formid, arraygoaltwo]
         );
       } else if (linestwo.length === 1 && arraygoaltwo.length > 1) {
         let arrayinserttwo = await t.none(
-          "INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,unnest(array[$4:csv]))",
+          'INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,unnest(array[$4:csv]))',
           [10, linestwo, formid, arraygoaltwo]
         );
       } else if (linestwo.length === 0) {
         return;
       } else {
         let arrayinserttwo = await t.none(
-          "INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,$4)",
+          'INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,$4)',
           [10, linestwo, formid, arraygoaltwo]
         );
       }
@@ -241,19 +241,19 @@ exports.qiaoutcome_post = function (req, res, next) {
       // lines three
       if (linesthree.length > 1 && arraygoalthree.length > 1) {
         let arrayinsertthree = await t.none(
-          "INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,unnest(array[$4:csv]))",
+          'INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,unnest(array[$4:csv]))',
           [10, linesthree, formid, arraygoalthree]
         );
       } else if (linesthree.length === 1 && arraygoalthree.length > 1) {
         let arrayinsertthree = await t.none(
-          "INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,unnest(array[$4:csv]))",
+          'INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,unnest(array[$4:csv]))',
           [10, linesthree, formid, arraygoalthree]
         );
       } else if (linesthree.length === 0) {
         return;
       } else {
         let arrayinsertthree = await t.none(
-          "INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,$4)",
+          'INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,$4)',
           [10, linesthree, formid, arraygoalthree]
         );
       }
@@ -263,19 +263,19 @@ exports.qiaoutcome_post = function (req, res, next) {
 
   db.tx(async (t) => {
     const useraccount = await db.one(
-      "SELECT company_id from useraccount WHERE username = $1",
+      'SELECT company_id from useraccount WHERE username = $1',
       [req.user.user]
     );
     const formresponseID = await t.one(
-      "INSERT INTO formresponse(form_id, company_id) VALUES (2, $1) RETURNING response_id",
+      'INSERT INTO formresponse(form_id, company_id) VALUES (2, $1) RETURNING response_id',
       [useraccount.company_id]
     );
     // insert the responses into the database proper utilizing ColumnSet
 
     const cs = new pgp.helpers.ColumnSet(
-      ["attrib_id", "value", "response_id", "measure_id"],
+      ['attrib_id', 'value', 'response_id', 'measure_id'],
       {
-        table: "formquestionresponse",
+        table: 'formquestionresponse',
       }
     );
 
@@ -520,16 +520,16 @@ exports.qiaoutcome_post = function (req, res, next) {
     arrayInsert(formresponseID.response_id);
   })
     .then((response) => {
-      req.flash("info", "Your form has been submitted. Thank you!");
-      res.redirect("/thanks");
+      req.flash('info', 'Your form has been submitted. Thank you!');
+      res.redirect('/thanks');
     })
     .catch((error) => {
       console.log(error);
       req.flash(
-        "error",
-        "An error has occured. Please try again or submit a support ticket."
+        'error',
+        'An error has occured. Please try again or submit a support ticket.'
       );
-      res.redirect("/");
+      res.redirect('/');
     });
 };
 
@@ -538,13 +538,13 @@ exports.qiaoutcome_post = function (req, res, next) {
 exports.detailedbudget = function (req, res, next) {
   db.tx(async (t) => {
     const companydetails = await t.one(
-      "SELECT company_name, c.id, u.first_name, u.last_name FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1",
+      'SELECT company_name, c.id, u.first_name, u.last_name FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1',
       [req.user.user]
     );
     return companydetails;
   })
     .then((results) => {
-      res.render("./forms/qiabudget", {
+      res.render('./forms/qiabudget', {
         user: req.user,
         currentYear,
         previousYear,
@@ -555,10 +555,10 @@ exports.detailedbudget = function (req, res, next) {
     .catch((error) => {
       if (error) {
         req.flash(
-          "error",
-          "There was a error. Please try again or submit a support ticket."
+          'error',
+          'There was a error. Please try again or submit a support ticket.'
         );
-        res.redirect("/");
+        res.redirect('/');
       }
     });
 };
@@ -567,9 +567,9 @@ exports.detailedbudgetpost = function (req, res, next) {
   const arrayCheck = async (values, formresponse) => {
     // validation for loop
     for (var x = 1; x <= 7; x++) {
-      console.log("for looop hit");
+      console.log('for looop hit');
       if (isEmpty(req.body[`goal${x}`]) == false) {
-        console.log("first is empty hit");
+        console.log('first is empty hit');
         values.push({
           attrib_id: 23,
           value: req.body[`goal${x}`],
@@ -683,18 +683,18 @@ exports.detailedbudgetpost = function (req, res, next) {
     }
     return values;
   };
-  const cs = new pgp.helpers.ColumnSet(["attrib_id", "value", "response_id"], {
-    table: "formquestionresponse",
+  const cs = new pgp.helpers.ColumnSet(['attrib_id', 'value', 'response_id'], {
+    table: 'formquestionresponse',
   });
 
   db.tx(async (t) => {
     const companyDetails = await t.one(
-      "SELECT company_name, c.id, first_name, last_name FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1",
+      'SELECT company_name, c.id, first_name, last_name FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1',
       [req.user.user]
     );
 
     const insertedForm = await t.one(
-      "INSERT INTO formresponse(company_id, form_id) VALUES ($1, 3) RETURNING response_id",
+      'INSERT INTO formresponse(company_id, form_id) VALUES ($1, 3) RETURNING response_id',
       [companyDetails.id]
     );
 
@@ -711,7 +711,7 @@ exports.detailedbudgetpost = function (req, res, next) {
           attrib_id: 19,
           value:
             results.companyDetails.first_name +
-            " " +
+            ' ' +
             results.companyDetails.last_name,
           response_id: results.insertedForm.response_id,
         },
@@ -775,16 +775,16 @@ exports.detailedbudgetpost = function (req, res, next) {
       const arrayed = arrayCheck(values, results.insertedForm.response_id);
       const query = pgp.helpers.insert(values, cs);
       const recordsResponse = db.none(query);
-      req.flash("info", "Your form has been succesfully submitted. Thank you!");
-      res.redirect("/thanks");
+      req.flash('info', 'Your form has been succesfully submitted. Thank you!');
+      res.redirect('/thanks');
     })
     .catch((error) => {
       console.log(error);
       req.flash(
-        "error",
-        "An error has occured. Please try again or submit a support ticket."
+        'error',
+        'An error has occured. Please try again or submit a support ticket.'
       );
-      res.redirect("/");
+      res.redirect('/');
     });
 };
 
@@ -793,15 +793,15 @@ exports.detailedbudgetpost = function (req, res, next) {
 exports.centerimprovement = function (req, res, next) {
   db.tx(async (t) => {
     const companyDetails = await t.one(
-      "SELECT c.id, company_name, address, email, phone_number FROM company c INNER JOIN useraccount u ON c.id = u.company_id WHERE u.username = $1",
+      'SELECT c.id, company_name, address, email, phone_number FROM company c INNER JOIN useraccount u ON c.id = u.company_id WHERE u.username = $1',
       [req.user.user]
     );
 
-    const qualityMeasures = await t.many("SELECT * from qualitymeasures");
+    const qualityMeasures = await t.many('SELECT * from qualitymeasures');
     return { companyDetails, qualityMeasures };
   })
     .then((results) => {
-      res.render("./forms/qiacenterimprovement", {
+      res.render('./forms/qiacenterimprovement', {
         user: req.user,
         currentYear,
         previousYear,
@@ -813,10 +813,10 @@ exports.centerimprovement = function (req, res, next) {
       console.log(error);
       if (error) {
         req.flash(
-          "error",
-          "An error occured. Please try again or submit a support ticket."
+          'error',
+          'An error occured. Please try again or submit a support ticket.'
         );
-        res.redirect("/");
+        res.redirect('/');
       }
     });
 };
@@ -905,17 +905,17 @@ exports.centerimprovementpost = function (req, res, next) {
     return values;
   };
 
-  const cs = new pgp.helpers.ColumnSet(["attrib_id", "value", "response_id"], {
-    table: "formquestionresponse",
+  const cs = new pgp.helpers.ColumnSet(['attrib_id', 'value', 'response_id'], {
+    table: 'formquestionresponse',
   });
 
   db.tx(async (t) => {
     const companyid = await t.one(
-      "SELECT c.id, c.company_name, c.address, c.phone_number, u.email from company c INNER JOIN useraccount u on c.id = u.company_id where u.username = $1",
+      'SELECT c.id, c.company_name, c.address, c.phone_number, u.email from company c INNER JOIN useraccount u on c.id = u.company_id where u.username = $1',
       [req.user.user]
     );
     const formResponse = await t.one(
-      "INSERT INTO formresponse(company_id, form_id) values($1, 4) RETURNING response_id",
+      'INSERT INTO formresponse(company_id, form_id) values($1, 4) RETURNING response_id',
       [companyid.id]
     );
 
@@ -954,17 +954,17 @@ exports.centerimprovementpost = function (req, res, next) {
       const query = pgp.helpers.insert(values, cs);
       const recordsResponse = db.none(query);
 
-      req.flash("info", "Form succesfully submitted.");
-      res.redirect("/");
+      req.flash('info', 'Form succesfully submitted.');
+      res.redirect('/');
     })
     .catch((error) => {
       if (error) {
         console.log(error);
         req.flash(
-          "error",
-          "An error occured. Try again or please submit a support ticket."
+          'error',
+          'An error occured. Try again or please submit a support ticket.'
         );
-        res.redirect("/");
+        res.redirect('/');
       }
     });
 };
@@ -973,12 +973,12 @@ exports.centerimprovementpost = function (req, res, next) {
 exports.staffmeetingtracker = function (req, res, next) {
   db.tx(async (t) => {
     const companyDetails = await t.one(
-      "SELECT * from company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1",
+      'SELECT * from company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1',
       [req.user.user]
     );
     return { companyDetails };
   }).then((results) => {
-    res.render("./forms/staffmeetingtracker", {
+    res.render('./forms/staffmeetingtracker', {
       user: req.user,
       currentYear,
       previousYear,
@@ -991,30 +991,30 @@ exports.staffmeetingtrackerpost = function (req, res, next) {
   const cs = new pgp.helpers.ColumnSet(
     [
       {
-        name: "attrib_id",
+        name: 'attrib_id',
       },
       {
-        name: "value",
+        name: 'value',
         skip(col) {
           return col.value === null || col.value === undefined;
         },
       },
       {
-        name: "response_id",
+        name: 'response_id',
       },
     ],
     {
-      table: "formquestionresponse",
+      table: 'formquestionresponse',
     }
   );
 
   db.tx(async (t) => {
     const useraccount = await t.one(
-      "SELECT u.company_id, c.company_name, c.first_name, c.last_name from company c inner join useraccount u on c.id = u.company_id where u.username = $1",
+      'SELECT u.company_id, c.company_name, c.first_name, c.last_name from company c inner join useraccount u on c.id = u.company_id where u.username = $1',
       [req.user.user]
     );
     const formresponse = await t.one(
-      "INSERT INTO formresponse(form_id, company_id) VALUES (6, $1) RETURNING response_id",
+      'INSERT INTO formresponse(form_id, company_id) VALUES (6, $1) RETURNING response_id',
       [useraccount.company_id]
     );
 
@@ -1023,62 +1023,62 @@ exports.staffmeetingtrackerpost = function (req, res, next) {
     .then((results) => {
       var linesJanuary =
         req.body.januarydates.length > 0
-          ? req.body.januarydates.split(", " || "," || " ")
+          ? req.body.januarydates.split(', ' || ',' || ' ')
           : null;
 
       var linesFebruary =
         req.body.februarydates.length > 0
-          ? req.body.februarydates.split(", " || "," || " ")
+          ? req.body.februarydates.split(', ' || ',' || ' ')
           : null;
 
       var linesMarch =
         req.body.marchdates.length > 0
-          ? req.body.marchdates.split(", " || "," || " ")
+          ? req.body.marchdates.split(', ' || ',' || ' ')
           : null;
 
       var linesApril =
         req.body.aprildates.length > 0
-          ? req.body.aprildates.split(", " || "," || " ")
+          ? req.body.aprildates.split(', ' || ',' || ' ')
           : null;
 
       var linesMay =
         req.body.maydates.length > 0
-          ? req.body.maydates.split(", " || "," || " ")
+          ? req.body.maydates.split(', ' || ',' || ' ')
           : null;
 
       var linesJune =
         req.body.junedates.length > 0
-          ? req.body.junedates.split(", " || "," || " ")
+          ? req.body.junedates.split(', ' || ',' || ' ')
           : null;
 
       var linesJuly =
         req.body.julydates.length > 0
-          ? req.body.julydates.split(", " || "," || " ")
+          ? req.body.julydates.split(', ' || ',' || ' ')
           : null;
 
       var linesAugust =
         req.body.augustdates.length > 0
-          ? req.body.augustdates.split(", " || "," || " ")
+          ? req.body.augustdates.split(', ' || ',' || ' ')
           : null;
 
       var linesSeptember =
         req.body.septemberdates.length > 0
-          ? req.body.septemberdates.split(", " || "," || " ")
+          ? req.body.septemberdates.split(', ' || ',' || ' ')
           : null;
 
       var linesOctober =
         req.body.octoberdates.length > 0
-          ? req.body.septemberdates.split(", " || "," || " ")
+          ? req.body.septemberdates.split(', ' || ',' || ' ')
           : null;
 
       var linesNovember =
         req.body.novemberdates.length > 0
-          ? req.body.novemberdates.split(", " || "," || " ")
+          ? req.body.novemberdates.split(', ' || ',' || ' ')
           : null;
 
       var linesDecember =
         req.body.decemberdates.length > 0
-          ? req.body.decemberdates.split(", " || "," || " ")
+          ? req.body.decemberdates.split(', ' || ',' || ' ')
           : null;
 
       const values = [
@@ -1091,7 +1091,7 @@ exports.staffmeetingtrackerpost = function (req, res, next) {
           attrib_id: 64,
           value:
             results.useraccount.first_name +
-            " " +
+            ' ' +
             results.useraccount.last_name,
           response_id: results.formresponse.response_id,
         },
@@ -1166,21 +1166,21 @@ exports.staffmeetingtrackerpost = function (req, res, next) {
       const recordsResponse = db.none(query);
 
       const deletenull = db.none(
-        "DELETE from formquestionresponse where value is null and response_id = $1",
+        'DELETE from formquestionresponse where value is null and response_id = $1',
         [parseInt(results.formresponse.response_id)]
       );
 
-      req.flash("info", "Form has been submitted. Thank you.");
-      res.redirect("/");
+      req.flash('info', 'Form has been submitted. Thank you.');
+      res.redirect('/');
     })
     .catch((error) => {
       console.log(error);
       if (error) {
         req.flash(
-          "error",
-          "There has been a error. Try again or submit a support ticket."
+          'error',
+          'There has been a error. Try again or submit a support ticket.'
         );
-        res.redirect("/");
+        res.redirect('/');
       }
     });
 };
@@ -1190,18 +1190,18 @@ exports.staffmeetingtrackerpost = function (req, res, next) {
 exports.ececredittracking = function (req, res, next) {
   db.tx(async (t) => {
     const companyDetails = await t.one(
-      "SELECT * from company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1",
+      'SELECT * from company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1',
       [req.user.user]
     );
-    const classTypes = await t.manyOrNone("SELECT * from classtypes");
+    const classTypes = await t.manyOrNone('SELECT * from classtypes');
     const staffMembers = await t.manyOrNone(
-      "SELECT u.first_name, u.last_name, u.id, d.degree, dt.degree_type from useraccount u INNER JOIN degree_types dt on u.degree_type = dt.type_id INNER JOIN degrees d on dt.type_id = d.degree_id INNER JOIN company c on u.company_id = c.id WHERE c.id = $1",
+      'SELECT u.first_name, u.last_name, u.id, d.degree, dt.degree_type from useraccount u INNER JOIN degree_types dt on u.degree_type = dt.type_id INNER JOIN degrees d on dt.type_id = d.degree_id INNER JOIN company c on u.company_id = c.id WHERE c.id = $1',
       [companyDetails.company_id]
     );
     return { companyDetails, staffMembers, classTypes };
   })
     .then((results) => {
-      res.render("./forms/ececredittracking", {
+      res.render('./forms/ececredittracking', {
         user: req.user,
         companyName: results.companyDetails,
         staffMembers: results.staffMembers,
@@ -1215,10 +1215,10 @@ exports.ececredittracking = function (req, res, next) {
       if (error) {
         console.log(error);
         req.flash(
-          "error",
-          "There has been a error. Your company may not have any Staff Members. Try again or submit a Support Ticket."
+          'error',
+          'There has been a error. Your company may not have any Staff Members. Try again or submit a Support Ticket.'
         );
-        res.redirect("/");
+        res.redirect('/');
       }
     });
 };
@@ -1226,15 +1226,15 @@ exports.ececredittracking = function (req, res, next) {
 exports.ececredittrackingpost = function (req, res, next) {
   db.tx(async (t) => {
     const companyAccount = await t.one(
-      "SELECT c.id, u.company_id, c.company_name from company c INNER JOIN useraccount u on c.id = u.company_id where u.username = $1",
+      'SELECT c.id, u.company_id, c.company_name from company c INNER JOIN useraccount u on c.id = u.company_id where u.username = $1',
       [req.user.user]
     );
     const staffMembers = await t.manyOrNone(
-      "SELECT u.first_name, u.last_name, u.id, d.degree, dt.degree_type from useraccount u INNER JOIN degree_types dt on u.degree_type = dt.type_id INNER JOIN degrees d on dt.type_id = d.degree_id INNER JOIN company c on u.company_id = c.id WHERE c.id = $1",
+      'SELECT u.first_name, u.last_name, u.id, d.degree, dt.degree_type from useraccount u INNER JOIN degree_types dt on u.degree_type = dt.type_id INNER JOIN degrees d on dt.type_id = d.degree_id INNER JOIN company c on u.company_id = c.id WHERE c.id = $1',
       [companyAccount.company_id]
     );
     const insertForm = await t.one(
-      "INSERT INTO formresponse(form_id, company_id) values (7, $1) returning response_id",
+      'INSERT INTO formresponse(form_id, company_id) values (7, $1) returning response_id',
       [companyAccount.company_id]
     );
     return { companyAccount, staffMembers, insertForm };
@@ -1243,17 +1243,17 @@ exports.ececredittrackingpost = function (req, res, next) {
       const cs = new pgp.helpers.ColumnSet(
         [
           {
-            name: "attrib_id",
+            name: 'attrib_id',
           },
           {
-            name: "value",
+            name: 'value',
           },
           {
-            name: "response_id",
+            name: 'response_id',
           },
         ],
         {
-          table: "formquestionresponse",
+          table: 'formquestionresponse',
         }
       );
 
@@ -1546,17 +1546,17 @@ exports.ececredittrackingpost = function (req, res, next) {
       const query = pgp.helpers.insert(values, cs);
       const recordsResponse = db.none(query);
 
-      req.flash("info", "Thank you for your form submission.");
-      res.redirect("/");
+      req.flash('info', 'Thank you for your form submission.');
+      res.redirect('/');
     })
     .catch((error) => {
       if (error) {
         console.log(error);
         req.flash(
-          "error",
-          "There has been a error. Try again or submit a support ticket."
+          'error',
+          'There has been a error. Try again or submit a support ticket.'
         );
-        res.redirect("/");
+        res.redirect('/');
       }
     });
 };
@@ -1566,17 +1566,17 @@ exports.ececredittrackingpost = function (req, res, next) {
 exports.annualreport = function (req, res, next) {
   db.tx(async (t) => {
     const companyDetails = await t.one(
-      "SELECT u.company_id, c.company_name, c.first_name,c.last_name, c.town, l.license_type from company c INNER JOIN license l ON c.license_type = l.id INNER JOIN useraccount u ON c.id = u.company_id WHERE u.username = $1",
+      'SELECT u.company_id, c.company_name, c.first_name,c.last_name, c.town, l.license_type from company c INNER JOIN license l ON c.license_type = l.id INNER JOIN useraccount u ON c.id = u.company_id WHERE u.username = $1',
       [req.user.user]
     );
     const agesServed = await t.many(
-      "SELECT * FROM agerange a INNER JOIN companyages ca ON a.id = ca.age_id WHERE ca.company_id = $1",
+      'SELECT * FROM agerange a INNER JOIN companyages ca ON a.id = ca.age_id WHERE ca.company_id = $1',
       [companyDetails.company_id]
     );
     return { companyDetails, agesServed };
   })
     .then((results) => {
-      res.render("./forms/annualreport", {
+      res.render('./forms/annualreport', {
         companyDetails: results.companyDetails,
         agesServed: results.agesServed,
         user: req.user,
@@ -1589,24 +1589,384 @@ exports.annualreport = function (req, res, next) {
       if (e) {
         console.log(e);
         req.flash(
-          "error",
-          "An error has occured. Try again or submit a support ticket"
+          'error',
+          'An error has occured. Try again or submit a support ticket'
         );
-        res.redirect("/");
+        res.redirect('/');
       }
     });
 };
 
 exports.annualreportpost = function (req, res, next) {
-  // not real code.
   db.tx(async (t) => {
-    const formresponseid = await t
-      .one("SELECT id FROM formresponse WHERE id = $1", [req.user.id])
-      .then((results) => {
-        res.json(results);
-      });
-  });
+    const companyAccount = await t.one(
+      'SELECT c.id, u.company_id, c.company_name from company c INNER JOIN useraccount u on c.id = u.company_id where u.username=$1',
+      [req.user.user]
+    );
+    const insertForm = await t.one(
+      'INSERT INTO formresponse(form_id, company_id) values (8, $1) returning response_id',
+      [companyAccount.company_id]
+    );
 
-  // real code.
-  res.send("NYI");
+    return { companyAccount, insertForm };
+  })
+    .then((result) => {
+      const cs = new pgp.helpers.ColumnSet(
+        [
+          {
+            name: 'attrib_id',
+          },
+          {
+            name: 'value',
+          },
+          {
+            name: 'response_id',
+          },
+        ],
+        {
+          table: 'formquestionresponse',
+        }
+      );
+
+      // {companyDetails.company_id}${agegroup.id}coosnumber`)
+      //
+      //   {companyDetails.company_id}${agegroup.id}outofcoosnumber`)
+
+      // req.body[`actualcost${x}`],
+      const values = [
+        {
+          attrib_id: 95,
+          value: req.body.date,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 96,
+          value: req.body.numberofchildrenserved,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 131,
+          value: req.body.agesofchildrenserved,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 97,
+          value: req.body[`${companyAccount.company_id}5coosnumber`],
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 98,
+          value: req.body[`${companyAccount.company_id}5outofcoosnumber`],
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 99,
+          value: req.body[`${companyAccount.company_id}6coosnumber`],
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 100,
+          value: req.body[`${companyAccount.company_id}6outofcoosnumber`],
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 101,
+          value: req.body.birthenrollmentcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 102,
+          value: req.body.birthenrollmentoutofcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 103,
+          value: req.body.kindergartenenrollmentcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 104,
+          value: req.body.kindergartenenrollmentoutofcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 105,
+          value: req.body.beforeafterenrollmentcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 106,
+          value: req.body.beforeafterenrollmentoutofcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 107,
+          value: req.body.birthdailyattendancecoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 108,
+          value: req.body.birthdailyattendanceoutofcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 109,
+          value: req.body.kindergarteneattendancecoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 110,
+          value: req.body.kindergartenattendanceoutofcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 111,
+          value: req.body.beforeafterattendancecoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 112,
+          value: req.body.beforeafterattendanceoutofcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 113,
+          value: req.body.birthspecialneedscoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 114,
+          value: req.body.birthspecialneedsoutofcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 115,
+          value: req.body.kindergartenspecialneedscoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 116,
+          value: req.body.kindergartenspecialneedsoutofcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 117,
+          value: req.body.beforeafterspecialneedscoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 118,
+          value: req.body.beforeafterspecialneedsoutofcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 119,
+          value: req.body.birthpovertylevelcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 120,
+          value: req.body.birthpovertyleveloutofcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 121,
+          value: req.body.kindergartenpovertycoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 122,
+          value: req.body.kindergartenpovertyoutofcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 123,
+          value: req.body.beforeafterpovertycoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 124,
+          value: req.body.beforeafterpovertyoutofcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 125,
+          value: req.body.birthstatescholarshipcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 126,
+          value: req.body.birthstatescholarshipoutofcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 127,
+          value: req.body.kindergartenstatescholarshipcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 128,
+          value: req.body.kindergartenstatescholarshipoutofcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 129,
+          value: req.body.beforeafterstatescholarshipcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 130,
+          value: req.body.beforeafterstatescholarshipoutofcoos,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 133,
+          value: req.body.totalnumberofstaff,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 134,
+          value: req.body.numberoffulltimestaff,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 135,
+          value: req.body.numberofparttimestaff,
+          response_id: result.insertForm.response_id,
+        },
+        {},
+      ];
+
+      if (isEmpty(req.body.asqstafftrained) == false) {
+        {
+          values.push({
+            attrib_id: 136,
+            value: req.body.asqstafftrained,
+            response_id: result.insertForm.response_id,
+          });
+        }
+      }
+
+      if (isEmpty(req.body.pyramidmodelfacestafftrained) == false) {
+        {
+          values.push({
+            attrib_id: 137,
+            value: req.body.pyramidmodelfacestafftrained,
+            response_id: result.insertForm.response_id,
+          });
+        }
+      }
+
+      if (isEmpty(req.body.pyramidmodelonlinestafftrained) == false) {
+        {
+          values.push({
+            attrib_id: 138,
+            value: req.body.pyramidmodelonlinestafftrained,
+            response_id: result.insertForm.response_id,
+          });
+        }
+      }
+
+      if (isEmpty(req.body.pyramidmodelplcstafftrained) == false) {
+        {
+          values.push({
+            attrib_id: 139,
+            value: req.body.pyramidmodelplcstafftrained,
+            response_id: results.insertForm.response_id,
+          });
+        }
+      }
+
+      if (isEmpty(req.body.tsgoldstafftrained) == false) {
+        {
+          values.push({
+            attrib_id: 140,
+            value: req.body.tsgoldstafftrained,
+            response_id: results.insertForm.response_id,
+          });
+        }
+      }
+
+      if (isEmpty(req.body.corstafftrained) == false) {
+        {
+          values.push({
+            attrib_id: 141,
+            value: req.body.corstafftrained,
+            response_id: results.insertForm.response_id,
+          });
+        }
+      }
+
+      if (isEmpty(req.body.drdpstafftrained) == false) {
+        {
+          values.push({
+            attrib_id: 142,
+            value: req.body.drdpstafftrained,
+            response_id: results.insertForm.response_id,
+          });
+        }
+      }
+
+      if (isEmpty(req.body.creativecurriculumstafftrained) == false) {
+        {
+          values.push({
+            attrib_id: 143,
+            value: req.body.creativecurriculumstafftrained,
+            response_id: results.insertForm.response_id,
+          });
+        }
+      }
+
+      if (isEmpty(req.body.highscopestafftrained) == false) {
+        {
+          values.push({
+            attrib_id: 144,
+            value: req.body.highscopestafftrained,
+            response_id: results.insertForm.response_id,
+          });
+        }
+      }
+
+      if ((isEmpty(req.body.strengtheningfamiliesstafftrained) = false)) {
+        {
+          values.push({
+            attrib_id: 145,
+            value: req.body.strengtheningfamiliesstafftrained,
+            response_id: results.insertForm.response_id,
+          });
+        }
+      }
+
+      if (isEmpty(req.body.ncpmistafftrained) == false) {
+        {
+          values.push({
+            attrib_id: 146,
+            value: req.body.ncpmistafftrained,
+            response_id: results.insertForm.response_id,
+          });
+        }
+      }
+
+      if (isEmpty(req.body.earlylearningstandardsstafftrained) == false) {
+        {
+          values.push({
+            attrib_id: 147,
+            value: req.body.earlylearningstandardsstafftrained,
+            response_id: results.insertForm.response_id,
+          });
+        }
+      }
+    })
+
+    // next up is additional questions
+    .catch((e) => {
+      if (e) {
+        console.log(e);
+        req.flash(
+          'error',
+          'An error has occured. Please try again or submit a Support Ticket.'
+        );
+        res.redirect('/');
+      }
+    });
 };
