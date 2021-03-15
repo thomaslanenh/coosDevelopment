@@ -1628,11 +1628,6 @@ exports.annualreportpost = function (req, res, next) {
         }
       );
 
-      // {companyDetails.company_id}${agegroup.id}coosnumber`)
-      //
-      //   {companyDetails.company_id}${agegroup.id}outofcoosnumber`)
-
-      // req.body[`actualcost${x}`],
       const values = [
         {
           attrib_id: 95,
@@ -1834,131 +1829,418 @@ exports.annualreportpost = function (req, res, next) {
           value: req.body.numberofparttimestaff,
           response_id: result.insertForm.response_id,
         },
-        {},
+        {
+          attrib_id: 148,
+          value: req.body.familymaterialsvroom,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 149,
+          value: req.body.parentteacherconferences,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 150,
+          value: req.body.engagingfamilies,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 151,
+          value: req.body.otherengagingways,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 153,
+          value: req.body.staffeligibletoapplyforcredential,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 154,
+          value: req.body.staffwithavalidnhcredential,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 155,
+          value: req.body.staffwithnewcredential,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 162,
+          value: req.body.staffeducationbarriers,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 180,
+          value: req.body.currentasqparticipationneeds,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 181,
+          value: req.body.childrenwhoreceivedfollowupassesment,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 182,
+          value: req.body.studentsparticipatedinotherscreenings,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 183,
+          value: req.body.developmentalscreeningstraining,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 189,
+          value: req.body.asqsupportneeded,
+          response_id: result.insertForm.response_id,
+        },
       ];
 
       if (isEmpty(req.body.asqstafftrained) == false) {
-        {
-          values.push({
-            attrib_id: 136,
-            value: req.body.asqstafftrained,
-            response_id: result.insertForm.response_id,
-          });
-        }
+        values.push({
+          attrib_id: 136,
+          value: req.body.asqstafftrained,
+          response_id: result.insertForm.response_id,
+        });
       }
 
       if (isEmpty(req.body.pyramidmodelfacestafftrained) == false) {
-        {
-          values.push({
-            attrib_id: 137,
-            value: req.body.pyramidmodelfacestafftrained,
-            response_id: result.insertForm.response_id,
-          });
-        }
+        values.push({
+          attrib_id: 137,
+          value: req.body.pyramidmodelfacestafftrained,
+          response_id: result.insertForm.response_id,
+        });
       }
 
       if (isEmpty(req.body.pyramidmodelonlinestafftrained) == false) {
+        values.push({
+          attrib_id: 138,
+          value: req.body.pyramidmodelonlinestafftrained,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.pyramidmodelplcstafftrained) == false) {
+        values.push({
+          attrib_id: 139,
+          value: req.body.pyramidmodelplcstafftrained,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.tsgoldstafftrained) == false) {
+        values.push({
+          attrib_id: 140,
+          value: req.body.tsgoldstafftrained,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.corstafftrained) == false) {
+        values.push({
+          attrib_id: 141,
+          value: req.body.corstafftrained,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.drdpstafftrained) == false) {
+        values.push({
+          attrib_id: 142,
+          value: req.body.drdpstafftrained,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.creativecurriculumstafftrained) == false) {
+        values.push({
+          attrib_id: 143,
+          value: req.body.creativecurriculumstafftrained,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.highscopestafftrained) == false) {
+        values.push({
+          attrib_id: 144,
+          value: req.body.highscopestafftrained,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if ((isEmpty(req.body.strengtheningfamiliesstafftrained) = false)) {
+        values.push({
+          attrib_id: 145,
+          value: req.body.strengtheningfamiliesstafftrained,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.ncpmistafftrained) == false) {
+        values.push({
+          attrib_id: 146,
+          value: req.body.ncpmistafftrained,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.earlylearningstandardsstafftrained) == false) {
+        values.push({
+          attrib_id: 147,
+          value: req.body.earlylearningstandardsstafftrained,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.otherwaysofengagingfamily) == false) {
+        values.push({
+          attrib_id: 152,
+          value: req.body.otherwaysofengagingfamily,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.staffwithfamilychildcarecredential) == false) {
         {
           values.push({
-            attrib_id: 138,
-            value: req.body.pyramidmodelonlinestafftrained,
+            attrib_id: 156,
+            value: req.body.staffwithfamilychildcarecredential,
             response_id: result.insertForm.response_id,
           });
         }
       }
 
-      if (isEmpty(req.body.pyramidmodelplcstafftrained) == false) {
+      if (isEmpty(req.body.staffwithearlychildhoodteachercredential) == false) {
+        values.push({
+          attrib_id: 157,
+          value: req.body.staffwithearlychildhoodteachercredential,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (
+        isEmpty(req.body.staffwithearlychildhoodmasterteachercredential) ==
+        false
+      ) {
+        values.push({
+          attrib_id: 158,
+          value: req.body.staffwithearlychildhoodmasterteachercredential,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (
+        isEmpty(req.body.staffwithearlychildhoodadministratorcredential) ==
+        false
+      ) {
+        values.push({
+          attrib_id: 159,
+          value: req.body.staffwithearlychildhoodadministratorcredential,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (
+        isEmpty(req.body.staffwithearlychildhoodmasterprofessionalcredential) ==
+        false
+      ) {
         {
           values.push({
-            attrib_id: 139,
-            value: req.body.pyramidmodelplcstafftrained,
-            response_id: results.insertForm.response_id,
+            attrib_id: 160,
+            value: req.body.staffwithearlychildhoodmasterprofessionalcredential,
+            response_id: result.insertForm.response_id,
           });
         }
       }
 
-      if (isEmpty(req.body.tsgoldstafftrained) == false) {
-        {
-          values.push({
-            attrib_id: 140,
-            value: req.body.tsgoldstafftrained,
-            response_id: results.insertForm.response_id,
-          });
-        }
+      if (
+        isEmpty(req.body.staffwithearlychildhoodinfanttoddlercredential) ==
+        false
+      ) {
+        values.push({
+          attrib_id: 161,
+          value: req.body.staffwithearlychildhoodinfanttoddlercredential,
+          response_id: result.insertForm.response_id,
+        });
       }
 
-      if (isEmpty(req.body.corstafftrained) == false) {
-        {
-          values.push({
-            attrib_id: 141,
-            value: req.body.corstafftrained,
-            response_id: results.insertForm.response_id,
-          });
-        }
+      if (isEmpty(req.body.stafftrainingstories) == false) {
+        values.push({
+          attrib_id: 162,
+          value: req.body.stafftrainingstories,
+          response_id: result.insertForm.response_id,
+        });
       }
 
-      if (isEmpty(req.body.drdpstafftrained) == false) {
-        {
-          values.push({
-            attrib_id: 142,
-            value: req.body.drdpstafftrained,
-            response_id: results.insertForm.response_id,
-          });
-        }
+      if (isEmpty(req.body.firststquarternotattempted) == false) {
+        values.push({
+          attrib_id: 164,
+          value: req.body.firststquarternotattempted,
+          response_id: result.insertForm.response_id,
+        });
       }
 
-      if (isEmpty(req.body.creativecurriculumstafftrained) == false) {
-        {
-          values.push({
-            attrib_id: 143,
-            value: req.body.creativecurriculumstafftrained,
-            response_id: results.insertForm.response_id,
-          });
-        }
+      if (isEmpty(req.body.firstquarterinprogress) == false) {
+        values.push({
+          attrib_id: 168,
+          value: req.body.firstquarterinprogress,
+          response_id: result.insertForm.response_id,
+        });
       }
 
-      if (isEmpty(req.body.highscopestafftrained) == false) {
-        {
-          values.push({
-            attrib_id: 144,
-            value: req.body.highscopestafftrained,
-            response_id: results.insertForm.response_id,
-          });
-        }
+      if (isEmpty(req.body.firstquartercompletedwith80minimum) == false) {
+        values.push({
+          attrib_id: 172,
+          value: req.body.firstquartercompletedwith80minimum,
+          response_id: result.insertForm.response_id,
+        });
       }
 
-      if ((isEmpty(req.body.strengtheningfamiliesstafftrained) = false)) {
-        {
-          values.push({
-            attrib_id: 145,
-            value: req.body.strengtheningfamiliesstafftrained,
-            response_id: results.insertForm.response_id,
-          });
-        }
+      if (isEmpty(req.body.firstquartertotalcriteriacompleted) == false) {
+        values.push({
+          attrib_id: 176,
+          value: req.body.firstquartertotalcriteriacompleted,
+          response_id: result.insertForm.response_id,
+        });
       }
 
-      if (isEmpty(req.body.ncpmistafftrained) == false) {
-        {
-          values.push({
-            attrib_id: 146,
-            value: req.body.ncpmistafftrained,
-            response_id: results.insertForm.response_id,
-          });
-        }
+      if (isEmpty(req.body.secondquarternotattempted) == false) {
+        values.push({
+          attrib_id: 165,
+          value: req.body.secondquarternotattempted,
+          response_id: result.insertForm.response_id,
+        });
       }
 
-      if (isEmpty(req.body.earlylearningstandardsstafftrained) == false) {
-        {
-          values.push({
-            attrib_id: 147,
-            value: req.body.earlylearningstandardsstafftrained,
-            response_id: results.insertForm.response_id,
-          });
-        }
+      if (isEmpty(req.body.secondquarterinprogress) == false) {
+        values.push({
+          attrib_id: 169,
+          value: req.body.secondquarterinprogress,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.secondquartercompletedwith80minimum) == false) {
+        values.push({
+          attrib_id: 173,
+          value: req.body.secondquartercompletedwith80minimum,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.secondquartertotalcriteriacompleted) == false) {
+        values.push({
+          attrib_id: 177,
+          values: req.body.secondquartertotalcriteriacompleted,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.thirdquarternotattempted) == false) {
+        values.push({
+          attrib_id: 166,
+          value: req.body.thirdquarternotattempted,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.thirdquarterinprogress) == false) {
+        values.push({
+          attrib_id: 170,
+          value: req.body.thirdquarterinprogress,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.thirdquartercompletedwith80minimum) == false) {
+        values.push({
+          attrib_id: 174,
+          value: req.body.thirdquartercompletedwith80minimum,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.thirdquartertotalcriteriacompleted) == false) {
+        values.push({
+          attrib_id: 178,
+          value: req.body.thirdquartertotalcriteriacompleted,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.fourthquarternotattempted) == false) {
+        values.push({
+          attrib_id: 167,
+          value: req.body.fourthquarternotattempted,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.fourthquarterinprogress) == false) {
+        values.push({
+          attrib_id: 171,
+          value: req.body.fourthquarterinprogress,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.fourthquartercompletedwith80minimum) == false) {
+        values.push({
+          attrib_id: 175,
+          value: req.body.fourthquartercompletedwith80minimum,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.fourthquartertotalcriteriacompleted) == false) {
+        values.push({
+          attrib_id: 179,
+          value: req.body.fourthquartertotalcriteriacompleted,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.asqintrainingfidelity) == false) {
+        values.push({
+          attrib_id: 184,
+          value: req.body.asqintrainingfidelity,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.asqadoptionfidelity) == false) {
+        values.push({
+          attrib_id: 185,
+          value: req.body.asqadoptionfidelity,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.asqpartialimplementationfidelity) == false) {
+        values.push({
+          attrib_id: 186,
+          value: req.body.asqpartialimplementationfidelity,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.asqfullimplementationfidelity) == false) {
+        values.push({
+          attrib_id: 187,
+          value: req.body.asqfullimplementationfidelity,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.asqfidelityfidelity) == false) {
+        values.push({
+          attrib_id: 188,
+          value: req.body.asqfidelityfidelity,
+          response_id: result.insertForm.response_id,
+        });
       }
     })
 
-    // next up is additional questions
     .catch((e) => {
       if (e) {
         console.log(e);
