@@ -1894,6 +1894,23 @@ exports.annualreportpost = function (req, res, next) {
           value: req.body.asqsupportneeded,
           response_id: result.insertForm.response_id,
         },
+        {
+          attrib_id: 190,
+          value: req.body.birtrainingdescription,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 196,
+          value: req.body.birsupportneeded,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 197,
+          value: req.body.birreportusages,
+          response_id: result.insertForm.response_id,
+        },
+
+        // Evidence-Based Assesment Systems is NExt
       ];
 
       if (isEmpty(req.body.asqstafftrained) == false) {
@@ -2236,6 +2253,46 @@ exports.annualreportpost = function (req, res, next) {
         values.push({
           attrib_id: 188,
           value: req.body.asqfidelityfidelity,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.birintrainingfidelity) == false) {
+        values.push({
+          attrib_id: 191,
+          value: req.body.birintrainingfidelity,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.biradoptionfidelity) == false) {
+        values.push({
+          attrib_id: 192,
+          value: req.body.biradoptionfidelity,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.birpartialimplementationfidelity) == false) {
+        values.push({
+          attrib_id: 193,
+          value: req.body.birpartialimplementationfidelity,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.birfullimplementationfidelity) == false) {
+        values.push({
+          attrib_id: 194,
+          value: req.body.birfullimplementationfidelity,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.birfidelityfidelity) == false) {
+        values.push({
+          attrib_id: 195,
+          value: req.body.birfidelityfidelity,
           response_id: result.insertForm.response_id,
         });
       }
