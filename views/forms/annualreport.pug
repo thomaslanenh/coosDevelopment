@@ -655,13 +655,13 @@ block content
                         p(class='has-text-centered') Program Implementation Criteria
                     div(class='content')
                         p(class='is-italic mt-5') What support is needed to reach the next stage of implementation?
-                        textarea(class='textarea' rows='5' name='ebassupportneeded')
+                        textarea(class='textarea' rows='5' name='ebassupportneeded' required)
                     div(class='content')
                         p(class='is-italic mt-5') Do you use the results of these evidence-based assessments to inform your curriculum planning? If so, how?
-                        textarea(class='textarea' rows='5' name='ebasresultsinform')
+                        textarea(class='textarea' rows='5' name='ebasresultsinform' required)
                     div(class='content')
                         p(class='is-italic mt-5') Use this space to further describe the use of any Evidence-Based Assessment Systems used at your center in this reporting year.
-                        textarea(class='textarea' rows='25' name='ebasreportusages')
+                        textarea(class='textarea' rows='25' name='ebasreportusages' required)
                 hr.solid
                 div(class='column is-full mt-6')
                     h2(class='has-text-centered has-text-weight-bold is-size-2') Staff Turnover
@@ -673,32 +673,32 @@ block content
                                     td 
                                         p # of Staff Left in #{previousYear}
                                     td
-                                        input(type='number' class='input' placeholder=0 name='staffleftpreviousyear')
+                                        input(type='number' class='input' placeholder=0 name='staffleftpreviousyear' required)
                                 tr  
                                     td 
                                         p # of Staff Hired to Replace Staff Left in #{previousYear}
                                     td 
-                                        input(type='number' class='input' placeholder=0 name='staffhiredreplacedpreviousyear')
+                                        input(type='number' class='input' placeholder=0 name='staffhiredreplacedpreviousyear' required)
                                 tr 
                                     td 
                                         p # of Staff Hired to New Positions in #{previousYear}
                                     td 
-                                        input(type='number' required class='input' placeholder=0 name='staffhirednewpositionpreviousyear')
+                                        input(type='number' required class='input' placeholder=0 name='staffhirednewpositionpreviousyear' required)
                                 tr 
                                     td 
                                         p # of Positions Remaining Unfilled in #{previousYear}
                                     td 
-                                        input(type='number' class='input' placeholder=0 name='positionsremaininginpreviousyear')
+                                        input(type='number' class='input' placeholder=0 name='positionsremaininginpreviousyear' required)
                         p(class='is-italic mt-5') Was the staff turnover rate you had this year typical of years past or did COVID have an additional impact on your turnover rate?
-                        textarea(class='textarea' rows='5' name='covideffectonstaffturnover')
+                        textarea(class='textarea' rows='5' name='covideffectonstaffturnover' required)
                         p(class='is-italic mt-5') Please describe the reasons you experienced staff turnover in #{previousYear}, as well as any concerns of difficulties you had with retaining/hiring staff.
-                        textarea(class='textarea' rows='25' name='reasonsstaffleftinpreviousyear')
+                        textarea(class='textarea' rows='25' name='reasonsstaffleftinpreviousyear' required)
                 hr.solid
                 div(class='column is-full mt-6')
                     h2(class='has-text-centered has-text-weight-bold is-size-2') COVID Impacts 
                     div(class='content')
                         p(class='is-italic mt-5') Please describe how COVID has impacted your program: 
-                        textarea(class='textarea' rows='30' name='covidimpactonprogram')
+                        textarea(class='textarea' rows='30' name='covidimpactonprogram' required)
                         table(class='table mt-5 is-bordered is-striped is-hoverable is-fullwidth')
                             tbody
                                 tr 

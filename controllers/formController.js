@@ -1909,6 +1909,66 @@ exports.annualreportpost = function (req, res, next) {
           value: req.body.birreportusages,
           response_id: result.insertForm.response_id,
         },
+        {
+          attrib_id: 198,
+          value: req.body.ebastrainingdescription,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 204,
+          value: req.body.ebassupportneeded,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 205,
+          value: req.body.ebasresultsinform,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 206,
+          value: req.body.ebasreportusages,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 207,
+          value: req.body.staffleftpreviousyear,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 208,
+          value: req.body.staffhiredreplacedpreviousyear,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 209,
+          value: req.body.staffhirednewpositionpreviousyear,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 210,
+          value: req.body.positionsremaininginpreviousyear,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 211,
+          value: req.body.covideffectonstaffturnover,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 212,
+          value: req.body.reasonsstaffleftinpreviousyear,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 213,
+          value: req.body.covidimpactonprogram,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 214,
+          value: req.body.extrafundingsources,
+          response_id: result.insertForm.response_id,
+        },
 
         // Evidence-Based Assesment Systems is NExt
       ];
@@ -2293,6 +2353,62 @@ exports.annualreportpost = function (req, res, next) {
         values.push({
           attrib_id: 195,
           value: req.body.birfidelityfidelity,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.ebasintrainingfidelity) == false) {
+        values.push({
+          attrib_id: 199,
+          value: req.body.ebasintrainingfidelity,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.ebasadoptionfidelity) == false) {
+        values.push({
+          attrib_id: 200,
+          value: req.body.ebasadoptionfidelity,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.ebaspartialimplementationfidelity) == false) {
+        values.push({
+          attrib_id: 201,
+          value: req.body.ebaspartialimplementationfidelity,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.ebasfullimplementationfidelity) == false) {
+        values.push({
+          attrib_id: 202,
+          value: req.body.ebasfullimplementationfidelity,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.ebasfidelityfidelity) == false) {
+        values.push({
+          attrib_id: 203,
+          value: req.body.ebasfidelityfidelity,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.otherfundingreceivedcorona) == false) {
+        values.push({
+          attrib_id: 215,
+          value: req.body.otherfundingreceivedcorona,
+          response_id: result.insertForm.response_id,
+        });
+      }
+
+      if (isEmpty(req.body.fundingreceivedhelpprogram) == false) {
+        values.push({
+          attrib_id: 216,
+          value: req.body.fundingreceivedhelpprogram,
           response_id: result.insertForm.response_id,
         });
       }
