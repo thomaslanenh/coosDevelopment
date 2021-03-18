@@ -1612,17 +1612,7 @@ exports.annualreportpost = function (req, res, next) {
   })
     .then((result) => {
       const cs = new pgp.helpers.ColumnSet(
-        [
-          {
-            name: 'attrib_id',
-          },
-          {
-            name: 'value',
-          },
-          {
-            name: 'response_id',
-          },
-        ],
+        ['attrib_id', 'value', 'response_id'],
         {
           table: 'formquestionresponse',
         }
@@ -1646,22 +1636,24 @@ exports.annualreportpost = function (req, res, next) {
         },
         {
           attrib_id: 97,
-          value: req.body[`${companyAccount.company_id}5coosnumber`],
+          value: req.body[`${result.companyAccount.company_id}5coosnumber`],
           response_id: result.insertForm.response_id,
         },
         {
           attrib_id: 98,
-          value: req.body[`${companyAccount.company_id}5outofcoosnumber`],
+          value:
+            req.body[`${result.companyAccount.company_id}5outofcoosnumber`],
           response_id: result.insertForm.response_id,
         },
         {
           attrib_id: 99,
-          value: req.body[`${companyAccount.company_id}6coosnumber`],
+          value: req.body[`${result.companyAccount.company_id}6coosnumber`],
           response_id: result.insertForm.response_id,
         },
         {
           attrib_id: 100,
-          value: req.body[`${companyAccount.company_id}6outofcoosnumber`],
+          value:
+            req.body[`${result.companyAccount.company_id}6outofcoosnumber`],
           response_id: result.insertForm.response_id,
         },
         {
@@ -2045,7 +2037,7 @@ exports.annualreportpost = function (req, res, next) {
         });
       }
 
-      if ((isEmpty(req.body.strengtheningfamiliesstafftrained) = false)) {
+      if (isEmpty(req.body.strengtheningfamiliesstafftrained) == false) {
         values.push({
           attrib_id: 145,
           value: req.body.strengtheningfamiliesstafftrained,
@@ -2208,7 +2200,7 @@ exports.annualreportpost = function (req, res, next) {
       if (isEmpty(req.body.secondquartertotalcriteriacompleted) == false) {
         values.push({
           attrib_id: 177,
-          values: req.body.secondquartertotalcriteriacompleted,
+          value: req.body.secondquartertotalcriteriacompleted,
           response_id: result.insertForm.response_id,
         });
       }
@@ -2412,6 +2404,12 @@ exports.annualreportpost = function (req, res, next) {
           response_id: result.insertForm.response_id,
         });
       }
+
+      const query = pgp.helpers.insert(values, cs);
+      const recordsResponse = db.none(query);
+
+      req.flash('info', 'Thank you for your form submission.');
+      res.redirect('/');
     })
 
     .catch((e) => {
