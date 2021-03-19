@@ -1598,6 +1598,9 @@ exports.annualreport = function (req, res, next) {
 };
 
 exports.annualreportpost = function (req, res, next) {
+  let engagingfamilies = req.body.engagingfamilies;
+  let extrafundingsources = req.body.extrafundingsources;
+
   db.tx(async (t) => {
     const companyAccount = await t.one(
       'SELECT c.id, u.company_id, c.company_name from company c INNER JOIN useraccount u on c.id = u.company_id where u.username=$1',
@@ -1611,6 +1614,7 @@ exports.annualreportpost = function (req, res, next) {
     return { companyAccount, insertForm };
   })
     .then((result) => {
+      console.log(req.body);
       const cs = new pgp.helpers.ColumnSet(
         ['attrib_id', 'value', 'response_id'],
         {
@@ -1832,11 +1836,6 @@ exports.annualreportpost = function (req, res, next) {
           response_id: result.insertForm.response_id,
         },
         {
-          attrib_id: 150,
-          value: req.body.engagingfamilies,
-          response_id: result.insertForm.response_id,
-        },
-        {
           attrib_id: 151,
           value: req.body.otherengagingways,
           response_id: result.insertForm.response_id,
@@ -1956,14 +1955,29 @@ exports.annualreportpost = function (req, res, next) {
           value: req.body.covidimpactonprogram,
           response_id: result.insertForm.response_id,
         },
-        {
-          attrib_id: 214,
-          value: req.body.extrafundingsources,
-          response_id: result.insertForm.response_id,
-        },
 
         // Evidence-Based Assesment Systems is NExt
       ];
+
+      if (isEmpty(extrafundingsources) == false) {
+        extrafundingsources.map((source) => {
+          values.push({
+            attrib_id: 214,
+            value: source,
+            response_id: result.insertForm.response_id,
+          });
+        });
+      }
+
+      if (isEmpty(engagingfamilies) == false) {
+        engagingfamilies.map((source) => {
+          values.push({
+            attrib_id: 150,
+            value: source,
+            response_id: result.insertForm.response_id,
+          });
+        });
+      }
 
       if (isEmpty(req.body.asqstafftrained) == false) {
         values.push({
