@@ -1,25 +1,25 @@
-require("dotenv").config();
-var express = require("express");
-var db = require("../db");
+require('dotenv').config();
+var express = require('express');
+var db = require('../db');
 var router = express.Router();
 var currentYear = new Date().getFullYear();
 
 // controller inits
-var homepage_controller = require("../controllers/homepageController");
-var useraccount_controller = require("../controllers/useraccountController");
-var companycreate_controller = require("../controllers/companycreationController");
-var formcreate_controller = require("../controllers/formController");
-var adminformview_controller = require("../controllers/adminFormView");
-var userformview_controller = require("../controllers/userFormView");
-var support_controller = require("../controllers/supportController");
+var homepage_controller = require('../controllers/homepageController');
+var useraccount_controller = require('../controllers/useraccountController');
+var companycreate_controller = require('../controllers/companycreationController');
+var formcreate_controller = require('../controllers/formController');
+var adminformview_controller = require('../controllers/adminFormView');
+var userformview_controller = require('../controllers/userFormView');
+var support_controller = require('../controllers/supportController');
 
-var async = require("async");
+var async = require('async');
 
 // multer initiation and sets upload folder to be /uploads
-var multer = require("multer");
+var multer = require('multer');
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/");
+    cb(null, 'uploads/');
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
@@ -27,53 +27,53 @@ var storage = multer.diskStorage({
 });
 var upload = multer({ storage: storage });
 
-var passport = require("passport");
-const { path } = require("../app");
+var passport = require('passport');
+const { path } = require('../app');
 
 // ensures authentication for user before letting them log in
 function ensureAuthentication(req, res, next) {
   if (req.isAuthenticated()) {
     next();
   } else {
-    req.flash = "error, You must be logged in to see this page.";
-    res.redirect(403, "/login");
+    req.flash = 'error, You must be logged in to see this page.';
+    res.redirect(403, '/login');
   }
 }
 
 // ensures user is a administrator AND authenticated before letting them to a ADMIN area.
 function administratorCheck(req, res, next) {
   console.log(req.user);
-  if (req.isAuthenticated() && req.user.user_type === '2' ) {
+  if (req.isAuthenticated() && req.user.user_type === '2') {
     next();
   } else {
-    req.session.error = "You must be a administrator to see this page.";
-    res.redirect(403, "/login");
+    req.session.error = 'You must be a administrator to see this page.';
+    res.redirect(403, '/login');
   }
 }
 
-router.get("/", homepage_controller.index);
+router.get('/', homepage_controller.index);
 
 //dynamically assign a company page to their ID.
-router.get("/company/:id", useraccount_controller.companyhome);
+router.get('/company/:id', useraccount_controller.companyhome);
 
 // user account sections
-router.get("/login", useraccount_controller.index);
+router.get('/login', useraccount_controller.index);
 router.post(
-  "/login",
-  passport.authenticate("local", {
+  '/login',
+  passport.authenticate('local', {
     successRedirect: `/`,
     successFlash: true,
-    failureRedirect: "/login",
+    failureRedirect: '/login',
     failureFlash: true,
   })
 );
-router.get("/signup", useraccount_controller.signup);
-router.post("/signup", useraccount_controller.signup_post);
+router.get('/signup', useraccount_controller.signup);
+router.post('/signup', useraccount_controller.signup_post);
 
-router.get("/logout", useraccount_controller.logout);
+router.get('/logout', useraccount_controller.logout);
 
 router.get(
-  "/:username/profile",
+  '/:username/profile',
   ensureAuthentication,
   useraccount_controller.profile
 );
@@ -83,24 +83,24 @@ router.get(
   '/:companyid/staffMembers',
   ensureAuthentication,
   useraccount_controller.staffmembers
-)
+);
 
 // Support Routes
-router.get("/support", ensureAuthentication, support_controller.index);
-router.post("/support", support_controller.indexpost);
+router.get('/support', ensureAuthentication, support_controller.index);
+router.post('/support', support_controller.indexpost);
 
 // Support Messages Routes
-router.get("/messages", ensureAuthentication, support_controller.messages);
+router.get('/messages', ensureAuthentication, support_controller.messages);
 // Support Message Detail
 router.get(
-  "/messages/:messageid",
+  '/messages/:messageid',
   ensureAuthentication,
   support_controller.messagedetail
 );
-router.post("/messages/:messageid", support_controller.messagedetailpost);
+router.post('/messages/:messageid', support_controller.messagedetailpost);
 // Route to Create a Company
 router.get(
-  "/createcompany",
+  '/createcompany',
   administratorCheck,
   companycreate_controller.createcompany
 );
@@ -108,11 +108,11 @@ router.get(
 // sets variables for company uploader to take the File input type. Sticks it in the "uplaods' folder"
 
 var compUploader = upload.fields([
-  { name: "logo" },
-  { name: "business_picture" },
+  { name: 'logo' },
+  { name: 'business_picture' },
 ]);
 
-router.post("/createcompany", compUploader, function (req, res, next) {
+router.post('/createcompany', compUploader, function (req, res, next) {
   console.log(req.files.logo[0].originalname);
 
   //transactionally adds the company to the database. Multer removes req.body access for multipart forms when the input
@@ -139,12 +139,12 @@ router.post("/createcompany", compUploader, function (req, res, next) {
     );
   })
     .then((data) => {
-      res.redirect("/");
+      res.redirect('/');
     })
     .catch((err) => {
       if (err) {
-        req.flash("error", "Something went wrong, contact DB admin");
-        res.redirect("/createcompany");
+        req.flash('error', 'Something went wrong, contact DB admin');
+        res.redirect('/createcompany');
       }
     });
 });
@@ -152,96 +152,119 @@ router.post("/createcompany", compUploader, function (req, res, next) {
 // starting forms
 
 // annual report
-router.get('/forms/annualreport', ensureAuthentication, formcreate_controller.annualreport);
-router.post('/forms/annualreport', formcreate_controller.annualreportpost)
+router.get(
+  '/forms/annualreport',
+  ensureAuthentication,
+  formcreate_controller.annualreport
+);
+router.post('/forms/annualreport', formcreate_controller.annualreportpost);
+
+// ecers report
+router.get(
+  '/forms/ecersdata',
+  ensureAuthentication,
+  formcreate_controller.ecersdata
+);
+router.post('/forms/ecersdata', formcreate_controller.ecersdatapost);
+
+// ipdp report
+router.get('/forms/ipdp', ensureAuthentication, formcreate_controller.ipdip);
+router.post('/forms/ipdp', formcreate_controller.ipdippost);
 
 // QIA Progress Form
 router.get(
-  "/forms/qiaprogress",
+  '/forms/qiaprogress',
   ensureAuthentication,
   formcreate_controller.qiaprogress
 );
 router.post(
-  "/forms/qiaprogress",
+  '/forms/qiaprogress',
   ensureAuthentication,
   formcreate_controller.qiaprogress_post
 );
 
 // QIA Outcome Reporting Form
 router.get(
-  "/forms/qiaoutcome",
+  '/forms/qiaoutcome',
   ensureAuthentication,
   formcreate_controller.qiaoutcome
 );
 
 router.post(
-  "/forms/qiaoutcome",
+  '/forms/qiaoutcome',
   ensureAuthentication,
   formcreate_controller.qiaoutcome_post
 );
 
 // QIA Detailed Budget Form
 router.get(
-  "/forms/qiabudget",
+  '/forms/qiabudget',
   ensureAuthentication,
   formcreate_controller.detailedbudget
 );
 
-router.post("/forms/qiabudget", formcreate_controller.detailedbudgetpost);
+router.post('/forms/qiabudget', formcreate_controller.detailedbudgetpost);
 
 // QIA Center Improvement Plan Form
 router.get(
-  "/forms/qiacenterimprovement",
+  '/forms/qiacenterimprovement',
   ensureAuthentication,
   formcreate_controller.centerimprovement
 );
 
 router.post(
-  "/forms/qiacenterimprovement",
+  '/forms/qiacenterimprovement',
   ensureAuthentication,
   formcreate_controller.centerimprovementpost
 );
 
 // staff meeting tracker form
 router.get(
-  "/forms/staffmeetingtracker",
+  '/forms/staffmeetingtracker',
   ensureAuthentication,
   formcreate_controller.staffmeetingtracker
 );
 
 router.post(
-  "/forms/staffmeetingtracker",
+  '/forms/staffmeetingtracker',
   formcreate_controller.staffmeetingtrackerpost
 );
 
 // ece credit tracking
-router.get('/forms/ececredittracking', ensureAuthentication, formcreate_controller.ececredittracking)
+router.get(
+  '/forms/ececredittracking',
+  ensureAuthentication,
+  formcreate_controller.ececredittracking
+);
 
-router.post('/forms/ececredittracking', formcreate_controller.ececredittrackingpost)
+router.post(
+  '/forms/ececredittracking',
+  formcreate_controller.ececredittrackingpost
+);
 // FORM POST SECTION
 
 // form submit thank you page
-router.get("/thanks", function (req, res, next) {
-  res.render("thanks", { user: req.user, currentYear });
+router.get('/thanks', function (req, res, next) {
+  res.render('thanks', { user: req.user, currentYear });
 });
 
 // form user view and download
 router.get(
-  "/:username/forms/:companyid/:formid/:formresponseid",
+  '/:username/forms/:companyid/:formid/:formresponseid',
   ensureAuthentication,
   userformview_controller.index
 );
 
 // form administration view
 router.get(
-  "/admin/:companyid/:formid/:formresponseid",
+  '/admin/:companyid/:formid/:formresponseid',
   administratorCheck,
   adminformview_controller.index
 );
 
 // view all user forms
 router.get(
-  "/:username/forms/:companyid/all",
+  '/:username/forms/:companyid/all',
   ensureAuthentication,
   userformview_controller.viewall
 );

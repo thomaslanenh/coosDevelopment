@@ -1251,6 +1251,10 @@ exports.ececredittrackingpost = function (req, res, next) {
           {
             name: 'response_id',
           },
+          {
+            name: 'staff_id',
+            def: null,
+          },
         ],
         {
           table: 'formquestionresponse',
@@ -1283,11 +1287,13 @@ exports.ececredittrackingpost = function (req, res, next) {
               value:
                 req.body[`${member.first_name}${member.last_name}ECEcredits`],
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             },
             {
               attrib_id: 80,
               value: `${member.first_name} ${member.last_name}`,
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             }
           );
         }
@@ -1304,11 +1310,13 @@ exports.ececredittrackingpost = function (req, res, next) {
                   `${member.first_name}${member.last_name}Elementarycredits`
                 ],
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             },
             {
               attrib_id: 80,
               value: `${member.first_name} ${member.last_name}`,
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             }
           );
         }
@@ -1325,11 +1333,13 @@ exports.ececredittrackingpost = function (req, res, next) {
                   `${member.first_name}${member.last_name}ECE Admincredits`
                 ],
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             },
             {
               attrib_id: 80,
               value: `${member.first_name} ${member.last_name}`,
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             }
           );
         }
@@ -1346,11 +1356,13 @@ exports.ececredittrackingpost = function (req, res, next) {
                   `${member.first_name}${member.last_name}Psychologycredits`
                 ],
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             },
             {
               attrib_id: 80,
               value: `${member.first_name} ${member.last_name}`,
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             }
           );
         }
@@ -1369,11 +1381,13 @@ exports.ececredittrackingpost = function (req, res, next) {
                   `${member.first_name}${member.last_name}Other ECE Relatedcredits`
                 ],
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             },
             {
               attrib_id: 80,
               value: `${member.first_name} ${member.last_name}`,
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             }
           );
         }
@@ -1392,11 +1406,13 @@ exports.ececredittrackingpost = function (req, res, next) {
                   `${member.first_name}${member.last_name}Other Non-ECE Relatedcredits`
                 ],
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             },
             {
               attrib_id: 80,
               value: `${member.first_name} ${member.last_name}`,
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             }
           );
         }
@@ -1416,11 +1432,13 @@ exports.ececredittrackingpost = function (req, res, next) {
                 ],
               ],
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             },
             {
               attrib_id: 80,
               value: `${member.first_name} ${member.last_name}`,
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             }
           );
         }
@@ -1440,11 +1458,13 @@ exports.ececredittrackingpost = function (req, res, next) {
                   `${member.first_name}${member.last_name}Elementaryscholarshipaccessed`
                 ],
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             },
             {
               attrib_id: 80,
               value: `${member.first_name} ${member.last_name}`,
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             }
           );
         }
@@ -1463,11 +1483,13 @@ exports.ececredittrackingpost = function (req, res, next) {
                   `${member.first_name}${member.last_name}ECE Adminscholarshipaccessed`
                 ],
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             },
             {
               attrib_id: 80,
               value: `${member.first_name} ${member.last_name}`,
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             }
           );
         }
@@ -1486,11 +1508,13 @@ exports.ececredittrackingpost = function (req, res, next) {
                   `${member.first_name}${member.last_name}Psychologyscholarshipaccessed`
                 ],
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             },
             {
               attrib_id: 80,
               value: `${member.first_name} ${member.last_name}`,
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             }
           );
         }
@@ -1509,11 +1533,13 @@ exports.ececredittrackingpost = function (req, res, next) {
                   `${member.first_name}${member.last_name}Other ECE Relatedscholarshipaccessed`
                 ],
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             },
             {
               attrib_id: 80,
               value: `${member.first_name} ${member.last_name}`,
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             }
           );
         }
@@ -1532,11 +1558,13 @@ exports.ececredittrackingpost = function (req, res, next) {
                   `${member.first_name}${member.last_name}Other Non-ECE Relatedscholarshipaccessed`
                 ],
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             },
             {
               attrib_id: 80,
               value: `${member.first_name} ${member.last_name}`,
               response_id: result.insertForm.response_id,
+              staff_id: member.id,
             }
           );
         }
@@ -1555,6 +1583,172 @@ exports.ececredittrackingpost = function (req, res, next) {
         req.flash(
           'error',
           'There has been a error. Try again or submit a support ticket.'
+        );
+        res.redirect('/');
+      }
+    });
+};
+
+// ecers report
+
+exports.ecersdata = function (req, res, next) {
+  db.tx(async (t) => {
+    const companyDetails = await t.one(
+      'SELECT u.company_id, c.company_name, c.first_name, c.last_name, c.town FROM company c INNER JOIN useraccount u  ON c.id = u.company_id  WHERE u.username = $1',
+      [req.user.user]
+    );
+    return { companyDetails };
+  })
+    .then((results) => {
+      res.render('./forms/ecersdata.pug', {
+        companyDetails: results.companyDetails,
+        currentYear,
+        user: req.user,
+        previousYear,
+        nextYear,
+      });
+    })
+    .catch((e) => {
+      if (e) {
+        console.log(e);
+        req.flash(
+          'error',
+          'An error has occured, please try again or submit a support ticket.'
+        );
+        res.redirect('/');
+      }
+    });
+};
+
+exports.ecersdatapost = function (req, res, next) {
+  res.send('NYI');
+};
+
+// ipdip form
+exports.ipdip = function (req, res, next) {
+  db.tx(async (t) => {
+    const companyDetails = await t.one(
+      'SELECT u.company_id, c.company_name, c.first_name, c.last_name, c.town FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1',
+      [req.user.user]
+    );
+    const staffMembers = await t.any(
+      'SELECT u.first_name, u.last_name, t.type FROM useraccount u INNER JOIN usertypes t ON u.user_type = t.type_ref WHERE u.company_id = $1 ORDER BY t.type ASC, u.last_name ASC',
+      [companyDetails.company_id]
+    );
+    return { companyDetails, staffMembers };
+  }).then((results) => {
+    res.render('./forms/ipdp.pug', {
+      companyDetails: results.companyDetails,
+      staffMembers: results.staffMembers,
+      currentYear,
+      user: req.user,
+      previousYear,
+      nextYear,
+    });
+  });
+};
+
+exports.ipdippost = function (req, res, next) {
+  db.tx(async (t) => {
+    const companyDetails = await t.one(
+      'SELECT u.company_id, c.company_name, c.first_name, c.last_name, c.town FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1',
+      [req.user.user]
+    );
+    const staffMembers = await t.any(
+      'SELECT u.first_name, u.last_name, u.id from useraccount u where u.company_id = $1',
+      [companyDetails.company_id]
+    );
+    const insertForm = await t.one(
+      'INSERT INTO formresponse(form_id, company_id) VALUES(9, $1) RETURNING response_id',
+      [companyDetails.company_id]
+    );
+
+    return { companyDetails, staffMembers, insertForm };
+  })
+    .then((results) => {
+      const cs = new pgp.helpers.ColumnSet(
+        [
+          {
+            name: 'attrib_id',
+          },
+          {
+            name: 'value',
+          },
+          {
+            name: 'response_id',
+          },
+          {
+            name: 'staff_id',
+            def: null,
+          },
+        ],
+        {
+          table: 'formquestionresponse',
+        }
+      );
+
+      const values = [
+        {
+          attrib_id: 217,
+          value: results.companyDetails.company_name,
+          response_id: results.insertForm.response_id,
+        },
+        {
+          attrib_id: 218,
+          value: `${results.companyDetails.first_name} ${results.companyDetails.last_name}`,
+          response_id: results.insertForm.response_id,
+        },
+        {
+          attrib_id: 223,
+          value: req.body[223],
+          response_id: results.insertForm.response_id,
+        },
+      ];
+
+      const staffList = results.staffMembers;
+
+      staffList.map((staff) => {
+        values.push(
+          {
+            attrib_id: 219,
+            value: staff.first_name + ' ' + staff.last_name,
+            response_id: results.insertForm.response_id,
+            staff_id: staff.id,
+          },
+          {
+            attrib_id: 220,
+            value: req.body[`${staff.first_name}${staff.last_name}220`],
+            response_id: results.insertForm.response_id,
+            staff_id: staff.id,
+          },
+          {
+            attrib_id: 221,
+            value: req.body[`${staff.first_name}${staff.last_name}221`],
+            response_id: results.insertForm.response_id,
+            staff_id: staff.id,
+          },
+          {
+            attrib_id: 222,
+            value: req.body[`${staff.first_name}${staff.last_name}222`],
+            response_id: results.insertForm.response_id,
+            staff_id: staff.id,
+          }
+        );
+        return values;
+      });
+
+      const query = pgp.helpers.insert(values, cs);
+      const recordsResponse = db.none(query);
+
+      req.flash('info', 'Thank you for your form submission.');
+      res.redirect('/thanks');
+    })
+    .catch((e) => {
+      if (e) {
+        console.log(e);
+        req.flash(
+          'error',
+          'An error has occured. Please try again or submit a support ticket.'
         );
         res.redirect('/');
       }

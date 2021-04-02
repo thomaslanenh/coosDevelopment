@@ -1,0 +1,37 @@
+extends layout 
+
+block content
+    section(class='section' style="flex: 1 0 auto;")
+    --console.log(companyDetails)
+        div(class='columns is-mobile is-centered is-multiline')
+            div(class='column is-full')
+                h1(class='has-text-centered has-text-weight-bold is-size-2') ECERS #{currentYear} REPORTING FORM
+            div(class="column is-full")
+                p(class='is-italic has-text-centered') Please refer to 
+                    a(href="/ecersscale.xlsx") this spreadsheet 
+                    | to rate performance.
+        div(class='columns is-mobile is-centered is-multiline')
+            form(action='' method='POST' class='js-form')
+                div(class='columns is-mobile is-responsive is-multiline')
+                    div(class='column is-full')
+                        label(class='label') Test Entry 
+                        input(type='number' required name="test" class="input")
+                div(class='column is-full mt-6')
+                    div(class='field')
+                        button(type='submit' class='button is-primary') Submit Form
+                        button(type='button' class='ml-5 button is-info js-button' ) Save Form Data
+                        button(type='button' class='ml-5 button is-danger js-clearbutton' ) Clear Form Data
+    script(src='https://unpkg.com/form-storage@1.2.0/build/form-storage.js')
+    script. 
+        var formStorage = new FormStorage('.js-form');
+        formStorage.apply();
+        var button = document.querySelector('.js-button');
+        var button2 = document.querySelector('.js-clearbutton')
+        button.addEventListener('click', function(){
+            formStorage.save();
+            location.reload(true);
+        });
+        button2.addEventListener('click', function(){
+            formStorage.clear();
+            location.reload(true);
+        })

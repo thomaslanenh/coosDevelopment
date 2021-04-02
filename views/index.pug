@@ -5,6 +5,9 @@ block content
     if (messages.error)
       div(class='notification is-danger')
         p=messages.error
+    else if (messages.info)
+      div(class='notification is-primary')
+        p=messages.info
     else
       div(class="notification is-dark")
         p Welcome to the Mothership

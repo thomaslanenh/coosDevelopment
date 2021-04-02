@@ -1,0 +1,73 @@
+extends layout 
+
+block content
+    section(class='section' style="flex: 1 0 auto;")
+    --console.log(companyDetails)
+    --console.log('staff members: ', staffMembers)
+        div(class='columns is-mobile is-centered is-multiline')
+            div(class='column is-full')
+                h1(class='has-text-centered has-text-weight-bold is-size-2') IPDP #{currentYear} REPORTING FORM
+            div(class="column is-full has-text-centered")
+                h3(class='is-italic has-text-centered is-size-4') #{companyDetails.company_name}
+            div(class='column is-full has-text-centered')
+                p(class='has-text-weight-bold is-italic is-size-4') Director Name: 
+                p #{companyDetails.first_name} #{companyDetails.last_name}
+                p(class='is-italic pt-2 help') If the above information is wrong, please submit a support ticket.
+        div(class='columns is-mobile is-centered is-multiline mt-5')
+            form(action='' method='POST' class='js-form')
+                div(class='columns is-mobile is-responsive is-multiline')
+                    div(class='column is-full')
+                        table(class='table is-bordered is-striped is-narrow is-hoverable is-fullwidth')
+                            thead 
+                                tr 
+                                    th Staff Person 
+                                    th IPDP Completed?
+                                    th Date Completed
+                                    th Date of Hire *
+                            tbody 
+                                each staff in staffMembers
+                                    tr
+                                        td 
+                                            p #{staff.first_name} #{staff.last_name}
+                                            p(class='help') #{staff.type}
+                                        td
+                                            div(class='control')
+                                                label(class='radio') 
+                                                    input(type='radio' name=`${staff.first_name}${staff.last_name}220` value='yes' required)
+                                                    p Yes
+                                                label(class='radio pl-5')
+                                                    input(type='radio' name=`${staff.first_name}${staff.last_name}220` value='no')
+                                                    p No
+                                        td
+                                            input(type='date' class='input' name=`${staff.first_name}${staff.last_name}221`)
+                                        td
+                                            input(type='date' class='input' name=`${staff.first_name}${staff.last_name}222` required)
+                        p(class='help has-text-weight-bold has-text-centered') * New Hire IPDP not counted toward % completed if employed for 1 year or less starting January 2020
+                    div(class='column is-full has-text-centered ')
+                        label(class='label') 100% IPDP Required for #{nextYear} QIA? 
+                        div(class='control')
+                            label(class='radio') 
+                                input(type='radio' name='223' value="yes" required)
+                                p Yes
+                            label(class='radio pl-5')
+                                input(type='radio' name='223' value='no')
+                                p No
+                div(class='column is-full mt-6 mb-6')
+                    div(class='field')
+                        button(type='submit' class='button is-primary') Submit Form
+                        button(type='button' class='ml-5 button is-info js-button' ) Save Form Data
+                        button(type='button' class='ml-5 button is-danger js-clearbutton' ) Clear Form Data
+    script(src='https://unpkg.com/form-storage@1.2.0/build/form-storage.js')
+    script. 
+        var formStorage = new FormStorage('.js-form');
+        formStorage.apply();
+        var button = document.querySelector('.js-button');
+        var button2 = document.querySelector('.js-clearbutton')
+        button.addEventListener('click', function(){
+            formStorage.save();
+            location.reload(true);
+        });
+        button2.addEventListener('click', function(){
+            formStorage.clear();
+            location.reload(true);
+        })
