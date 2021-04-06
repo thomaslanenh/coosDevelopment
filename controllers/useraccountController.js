@@ -8,7 +8,8 @@ const db = require('../db');
 var { body, validationResult } = require('express-validator');
 const { errors } = require('pg-promise');
 var currentYear = new Date().getFullYear();
-
+var previousYear = new Date().getFullYear() - 1;
+var nextYear = new Date().getFullYear() + 1;
 exports.index = function (req, res) {
   res.render('login', { title: 'Login', user: req.user, currentYear });
 };
@@ -35,6 +36,8 @@ exports.signup = function (req, res) {
         degrees: data.degrees,
         user: req.user,
         currentYear,
+        nextYear,
+        previousYear,
       });
     })
     .catch((err) => {
@@ -133,6 +136,8 @@ exports.companyhome = function (req, res, next) {
         title: 'Company Profile',
         user: req.user,
         currentYear,
+        nextYear,
+        previousYear,
       });
     })
     .catch((error) => {
@@ -184,6 +189,8 @@ exports.profile = async function (req, res, next) {
         userinfo: accountInfo,
         user: req.user,
         currentYear,
+        nextYear,
+        previousYear,
         todaysDate,
         recentForms,
       });
@@ -208,6 +215,8 @@ exports.staffmembers = function (req, res, next) {
       res.render('staffmembers', {
         user: req.user,
         currentYear,
+        nextYear,
+        previousYear,
         staffMembers: results.staffMembers,
       });
     })

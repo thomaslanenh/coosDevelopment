@@ -160,12 +160,12 @@ router.get(
 router.post('/forms/annualreport', formcreate_controller.annualreportpost);
 
 // ecers report
-router.get(
-  '/forms/ecersdata',
-  ensureAuthentication,
-  formcreate_controller.ecersdata
-);
-router.post('/forms/ecersdata', formcreate_controller.ecersdatapost);
+// router.get(
+//   '/forms/ecersdata',
+//   ensureAuthentication,
+//   formcreate_controller.ecersdata
+// );
+// router.post('/forms/ecersdata', formcreate_controller.ecersdatapost);
 
 // ipdp report
 router.get('/forms/ipdp', ensureAuthentication, formcreate_controller.ipdip);

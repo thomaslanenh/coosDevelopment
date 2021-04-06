@@ -58,26 +58,21 @@ exports.qiaprogress_post = async function (req, res, next) {
   var useraccount = req.user.user;
 
   db.tx(async (t) => {
-    let associatedCompany = await t.one(
-      'SELECT company_id from useraccount WHERE username = $1',
-      [useraccount]
-    );
-    let formresponseID = await db.one(
-      `INSERT INTO formresponse(form_id, company_id, date_submitted, form_responses) values (1, $1, $2, $3:json) RETURNING response_id`,
-      [
-        associatedCompany.company_id,
-        req.body.date,
-        {
-          date: req.body.date,
-          early_professional: req.body.earlyprofessional,
-          items_bought: lines,
-          evidence_progress: req.body.evidenceprogress,
-          reporting_year: req.body.reportingyear,
-        },
-      ]
+    const associatedCompany = await t.one(
+      'SELECT u.company_id, c.company_name, c.first_name, c.last_name, c.town FROM company c INNER JOIN useraccount u on c.id= u.company_id WHERE u.username = $1',
+      [req.user.user]
     );
 
-    console.log(formresponseID);
+    const formresponseID = await t.one(
+      'INSERT INTO formresponse(form_id, company_id) values (1, $1) returning response_id',
+      [associatedCompany.company_id]
+    );
+
+    let profileUpdate = await db.none(
+      'UPDATE company SET last_modified = to_timestamp($1 / 1000.0) WHERE company_name = $2',
+      [Date.now(), associatedCompany.company_name]
+    );
+
     // deal with the weird array from text box thing.
     let arrayinput = await t.none(
       'INSERT INTO formquestionresponse (attrib_id, value, response_id) VALUES (3, unnest(array[$1:csv]), $2)',
@@ -263,13 +258,19 @@ exports.qiaoutcome_post = function (req, res, next) {
 
   db.tx(async (t) => {
     const useraccount = await db.one(
-      'SELECT company_id from useraccount WHERE username = $1',
+      'SELECT company_id, company_name from company inner join useraccount on id= company_id WHERE username = $1',
       [req.user.user]
     );
     const formresponseID = await t.one(
       'INSERT INTO formresponse(form_id, company_id) VALUES (2, $1) RETURNING response_id',
       [useraccount.company_id]
     );
+
+    let profileUpdate = await db.none(
+      'UPDATE company SET last_modified = to_timestamp($1 / 1000.0) WHERE company_name = $2',
+      [Date.now(), useraccount.company_name]
+    );
+
     // insert the responses into the database proper utilizing ColumnSet
 
     const cs = new pgp.helpers.ColumnSet(
@@ -693,6 +694,11 @@ exports.detailedbudgetpost = function (req, res, next) {
       [req.user.user]
     );
 
+    let profileUpdate = await db.none(
+      'UPDATE company SET last_modified = to_timestamp($1 / 1000.0) WHERE company_name = $2',
+      [Date.now(), companyDetails.company_name]
+    );
+
     const insertedForm = await t.one(
       'INSERT INTO formresponse(company_id, form_id) VALUES ($1, 3) RETURNING response_id',
       [companyDetails.id]
@@ -914,6 +920,12 @@ exports.centerimprovementpost = function (req, res, next) {
       'SELECT c.id, c.company_name, c.address, c.phone_number, u.email from company c INNER JOIN useraccount u on c.id = u.company_id where u.username = $1',
       [req.user.user]
     );
+
+    let profileUpdate = await db.none(
+      'UPDATE company SET last_modified = to_timestamp($1 / 1000.0) WHERE company_name = $2',
+      [Date.now(), companyid.company_name]
+    );
+
     const formResponse = await t.one(
       'INSERT INTO formresponse(company_id, form_id) values($1, 4) RETURNING response_id',
       [companyid.id]
@@ -1013,6 +1025,12 @@ exports.staffmeetingtrackerpost = function (req, res, next) {
       'SELECT u.company_id, c.company_name, c.first_name, c.last_name from company c inner join useraccount u on c.id = u.company_id where u.username = $1',
       [req.user.user]
     );
+
+    let profileUpdate = await db.none(
+      'UPDATE company SET last_modified = to_timestamp($1 / 1000.0) WHERE company_name = $2',
+      [Date.now(), useraccount.company_name]
+    );
+
     const formresponse = await t.one(
       'INSERT INTO formresponse(form_id, company_id) VALUES (6, $1) RETURNING response_id',
       [useraccount.company_id]
@@ -1195,9 +1213,10 @@ exports.ececredittracking = function (req, res, next) {
     );
     const classTypes = await t.manyOrNone('SELECT * from classtypes');
     const staffMembers = await t.manyOrNone(
-      'SELECT u.first_name, u.last_name, u.id, d.degree, dt.degree_type from useraccount u INNER JOIN degree_types dt on u.degree_type = dt.type_id INNER JOIN degrees d on dt.type_id = d.degree_id INNER JOIN company c on u.company_id = c.id WHERE c.id = $1',
+      'SELECT u.first_name, u.last_name, u.id, t.type, d.degree, dt.degree_type from useraccount u INNER JOIN usertypes t ON u.user_type = t.type_ref INNER JOIN degree_types dt on u.degree_type = dt.type_id INNER JOIN degrees d on u.degree =  d.degree_id WHERE u.company_id = $1 ORDER BY t.type ASC, u.last_name asc',
       [companyDetails.company_id]
     );
+
     return { companyDetails, staffMembers, classTypes };
   })
     .then((results) => {
@@ -1233,6 +1252,11 @@ exports.ececredittrackingpost = function (req, res, next) {
       'SELECT u.first_name, u.last_name, u.id, d.degree, dt.degree_type from useraccount u INNER JOIN degree_types dt on u.degree_type = dt.type_id INNER JOIN degrees d on dt.type_id = d.degree_id INNER JOIN company c on u.company_id = c.id WHERE c.id = $1',
       [companyAccount.company_id]
     );
+    let profileUpdate = await db.none(
+      'UPDATE company SET last_modified = to_timestamp($1 / 1000.0) WHERE company_name = $2',
+      [Date.now(), companyAccount.company_name]
+    );
+
     const insertForm = await t.one(
       'INSERT INTO formresponse(form_id, company_id) values (7, $1) returning response_id',
       [companyAccount.company_id]
@@ -1591,38 +1615,38 @@ exports.ececredittrackingpost = function (req, res, next) {
 
 // ecers report
 
-exports.ecersdata = function (req, res, next) {
-  db.tx(async (t) => {
-    const companyDetails = await t.one(
-      'SELECT u.company_id, c.company_name, c.first_name, c.last_name, c.town FROM company c INNER JOIN useraccount u  ON c.id = u.company_id  WHERE u.username = $1',
-      [req.user.user]
-    );
-    return { companyDetails };
-  })
-    .then((results) => {
-      res.render('./forms/ecersdata.pug', {
-        companyDetails: results.companyDetails,
-        currentYear,
-        user: req.user,
-        previousYear,
-        nextYear,
-      });
-    })
-    .catch((e) => {
-      if (e) {
-        console.log(e);
-        req.flash(
-          'error',
-          'An error has occured, please try again or submit a support ticket.'
-        );
-        res.redirect('/');
-      }
-    });
-};
+// exports.ecersdata = function (req, res, next) {
+//   db.tx(async (t) => {
+//     const companyDetails = await t.one(
+//       'SELECT u.company_id, c.company_name, c.first_name, c.last_name, c.town FROM company c INNER JOIN useraccount u  ON c.id = u.company_id  WHERE u.username = $1',
+//       [req.user.user]
+//     );
+//     return { companyDetails };
+//   })
+//     .then((results) => {
+//       res.render('./forms/ecersdata.pug', {
+//         companyDetails: results.companyDetails,
+//         currentYear,
+//         user: req.user,
+//         previousYear,
+//         nextYear,
+//       });
+//     })
+//     .catch((e) => {
+//       if (e) {
+//         console.log(e);
+//         req.flash(
+//           'error',
+//           'An error has occured, please try again or submit a support ticket.'
+//         );
+//         res.redirect('/');
+//       }
+//     });
+// };
 
-exports.ecersdatapost = function (req, res, next) {
-  res.send('NYI');
-};
+// exports.ecersdatapost = function (req, res, next) {
+//   res.send('NYI');
+// };
 
 // ipdip form
 exports.ipdip = function (req, res, next) {
@@ -1635,6 +1659,11 @@ exports.ipdip = function (req, res, next) {
       'SELECT u.first_name, u.last_name, t.type FROM useraccount u INNER JOIN usertypes t ON u.user_type = t.type_ref WHERE u.company_id = $1 ORDER BY t.type ASC, u.last_name ASC',
       [companyDetails.company_id]
     );
+    let profileUpdate = await db.none(
+      'UPDATE company SET last_modified = to_timestamp($1 / 1000.0) WHERE company_name = $2',
+      [Date.now(), companyDetails.company_name]
+    );
+
     return { companyDetails, staffMembers };
   }).then((results) => {
     res.render('./forms/ipdp.pug', {
@@ -1654,6 +1683,11 @@ exports.ipdippost = function (req, res, next) {
       'SELECT u.company_id, c.company_name, c.first_name, c.last_name, c.town FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1',
       [req.user.user]
     );
+    let profileUpdate = await db.none(
+      'UPDATE company SET last_modified = to_timestamp($1 / 1000.0) WHERE company_name = $2',
+      [Date.now(), companyDetails.company_name]
+    );
+
     const staffMembers = await t.any(
       'SELECT u.first_name, u.last_name, u.id from useraccount u where u.company_id = $1',
       [companyDetails.company_id]
@@ -1795,6 +1829,10 @@ exports.asqconsentpost = function (req, res, next) {
       'INSERT INTO formresponse(form_id, company_id) VALUES(10, $1) RETURNING response_id',
       [companyDetails.company_id]
     );
+    let profileUpdate = await db.none(
+      'UPDATE company SET last_modified = to_timestamp($1 / 1000.0) WHERE company_name = $2',
+      [Date.now(), companyDetails.company_name]
+    );
 
     return { companyDetails, insertForm };
   })
@@ -1919,6 +1957,10 @@ exports.annualreportpost = function (req, res, next) {
     const insertForm = await t.one(
       'INSERT INTO formresponse(form_id, company_id) values (8, $1) returning response_id',
       [companyAccount.company_id]
+    );
+    let profileUpdate = await db.none(
+      'UPDATE company SET last_modified = to_timestamp($1 / 1000.0) WHERE company_name = $2',
+      [Date.now(), companyAccount.company_name]
     );
 
     return { companyAccount, insertForm };

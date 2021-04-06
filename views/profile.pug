@@ -12,22 +12,26 @@ block content
                 li 
                     a(href=`/${userinfo.company_id}/staffMembers` class='is-italic') Staff Members
         div(class='columns is-mobile is-centered is-multiline')
-            div(class="column is-narrow")
+            div(class="column")
                 section(class="section")
                     if userinfo
+                        - let modifiedDate = new Date(userinfo.last_modified.toString());
+                        - const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                        - modifiedDate = modifiedDate.toLocaleDateString(undefined, options);
                         h1(class='has-text-centered has-text-weight-bold is-size-2')=userinfo.username + "'s Profile"
-                    div(class="column is-half")
                         p(class='has-text-weight-bold') User Account E-Mail:
                         a(href=`mailto:${userinfo.email}`)
                             p=userinfo.email
                         br
-                        p Profile Last Updated: 
-                            p=userinfo.last_updated
+                        p Company's Last Form Submission:
+                            p=modifiedDate
                         br
-                        p Assigned Company:
-                            a(href=`/company/${userinfo.company_id}`)
-                                p=userinfo.company_name
-                                img(src=`/uploads/${userinfo.logo}`)
+                        h3(class='is-italic') Assigned Company:
+                        p(class='mt-2 has-text-weight-bold')=userinfo.company_name
+                        figure(class='image is-128x128')
+                            img(src=`/uploads/${userinfo.logo}` alt=userinfo.company_name)
+                    else 
+                        h1 No user information found. Please try again or submit a support ticket.
             div(class='column is-narrow')
                 div(class='column is-narrow')
                     section(class='section')
@@ -38,6 +42,7 @@ block content
                                 tr
                                     th Form Name
                                     th #{currentYear}
+                                    th Due Date
                             tbody
                                 tr 
                                     td 
@@ -48,6 +53,18 @@ block content
                                             td ✓
                                         else 
                                             td  
+                                    td
+                                        p January 7th #{nextYear}
+                                tr 
+                                    td
+                                        p(class='has-text-weight-bold') ASQ Welligent Form 
+                                    if todaysDate 
+                                        if todaysDate === "Yes"
+                                            td ✓
+                                        else 
+                                            td  
+                                    td 
+                                        p November 5, #{currentYear}
                                 tr 
                                     td 
                                         a(class='is-link' href='/forms/asqconsent')
@@ -57,6 +74,8 @@ block content
                                             td ✓
                                         else 
                                             td  
+                                    td 
+                                        p November 5, #{currentYear}
                                 tr 
                                     td 
                                         a(class="is-link" href='/forms/ipdp')
@@ -66,6 +85,8 @@ block content
                                             td ✓
                                         else 
                                             td 
+                                    td 
+                                        p December 3, #{currentYear}
                                 tr  
                                     td
                                         a(class='is-link' href='/forms/qiaprogress')
@@ -75,6 +96,8 @@ block content
                                             td ✓
                                         else
                                             td
+                                    td 
+                                        p May 7, #{currentYear}
                                 tr
                                     td
                                         a(class='is-link' href='/forms/qiaoutcome')
@@ -84,6 +107,8 @@ block content
                                             td ✓
                                         else
                                             td
+                                    td 
+                                        p December 3, #{currentYear}
                                 tr
                                     td
                                         a(class='is-link' href='/forms/qiabudget')
@@ -93,6 +118,8 @@ block content
                                                 td ✓
                                             else
                                                 td
+                                    td 
+                                        p February 4, #{nextYear}
                                 tr
                                     td
                                         a(class='is-link' href='/forms/qiacenterimprovement')
@@ -102,6 +129,8 @@ block content
                                                 td ✓
                                             else
                                                 td
+                                    td 
+                                        p February 4, #{nextYear}
                                 tr
                                     td
                                         a(class='is-link' href='/forms/staffmeetingtracker')
@@ -111,6 +140,8 @@ block content
                                                 td ✓
                                             else
                                                 td
+                                    td 
+                                        p December 3, #{currentYear}
                                 tr 
                                     td 
                                         a(class='is-link' href='/forms/ececredittracking')
@@ -120,6 +151,8 @@ block content
                                                 td ✓
                                             else 
                                                 td
+                                    td 
+                                        p August 6, #{currentYear}
                                 
                 div(class='column is-narrow')
                     section(class='section')
