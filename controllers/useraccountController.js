@@ -160,10 +160,13 @@ exports.profile = async function (req, res, next) {
       "SELECT f.form_id, f.company_id, f.response_id, TO_CHAR(f.date_submitted :: DATE,'yyyy-mm-dd'), f2.form_name from formresponse f INNER JOIN forms f2 on f.form_id = f2.form_id WHERE f.company_id = $1 ORDER BY date_submitted DESC LIMIT 5",
       [accountInfo.company_id]
     );
-    return { accountInfo, recentForms };
+    const submittedForms = await t.any(
+      'select (form_id, date_submitted) from formresponse where company_id = $1',
+      [accountInfo.company_id]
+    );
+    return { accountInfo, recentForms, submittedForms };
   })
     .then((data) => {
-      console.log(recentForms.length);
       // We need to compare the form submitted date to our date today to determine if completed.
       // First we need to see if to_char exists and then decalre the forms date as a date variable
       if (recentForms.length > 0) {
@@ -174,6 +177,8 @@ exports.profile = async function (req, res, next) {
 
       // now we declare todays date as a variable
       let todaysDate = new Date();
+
+      // logic will be here to determine if a form is submitted in the apropriate time
 
       // Then we do our comparisons.
       if (formDate <= todaysDate) {
@@ -188,6 +193,7 @@ exports.profile = async function (req, res, next) {
         title: `${req.params.username}'s Profile`,
         userinfo: accountInfo,
         user: req.user,
+        submittedForms: data.submittedForms,
         currentYear,
         nextYear,
         previousYear,
