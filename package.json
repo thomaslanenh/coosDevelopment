@@ -6,7 +6,7 @@
     "css-build": "node-sass --omit-source-map-url sass/mystyles.scss public/stylesheets/mystyles.css",
     "css-watch": "npm run css-build -- --watch",
     "watch-code": "nodemon ./bin/www",
-    "start": "node ./bin/www & npm run css-watch",
+    "start": "node ./bin/www",
     "start:dev": "npm run watch-code & npm run css-watch"
   },
   "dependencies": {
