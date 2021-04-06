@@ -1,0 +1,101 @@
+extends layout 
+
+block content
+    section(class='section' style="flex: 1 0 auto;")
+        div(class='columns is-mobile is-centered is-multiline')
+            div(class='column is-full')
+                h1(class='has-text-centered has-text-weight-bold is-size-2') ASQ #{currentYear} CONSENT REPORTING FORM
+            div(class="column is-full has-text-centered")
+                h3(class='is-italic has-text-centered is-size-4') #{companyDetails.company_name}
+            div(class='column is-full has-text-centered')
+                p(class='has-text-weight-bold is-italic is-size-4') Director Name: 
+                p #{companyDetails.first_name} #{companyDetails.last_name}
+                p(class='is-italic pt-2 help') If the above information is wrong, please submit a support ticket.
+        div(class='columns is-mobile is-centered is-multiline mt-5')
+            div(class='columns is-mobile is-responsive is-multiline is-5')
+                    form(action='' method='POST' class='js-form')
+                        div(class='column is-full')
+                            label(class='label') Date
+                            input(type='date' name='245' class='input' required)
+                        div(class='column is-full')
+                            label(class='label') Total Number of Children Enrolled in Program 
+                            input(type='number' min='0' placeholder='0' class='input' name='226' required)
+                        div(class='column is-full')
+                            label(class='label') Number of Children Enrolled: Coos 
+                            input(type='number' min='0' placeholder='0' class='input' name='227' required)
+                        div(class='column is-full')
+                            label(class='label') Number of Children Enrolled: Out of Coos 
+                            input(type='number' min='0' placeholder='0' class='input' name='228' required)
+                        div(class='column is-full')
+                            label(class='label') Number of ASQ's Consent Forms Distributed to Families 
+                            input(type='number' min='0' placeholder='0' class='input' name='229' required)
+                        div(class='column is-full')
+                            label(class='label') Number of ASQ Consent Forms Returned to Program 
+                            input(type='number' min='0' placeholder='0' class='input' name='230' required)
+                        div(class='column is-full')
+                            label(class='label') Percentage of Consent Forms Returned to Program 
+                            input(type='number' min='0' max='100' placeholder='0' class='input' name='231' required)
+                        div(class='column is-full')
+                            label(class='label') Number of Forms Returned with Consent Given to Enter Welligent 
+                            input(type='number' min='0' placeholder='0' class='input' name='232' required)
+                        div(class='column is-full')
+                            label(class='label') Number of Forms Returned with Consent Denied to Enter Welligent 
+                            input(type='number' min='0' placeholder='0' class='input' name='233' required)
+                        div(class='column is-full')
+                            label(class='label') Number of Forms Returned with Consent Denied because Done Elsewhere 
+                            input(type='number' min='0' placeholder='0' class='input' name='234' required)
+                        div(class='column is-full')
+                            label(class='label') Number of Consent Forms Not Returned 
+                            input(type='number' min='0' placeholder='0' class='input' name='235' required)
+                        div(class='column is-full')
+                            label(class='label') Number of ASQ's Distributed to Families 
+                            input(type='number' min='0' placeholder='0' class='input' name='236' required)
+                        div(class='column is-full')
+                            label(class='label') Number of ASQ SE's Distributed to Families 
+                            input(type='number' min='0' placeholder='0' class='input' name='237' required)
+                        div(class='column is-full')
+                            label(class='label') Number of ASQ's Completed: Coos 
+                            input(type='number' min='0' placeholder='0' class='input' name='238' required)
+                        div(class='column is-full')
+                            label(class='label') Number of ASQ SE's Completed: Coos 
+                            input(type='number' min='0' placeholder='0' class='input' name='239' required)
+                        div(class='column is-full')
+                            label(class='label') Number of ASQ's Completed: Out of Coos 
+                            input(type='number' min='0' placeholder='0' class='input' name='240' required)
+                        div(class='column is-full')
+                            label(class='label') Number of ASQ SE's Completed: Out of Coos 
+                            input(type='number' min='0' placeholder='0' class='input' name='241' required)
+                        div(class='column is-full')
+                            label(class='label') Number of ASQ's Not Returned to Program 
+                            input(type='number' min='0' placeholder='0' class='input' name='242' required)
+                        div(class='column is-full')
+                            label(class='label') Number of ASQ Se's Not Returned to Program 
+                            input(type='number' min='0' placeholder='0' class='input' name='243' required)
+                        div(class='column is-full')
+                            label(class='label') 50% Return of ASQ Consents Required Met?
+                            div(class='control')
+                                label(class='radio') 
+                                    input(type='radio' name=`244` value='yes' required)
+                                    p Met
+                                label(class='radio pl-5')
+                                    input(type='radio' name=`244` value='no')
+                                    p Unmet
+                        div(class='column is-full mt-6 mb-6')
+                            div(class='field')
+                                button(type='submit' class='button is-primary') Submit Form
+                                button(type='button' class='ml-5 button is-info js-button' ) Save Form Data
+                                button(type='button' class='ml-5 button is-danger js-clearbutton' ) Clear Form Data
+    script(src='https://unpkg.com/form-storage@1.2.0/build/form-storage.js')
+    script. 
+        var formStorage = new FormStorage('.js-form');
+        formStorage.apply();
+        var button = document.querySelector('.js-button');
+        var button2 = document.querySelector('.js-clearbutton')
+        button.addEventListener('click', function(){
+            formStorage.save();
+            location.reload(true);
+        });
+        button2.addEventListener('click', function(){
+            formStorage.clear();
+            location.reload(true);
+        })

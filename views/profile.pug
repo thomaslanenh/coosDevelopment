@@ -50,8 +50,17 @@ block content
                                             td  
                                 tr 
                                     td 
+                                        a(class='is-link' href='/forms/asqconsent')
+                                            p(class='has-text-weight-bold') ASQ Consent Reporting Form 
+                                    if todaysDate 
+                                        if todaysDate === "Yes"
+                                            td ✓
+                                        else 
+                                            td  
+                                tr 
+                                    td 
                                         a(class="is-link" href='/forms/ipdp')
-                                            p(class='has-text-weight-bold') #{currentYear} IPDP Reporting
+                                            p(class='has-text-weight-bold') IPDP Reporting Form
                                     if todaysDate 
                                         if todaysDate === 'Yes'
                                             td ✓

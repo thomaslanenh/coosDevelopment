@@ -230,6 +230,14 @@ router.post(
   formcreate_controller.staffmeetingtrackerpost
 );
 
+// ASQ Consent Form
+router.get(
+  '/forms/asqconsent',
+  ensureAuthentication,
+  formcreate_controller.asqconsent
+);
+router.post('/forms/asqconsent', formcreate_controller.asqconsentpost);
+
 // ece credit tracking
 router.get(
   '/forms/ececredittracking',

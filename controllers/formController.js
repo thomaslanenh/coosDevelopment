@@ -1755,6 +1755,122 @@ exports.ipdippost = function (req, res, next) {
     });
 };
 
+// ASQ Consent Form
+exports.asqconsent = function (req, res, next) {
+  db.tx(async (t) => {
+    const companyDetails = await t.one(
+      'SELECT u.company_id, c.company_name, c.first_name, c.last_name, c.town FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1',
+      [req.user.user]
+    );
+
+    return { companyDetails };
+  })
+    .then((results) => {
+      res.render('./forms/asqconsent.pug', {
+        companyDetails: results.companyDetails,
+        currentYear,
+        previousYear,
+        nextYear,
+        user: req.user,
+      });
+    })
+    .catch((e) => {
+      if (e) {
+        req.flash(
+          'error',
+          'An error has occured. Please try again or submit a support ticket.'
+        );
+        res.redirect('/');
+      }
+    });
+};
+
+exports.asqconsentpost = function (req, res, next) {
+  db.tx(async (t) => {
+    const companyDetails = await t.one(
+      'SELECT u.company_id, c.company_name, c.first_name, c.last_name, c.town FROM company c INNER JOIN useraccount u on c.id= u.company_id WHERE u.username = $1',
+      [req.user.user]
+    );
+    const insertForm = await t.one(
+      'INSERT INTO formresponse(form_id, company_id) VALUES(10, $1) RETURNING response_id',
+      [companyDetails.company_id]
+    );
+
+    return { companyDetails, insertForm };
+  })
+    .then((response) => {
+      const cs = new pgp.helpers.ColumnSet(
+        [
+          {
+            name: 'attrib_id',
+          },
+          {
+            name: 'value',
+          },
+          {
+            name: 'response_id',
+          },
+        ],
+        {
+          table: 'formquestionresponse',
+        }
+      );
+
+      let values = [
+        {
+          attrib_id: 224,
+          value: response.companyDetails.company_name,
+          response_id: response.insertForm.response_id,
+        },
+        {
+          attrib_id: 225,
+          value:
+            response.companyDetails.first_name +
+            ' ' +
+            response.companyDetails.last_name,
+          response_id: response.insertForm.response_id,
+        },
+      ];
+
+      let x = 226;
+
+      while (x <= 245) {
+        values.push({
+          attrib_id: x,
+          value: req.body[x],
+          response_id: response.insertForm.response_id,
+        });
+
+        x++;
+      }
+
+      // for (const field in datahome) {
+      //   values.push({
+      //     attrib_id: parseInt(field),
+      //     value: req.body[field],
+      //   });
+      // }
+
+      console.log(values);
+
+      const query = pgp.helpers.insert(values, cs);
+      const recordsResponse = db.none(query);
+
+      req.flash('info', 'Thank you for your form submission.');
+      res.redirect('/thanks');
+    })
+    .catch((e) => {
+      if (e) {
+        console.log(e);
+        req.flash(
+          'error',
+          'An error has occured. Please try again or submit a support ticket.'
+        );
+        res.redirect('/');
+      }
+    });
+};
+
 // Annual Report
 
 exports.annualreport = function (req, res, next) {
