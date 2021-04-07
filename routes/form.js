@@ -98,6 +98,10 @@ router.get(
   support_controller.messagedetail
 );
 router.post('/messages/:messageid', support_controller.messagedetailpost);
+
+// route to change due dates on forms
+router.get('/duedates', administratorCheck, useraccount_controller.duedate);
+
 // Route to Create a Company
 router.get(
   '/createcompany',

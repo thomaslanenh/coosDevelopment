@@ -19,6 +19,42 @@ exports.logout = function (req, res, next) {
   res.redirect('/');
 };
 
+exports.duedate = function (req, res, next) {
+  db.tx(async (t) => {
+    const dueDates = await t.any(
+      'SELECT form_name, id, duedate FROM formduedate INNER JOIN forms on form_reference = form_id ORDER BY form_name ASC'
+    );
+
+    return { dueDates };
+  })
+    .then((data) => {
+      res.render('duedates', { duedates: data.dueDates, user: req.user });
+    })
+    .catch((e) => {
+      if (e) {
+        console.log(e);
+        req.flash(
+          'error',
+          'An error has occured. Please try again or submit a support ticket.'
+        );
+        res.redirect('/');
+      }
+    });
+};
+
+exports.duedatepost = function (req, res, next) {
+  db.tx(async (t) => {
+    const dueDates = await t.any(
+      'SELECT form_name, id, duedate FROM formduedate INNER JOIN forms on form_reference = form_id ORDER BY form_name ASC'
+    );
+    // finish this!
+    const updateDue = await t.none(
+      'UPDATE formduedate SET duedate = $1 WHERE id = $2',
+      [req.body.company_id]
+    );
+  });
+};
+
 exports.signup = function (req, res) {
   db.tx(async (t) => {
     const companys = await t.any('SELECT company_name, id FROM company');
@@ -156,15 +192,22 @@ exports.profile = async function (req, res, next) {
       'SELECT * from useraccount INNER JOIN company on useraccount.company_id = company.id WHERE username = $1',
       [req.params.username]
     );
+
     recentForms = await t.any(
       "SELECT f.form_id, f.company_id, f.response_id, TO_CHAR(f.date_submitted :: DATE,'yyyy-mm-dd'), f2.form_name from formresponse f INNER JOIN forms f2 on f.form_id = f2.form_id WHERE f.company_id = $1 ORDER BY date_submitted DESC LIMIT 5",
       [accountInfo.company_id]
     );
+
     const submittedForms = await t.any(
       'select (form_id, date_submitted) from formresponse where company_id = $1',
       [accountInfo.company_id]
     );
-    return { accountInfo, recentForms, submittedForms };
+
+    const dueDates = await t.any(
+      'SELECT form_reference, form_name, link, duedate from formduedate INNER JOIN forms on form_reference = form_id ORDER BY form_name ASC'
+    );
+
+    return { accountInfo, recentForms, submittedForms, dueDates };
   })
     .then((data) => {
       // We need to compare the form submitted date to our date today to determine if completed.
@@ -180,7 +223,8 @@ exports.profile = async function (req, res, next) {
 
       // logic will be here to determine if a form is submitted in the apropriate time
 
-      // Then we do our comparisons.
+      const duedatearray = [];
+
       if (formDate <= todaysDate) {
         console.log('Yes');
         todaysDate = 'Yes';
@@ -194,6 +238,7 @@ exports.profile = async function (req, res, next) {
         userinfo: accountInfo,
         user: req.user,
         submittedForms: data.submittedForms,
+        dueDates: data.dueDates,
         currentYear,
         nextYear,
         previousYear,

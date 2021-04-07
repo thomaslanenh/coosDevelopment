@@ -1,7 +1,7 @@
 extends layout
 
 block content
-    -console.log(submittedForms)
+    -console.log(dueDates['7'])
     section(class="main-content columns is-fullheight" style="flex: 1 0 auto; padding: 20px;")
         aside(class="column is-2 is-narrow-mobile is-fullheight section")
             p(class="menu-label") Dashboard
@@ -45,116 +45,25 @@ block content
                                     th #{currentYear}
                                     th Due Date
                             tbody
-                                tr 
-                                    td 
-                                        a(class='is-link' href='/forms/annualreport')
-                                            p(class='has-text-weight-bold') #{currentYear} Annual Report 
-                                    if todaysDate
-                                        if todaysDate === "Yes"
-                                            td ✓
-                                        else 
-                                            td  
-                                    td
-                                        p January 7th #{nextYear}
-                                tr 
-                                    td
-                                        p(class='has-text-weight-bold') ASQ Welligent Form 
-                                    if todaysDate 
-                                        if todaysDate === "Yes"
-                                            td ✓
-                                        else 
-                                            td  
-                                    td 
-                                        p November 5, #{currentYear}
-                                tr 
-                                    td 
-                                        a(class='is-link' href='/forms/asqconsent')
-                                            p(class='has-text-weight-bold') ASQ Consent Reporting Form 
-                                    if todaysDate 
-                                        if todaysDate === "Yes"
-                                            td ✓
-                                        else 
-                                            td  
-                                    td 
-                                        p November 5, #{currentYear}
-                                tr 
-                                    td 
-                                        a(class="is-link" href='/forms/ipdp')
-                                            p(class='has-text-weight-bold') IPDP Reporting Form
-                                    if todaysDate 
-                                        if todaysDate === 'Yes'
-                                            td ✓
-                                        else 
+                                if dueDates
+                                    each form in dueDates 
+                                        -let formdue = new Date(form.duedate)
+                                        - const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                                        -formdue = formdue.toLocaleDateString(undefined, options);
+                                        tr 
                                             td 
-                                    td 
-                                        p December 3, #{currentYear}
-                                tr  
-                                    td
-                                        a(class='is-link' href='/forms/qiaprogress')
-                                            p(class='has-text-weight-bold') QIA Progress Report Form
-                                    if todaysDate
-                                        if todaysDate === "Yes"
-                                            td ✓
-                                        else
-                                            td
-                                    td 
-                                        p May 7, #{currentYear}
-                                tr
-                                    td
-                                        a(class='is-link' href='/forms/qiaoutcome')
-                                            p(class='has-text-weight-bold') QIA Outcome Reporting Form
-                                    if todaysDate
-                                        if todaysDate === 'Yes'
-                                            td ✓
-                                        else
-                                            td
-                                    td 
-                                        p December 3, #{currentYear}
-                                tr
-                                    td
-                                        a(class='is-link' href='/forms/qiabudget')
-                                            p(class='has-text-weight-bold') QIA Detailed Budget Form
-                                        if todaysDate
-                                            if todaysDate === 'Yes'
-                                                td ✓
-                                            else
-                                                td
-                                    td 
-                                        p February 4, #{nextYear}
-                                tr
-                                    td
-                                        a(class='is-link' href='/forms/qiacenterimprovement')
-                                            p(class='has-text-weight-bold') QIA Center Improvement Plan Form
-                                        if todaysDate
-                                            if todaysDate === 'Yes'
-                                                td ✓
-                                            else
-                                                td
-                                    td 
-                                        p February 4, #{nextYear}
-                                tr
-                                    td
-                                        a(class='is-link' href='/forms/staffmeetingtracker')
-                                            p(class='has-text-weight-bold') DN Staff Meeting Tracker Form
-                                        if todaysDate
-                                            if todaysDate === 'Yes'
-                                                td ✓
-                                            else
-                                                td
-                                    td 
-                                        p December 3, #{currentYear}
-                                tr 
-                                    td 
-                                        a(class='is-link' href='/forms/ececredittracking')
-                                            p(class='has-text-weight-bold') ECE Credit Tracking Form 
-                                        if todaysDate 
-                                            if todaysDate === 'Yes'
-                                                td ✓
-                                            else 
-                                                td
-                                    td 
-                                        p August 6, #{currentYear}
-                                
+                                                a(class='is-link' href=form.link)
+                                                    p(class='has-text-weight-bold')=form.form_name
+                                            if todaysDate 
+                                                if todaysDate === 'Yes'
+                                                    td OK 
+                                                else 
+                                                    td 
+                                            td 
+                                                p=formdue
+                                else 
+                                    tr 
+                                        p No Forms found, please refresh or submit a support ticket.
                 div(class='column is-narrow')
                     section(class='section')
                         h3(class='has-text-weight-semibold has-text-centered is-size-5') Recently Completed Forms:
