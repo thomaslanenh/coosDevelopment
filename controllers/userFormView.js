@@ -8,13 +8,14 @@ exports.index = async function (req, res, next) {
   await db
     .any(
       `select f4.attrib_id, c.company_name, f3.attribute_name, f4.value, f4.staff_id 
-            from company c 
-            inner join formresponse f on c.id = f.company_id 
-            inner join forms f2 on f.form_id = f2.form_id 
-            inner join formquestion f3 on f2.form_id = f3.form_id 
-            inner join formquestionresponse f4 on f3.attrib_id  = f4.attrib_id 
-            where f.company_id = $1 AND f.form_id = $2 AND f.response_id = $3 AND f4.response_id = $3
-            order by min(f4.attrib_id) over (partition by f4.staff_id), f4.staff_id, f4.attrib_id`,
+      from company c 
+      inner join formresponse f on c.id = f.company_id 
+      inner join forms f2 on f.form_id = f2.form_id 
+      inner join formquestion f3 on f2.form_id = f3.form_id 
+      inner join formquestionresponse f4 on f3.attrib_id  = f4.attrib_id 
+      where f.company_id = $1 AND f.form_id = $2 AND f.response_id = $3 AND f4.response_id = $3
+      order by min(f4.attrib_id) over (partition by f4.staff_id), f4.staff_id , f4.attrib_id
+`,
       [
         parseInt(req.params.companyid),
         parseInt(req.params.formid),
