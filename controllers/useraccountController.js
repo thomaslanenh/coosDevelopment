@@ -7,9 +7,20 @@ const app = require('../app');
 const db = require('../db');
 var { body, validationResult } = require('express-validator');
 const { errors } = require('pg-promise');
+const pgPromise = require('pg-promise');
 var currentYear = new Date().getFullYear();
 var previousYear = new Date().getFullYear() - 1;
 var nextYear = new Date().getFullYear() + 1;
+var isEmpty = require('lodash.isempty');
+const { ColumnSet } = require('pg-promise');
+const { NULL } = require('node-sass');
+var todaysDate = new Date();
+
+const pgp = require('pg-promise')({
+  /* initialization options */
+  capSQL: true, // capitalize all generated SQL
+});
+
 exports.index = function (req, res) {
   res.render('login', { title: 'Login', user: req.user, currentYear });
 };
@@ -24,7 +35,6 @@ exports.duedate = function (req, res, next) {
     const dueDates = await t.any(
       'SELECT form_name, id, duedate FROM formduedate INNER JOIN forms on form_reference = form_id ORDER BY form_name ASC'
     );
-
     return { dueDates };
   })
     .then((data) => {
@@ -47,11 +57,39 @@ exports.duedatepost = function (req, res, next) {
     const dueDates = await t.any(
       'SELECT form_name, id, duedate FROM formduedate INNER JOIN forms on form_reference = form_id ORDER BY form_name ASC'
     );
-    // finish this!
-    const updateDue = await t.none(
-      'UPDATE formduedate SET duedate = $1 WHERE id = $2',
-      [req.body.company_id]
-    );
+
+    return {dueDates};
+  }).then(data => {
+
+    const dataMulti = [];
+
+    data.dueDates.map(date => {
+      dataMulti.push(
+        {
+          id: date.id,
+          duedate: req.body[`${date.id}`]
+        }
+      );
+      return dataMulti;
+    })
+
+    console.log(dataMulti)
+
+    const cs = new pgp.helpers.ColumnSet(['?id', 'duedate'], {table: 'formduedate'});
+  
+
+    const query = pgp.helpers.update(dataMulti, cs) + 'WHERE v.id = t.id';
+  
+    const recordsResponse = db.none(query);
+
+    req.flash('info', 'Thank you for updating the form due dates!');
+    res.redirect('/thanks')
+  }).catch(e => {
+    if (e) {
+      console.log(e);
+      req.flash('error', 'An error has occured. Please try again.');
+      res.redirect('/');
+    }
   });
 };
 
@@ -184,58 +222,34 @@ exports.companyhome = function (req, res, next) {
 };
 
 exports.profile = async function (req, res, next) {
-  let accountInfo = {};
-  let recentForms = {};
+  
 
   db.tx(async (t) => {
-    accountInfo = await t.one(
+    const accountInfo = await t.one(
       'SELECT * from useraccount INNER JOIN company on useraccount.company_id = company.id WHERE username = $1',
       [req.params.username]
     );
 
-    recentForms = await t.any(
+    const recentForms = await t.any(
       "SELECT f.form_id, f.company_id, f.response_id, TO_CHAR(f.date_submitted :: DATE,'yyyy-mm-dd'), f2.form_name from formresponse f INNER JOIN forms f2 on f.form_id = f2.form_id WHERE f.company_id = $1 ORDER BY date_submitted DESC LIMIT 5",
       [accountInfo.company_id]
     );
 
     const submittedForms = await t.any(
-      'select (form_id, date_submitted) from formresponse where company_id = $1',
+      'select DISTINCT ON (form_id) form_id, date_submitted from formresponse where company_id = $1 ORDER BY form_id, date_submitted desc',
       [accountInfo.company_id]
     );
 
     const dueDates = await t.any(
-      'SELECT form_reference, form_name, link, duedate from formduedate INNER JOIN forms on form_reference = form_id ORDER BY form_name ASC'
+      'SELECT id, form_reference, form_name, link, duedate from formduedate INNER JOIN forms on form_reference = form_id ORDER BY form_name ASC'
     );
 
     return { accountInfo, recentForms, submittedForms, dueDates };
   })
     .then((data) => {
-      // We need to compare the form submitted date to our date today to determine if completed.
-      // First we need to see if to_char exists and then decalre the forms date as a date variable
-      if (recentForms.length > 0) {
-        formDate = new Date(recentForms[0].to_char);
-      } else {
-        formDate = '2120-01-12';
-      }
-
-      // now we declare todays date as a variable
-      let todaysDate = new Date();
-
-      // logic will be here to determine if a form is submitted in the apropriate time
-
-      const duedatearray = [];
-
-      if (formDate <= todaysDate) {
-        console.log('Yes');
-        todaysDate = 'Yes';
-      } else {
-        console.log('no');
-        todaysDate = 'No';
-      }
-
       res.render('profile', {
         title: `${req.params.username}'s Profile`,
-        userinfo: accountInfo,
+        userinfo: data.accountInfo,
         user: req.user,
         submittedForms: data.submittedForms,
         dueDates: data.dueDates,
@@ -243,7 +257,7 @@ exports.profile = async function (req, res, next) {
         nextYear,
         previousYear,
         todaysDate,
-        recentForms,
+        recentForms: data.recentForms,
       });
     })
     .catch((error) => {
