@@ -11,6 +11,20 @@ block content
                             div(style='field')
                                 label(class='label')=company.attribute_name
                                 div(class='control')
-                                    input(readonly class='input' type='text' value=company.value style='width:100%;margin:-3px;border:2px inset #eee')
+                                -let dateparse = Date.parse(company.value)
+                                -if (!isNaN(dateparse)){dateparse = dateparse} else {dateparse = null}
+                                -console.log(dateparse)
+                                    if dateparse === 1609459200000
+                                        label(class='label')
+                                            p(class='help') Make sure new value is in the same format of YYYY
+                                        input(class='input' type='text' value=company.value name=company.attrib_id)
+                                    else if dateparse
+                                        label(class='label')
+                                            p(class='help') Make sure new value is in the same format of MM/DD/YYYY
+                                        input(class='input' type='date' value=company.value name=company.attrib_id)
+                                    else if company.value.length > 101
+                                        textarea(rows='20' class='textarea' name=company.attrib_id )=company.value
+                                    else
+                                        input(class='input' type='text' value=company.value name=company.attrib_id style='width:100%;margin:-3px;border:2px inset #eee')
                             br
-                    button(type='Submit' class='button') View PDF
+                    button(type='Submit' class='button is-primary') View PDF

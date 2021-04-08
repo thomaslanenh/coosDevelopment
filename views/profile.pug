@@ -51,21 +51,30 @@ block content
                                         -let formdue = new Date(form.duedate.replace(/-/g, '\/'))
                                         - const options = { year: 'numeric', month: 'long', day: 'numeric' };
                                         -formdue = formdue.toLocaleDateString(undefined, options);
-                                        tr 
-                                            td 
-                                                a(class='is-link' href=form.link)
-                                                    p(class='has-text-weight-bold')=form.form_name
-                                            each dateform in submittedForms 
-                                                -let formsubmitdate = new Date(dateform.date_submitted);
-                                                -const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                                                -formsubmitdate = formsubmitdate.toLocaleDateString(undefined, options);
-                                                if dateform.form_id === form.form_reference && formsubmitdate <= formdue
-                                                    td
-                                                        p(class='has-text-centered has-font-weight-bold') ✓
-                                                else 
-                                                    td 
-                                            td 
-                                                p=formdue
+                                        if form.form_name === 'Strengthening Families'
+                                            tr 
+                                                td 
+                                                    a(class='is-link' href=form.link)
+                                                        p(class='has-text-weight-bold')=form.form_name 
+                                                td 
+                                                    p(class='help is-italic has-text-weight-bold has-text-centered') --
+                                                td 
+                                                    p=formdue
+                                        else
+                                            tr 
+                                                td 
+                                                    a(class='is-link' href=form.link)
+                                                        p(class='has-text-weight-bold')=form.form_name
+                                                td
+                                                    each dateform in submittedForms 
+                                                        -let formsubmitdate = new Date(dateform.date_submitted);
+                                                        -const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                                                        -formsubmitdate = formsubmitdate.toLocaleDateString(undefined, options);
+                                                        if dateform.form_id === form.form_reference && formsubmitdate <= formdue
+                                                                p(class='has-text-centered has-font-weight-bold') ✓
+                                                        
+                                                td 
+                                                    p=formdue
                                 else 
                                     tr 
                                         p No Forms found, please refresh or submit a support ticket.
