@@ -1,31 +1,45 @@
 extends layout
 
 block content
+    script(type='text/javascript').
+        function deleteConfirm() {
+        if (confirm('Are you sure you want to delete this form?')){
+            return next();
+        } else {
+            return false;
+        }}
     section(style="flex: 1 0 auto; padding: 20px;")
         div(class='columns is-multiline is-mobile is-centered')
-            div(class='column is-half')
+            div(class='box has-text-centered mt-5')
                 form(action='/formdownloads/form.pdf')
+                    button(type='submit' class='button is-info mb-5' formaction='/formdownloads/form.pdf') View & Print PDF
+                p(class='help') See something wrong with this form?
+                p(class='help is-italic') #[a(href='/support') Submit a Support Ticket]
+            div(class='column is-halfmt-6 is-centered mt-5')
+                form(action='' method='post')
                     h1(class='has-text-centered has-text-weight-bold')= companyForm[0].company_name
+                    h2(class='has-text-centered has-text-weight-bold is-italic mb-5')=companyForm[0].form_name
                     div(class='column is-mobile is-multiline' id='form')
                         for company in companyForm
                             -console.log(company)
                             div(style='field')
                                 label(class='label')=company.attribute_name
                                 div(class='control')
-                                    //- -let dateparse = Date.parse(company.value)
-                                    //- -if (!isNaN(dateparse)){dateparse = dateparse} else {dateparse = null}
-                                    //- -console.log(dateparse)
-                                    //- if dateparse === 1609459200000
-                                    //-     label(class='label')
-                                    //-         p(class='help') Make sure new values is in the same format of YYYY
-                                    //-     input(class='input' type='text' value=company.value name=company.attrib_id)
-                                    //- else if dateparse
-                                    //-     label(class='label')
-                                    //-         p(class='help') Make sure new value is in the same format of MM/DD/YYYY
-                                    //-     input(class='input' type='date' value=company.value name=company.attrib_id)
-                                    if company.value.length > 101
+                                    if company.attribute_name.toLowerCase().includes('year')
+                                        label(class='label')
+                                            p(class='help') Make sure new values is in the same format of YYYY
+                                        input(class='input' type='text' value=company.value name=company.attrib_id)
+                                    else if company.attribute_name.toLowerCase().includes('date')
+                                        label(class='label')
+                                            p(class='help') Make sure new value is in the same format of MM/DD/YYYY
+                                        input(class='input' type='date' value=company.value name=company.attrib_id)
+                                    else if company.value.length > 101
                                         textarea(rows='20' class='textarea' name=company.attrib_id )=company.value
+                                    else if company.attribute_name.toLowerCase().includes('number')
+                                        input(class='input' type='number' min=0 value=company.value name=company.attrib_id)
                                     else
                                         input(class='input' type='text' value=company.value name=company.attrib_id style='width:100%;margin:-3px;border:2px inset #eee')
                             br
-                    button(type='Submit' class='button is-primary') View PDF
+                    div(class='field is-grouped')
+                        button(type='submit' class='button is-primary is-outlined mb-4 mr-5' name='formSubmit' value='updateForm') Update Form
+                        button(type='submit' class='button is-danger' name='formSubmit' value="deleteFORM" onclick='if(confirm("Are you sure you want to delete this form?")){} else {return false;};') Delete Form

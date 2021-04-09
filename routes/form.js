@@ -254,6 +254,7 @@ router.post(
   '/forms/ececredittracking',
   formcreate_controller.ececredittrackingpost
 );
+
 // FORM POST SECTION
 
 // form submit thank you page
@@ -266,6 +267,14 @@ router.get(
   '/:username/forms/:companyid/:formid/:formresponseid',
   ensureAuthentication,
   userformview_controller.index
+);
+
+//form user view delete and update
+
+router.post(
+  '/:username/forms/:companyid/:formid/:formresponseid',
+  ensureAuthentication,
+  userformview_controller.indexpost
 );
 
 // form administration view

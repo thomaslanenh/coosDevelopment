@@ -2,12 +2,14 @@ const db = require('../db');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 var currentYear = new Date().getFullYear();
+var previousYear = new Date().getFullYear() - 1;
+var nextYear = new Date().getFullYear() + 1;
 
 exports.index = async function (req, res, next) {
   // queries the DB to return information about the selected form that brought them to this page.
   await db
     .any(
-      `select f4.attrib_id, c.company_name, f3.attribute_name, f4.value, f4.staff_id 
+      `select f4.attrib_id, c.company_name, f2.form_name, f3.attribute_name, f4.value, f4.staff_id 
       from company c 
       inner join formresponse f on c.id = f.company_id 
       inner join forms f2 on f.form_id = f2.form_id 
@@ -29,7 +31,7 @@ exports.index = async function (req, res, next) {
       // create a doc
       const doc = new PDFDocument();
 
-      // set up the file stream for the file
+      // set up the file stream for the file, might need to be randomized?
       doc.pipe(fs.createWriteStream('public/formdownloads/form.pdf'));
 
       // Adds info to the PDF.
@@ -40,19 +42,18 @@ exports.index = async function (req, res, next) {
           align: 'center',
           underline: 'true',
         })
+        .text(results[0].form_name, {
+          align: 'center',
+        })
         .moveDown();
 
-      for (const result in results) {
+      results.map((data) => {
         doc
           .font('Helvetica-Bold')
           .fontSize(8)
-          .text(results[result].attribute_name + ':');
-        doc
-          .font('Helvetica')
-          .fontSize(7)
-          .text(results[result].value)
-          .moveDown();
-      }
+          .text(data.attribute_name + ':');
+        doc.font('Helvetica').fontSize(7).text(data.value).moveDown();
+      });
 
       // ends Doc generation
       doc.end();
@@ -62,6 +63,8 @@ exports.index = async function (req, res, next) {
         companyForm: results,
         user: req.user,
         currentYear,
+        nextYear,
+        previousYear,
       });
     })
     .catch((error) => {
@@ -69,6 +72,17 @@ exports.index = async function (req, res, next) {
         next(error);
       }
     });
+};
+
+exports.indexpost = function (req, res, next) {
+  let inputValue = req.body.formSubmit;
+
+  if (inputValue == 'deleteFORM') {
+    console.log('Delete Hit');
+    res.send('NYI Delete');
+  } else {
+    res.send('NYI Update');
+  }
 };
 
 // view all forms by a company.
