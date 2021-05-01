@@ -1,0 +1,34 @@
+extends layout
+
+block content
+    -console.log(user)
+    section(class='section' style="flex: 1 0 auto;")
+            div(class='columns is-mobile is-centered is-multiline')
+                div(class='column is-full')
+                    h1(class='has-text-centered has-text-weight-bold is-size-2') #{companyForms[0].company_name} Forms
+                div(class="column is-full")
+                    p(class='help has-text-centered') This page lists all forms submitted by #{companyForms[0].company_name}. If you think a form is missing, or you need to request a form that is not shown, please submit a #[a(href="/support") Support Ticket].
+            div(class='columns is-mobile is-centered is-multiline is-half')
+                table(class='table is-bordered is-striped is-narrow is-hoverable')
+                    thead 
+                        tr 
+                            th 
+                                p Company Name 
+                            th 
+                                p Form Name 
+                            th 
+                                p Date Submitted
+                            th
+                                p View
+                    tbody 
+                        each form in companyForms 
+                            tr
+                                td 
+                                    p=form.company_name
+                                td 
+                                    p=form.form_name
+                                td 
+                                    p=form.to_char
+                                td 
+                                    a(class="is-link" href=`/${user.user}/forms/${form.id}/${form.form_id}/${form.response_id}`)
+                                        p View Form

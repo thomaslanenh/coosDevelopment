@@ -1,39 +1,63 @@
 extends layout
 
 block content
-    -console.log(dueDates)
-    -console.log(submittedForms)
+    -console.log(supporttickets)
     section(class="main-content columns is-fullheight" style="flex: 1 0 auto; padding: 20px;")
         aside(class="column is-2 is-narrow-mobile is-fullheight section")
-            p(class="menu-label") Dashboard
+            p(class="menu-label has-text-weight-bold") CCDN Website
             ul(class='menu-list')
                 li
-                    a(href="/" class="is-italic") Home
+                    a(href=`${ccdnLink}` target="_blank" class="is-italic") CCDN Website
+                li 
+                    a(href=`${ccdnLink}/job-posting/` target="_blank"  class='is-italic' ) Submit a Job Posting
+            p(class='menu-label') Form System
+            ul(class='menu-list')
                 li
                     a(href=`/${userinfo.username}/forms/${userinfo.company_id}/all` class='is-italic') Completed Forms
                 li 
                     a(href=`/${userinfo.company_id}/staffMembers` class='is-italic') Staff Members
+                li 
+                    a(href='/messages' class='is-italic') View All Support Messages
+                li 
+                    a(href='/support' class='is-italic') Submit a Ticket
         div(class='columns is-mobile is-centered is-multiline')
             div(class="column")
                 section(class="section")
                     if userinfo
-                        - let modifiedDate = new Date(userinfo.last_modified.toString());
-                        - const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                        - modifiedDate = modifiedDate.toLocaleDateString(undefined, options);
+                       
                         h1(class='has-text-centered has-text-weight-bold is-size-2')=userinfo.username + "'s Profile"
                         p(class='has-text-weight-bold') User Account E-Mail:
                         a(href=`mailto:${userinfo.email}`)
                             p=userinfo.email
                         br
-                        p Company's Last Form Submission:
-                            p=modifiedDate
-                        br
-                        h3(class='is-italic') Assigned Company:
+                        h3(class='is-italic') Company Information:
                         p(class='mt-2 has-text-weight-bold')=userinfo.company_name
                         figure(class='image is-128x128')
                             img(src=`/uploads/${userinfo.logo}` alt=userinfo.company_name)
                     else 
                         h1 No user information found. Please try again or submit a support ticket.
+
+                section(class="section" style="flex: 1 0 auto; padding: 20px;")
+                    div(class='columns is-mobile is-centered is-multiline')
+                        div(class='column is-full')
+                            p(class='help has-text-centered') Please #[a(href="/support") submit a support ticket] to start a conversation or click in to a message below to reply.
+                        div(class='column is-narrow')
+                            if supporttickets.length > 0
+                                table(class='table is-bordered is-hoverable is-striped')
+                                    thead
+                                        th Message:
+                                        th User:
+                                    tbody
+                                        each ticket in supporttickets
+                                            tr
+                                                th
+                                                    a(href=`/messages/${ticket.ticketid}`)
+                                                        p=ticket.subject_title
+                                                th=ticket.username
+                                a(class="is-link" href="/messages") 
+                                    p(class="has-text-centered has-text-weight-bold") View All Messages
+                            else
+                                p(class='has-text-weight-bold has-text-centered is-size-6 is-italic') You Have No Messages
             div(class='column is-narrow')
                 div(class='column is-narrow')
                     section(class='section')

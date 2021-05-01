@@ -278,10 +278,18 @@ router.post(
 );
 
 // form administration view
+
 router.get(
-  '/admin/:companyid/:formid/:formresponseid',
+  '/admin/formbrowser',
   administratorCheck,
   adminformview_controller.index
+);
+
+// form administration individual company viewer
+router.get(
+  '/admin/formviewer/:companyid',
+  administratorCheck,
+  adminformview_controller.formviewer
 );
 
 // view all user forms

@@ -1,60 +1,64 @@
+const db = require('../db');
+
 var currentYear = new Date().getFullYear();
+var previousYear = new Date().getFullYear() - 1;
+var nextYear = new Date().getFullYear() + 1;
 
 exports.index = async function (req, res, next) {
-    await db
-      .any(
-        `select c.company_name, f.form_responses, f3.attribute_name, f4.value 
-              from company c 
-              inner join formresponse f on c.id = f.company_id 
-              inner join forms f2 on f.form_id = f2.form_id 
-              inner join formquestion f3 on f2.form_id = f3.form_id 
-              inner join formquestionresponse f4 on f3.attrib_id  = f4.attrib_id 
-              where f.company_id = $1 and f.form_id = $2 and f.response_id = $3
-              order by f3.attribute_name`,
-        [req.params.companyid, req.params.formid, req.params.formresponseid]
-      )
-      .then((results) => {
-        // create a doc
-        const doc = new PDFDocument();
-  
-        // set up the file stream for the file
-        doc.pipe(fs.createWriteStream("public/formdownloads/form.pdf"));
-  
-        // Adds info to the PDF.
-        doc
-          .font("Helvetica-Bold")
-          .fontSize(8)
-          .text(results[0].company_name, {
-            align: 'center',
-            underline: 'true'
-          })
-          .moveDown();
-  
-        for (const result in results) {
-          doc
-            .font("Helvetica-Bold")
-            .fontSize(8)
-            .text(results[result].attribute_name + ":")
-          doc
-            .font("Helvetica")
-            .fontSize(7)
-            .text(results[result].value).moveDown();
-        }
-  
-        // ends Doc generation
-        doc.end();
-  
-        // renders page.
-        res.render("userformview", {
-          companyForm: results,
-          users: req.users,
-          currentYear
-        });
-      })
-      .catch((error) => {
-        if (error) {
-          next(error);
-        }
+  db.tx(async (t) => {
+    const companyList = await t.many(
+      'select distinct fr.company_id, c.company_name from formresponse fr inner join company c on fr.company_id = c.id'
+    );
+
+    return { companyList };
+  })
+    .then((results) => {
+      res.render('adminformview', {
+        user: req.user,
+        companyList: results.companyList.sort(),
+        currentYear,
+        previousYear,
+        nextYear,
       });
-  };
-  
+    })
+    .catch((e) => {
+      if (e) {
+        console.log(e);
+        req.flash(
+          'error',
+          'An error has occured. Please try again or submit a support ticket.'
+        );
+        res.redirect('/');
+      }
+    });
+};
+
+exports.formviewer = async function (req, res, next) {
+  db.tx(async (t) => {
+    const companyForms = await t.many(
+      "SELECT f.form_id, c.company_name, c.id, f.response_id, TO_CHAR(f.date_submitted :: DATE,'mm-dd-yyyy'), f2.form_name from formresponse f INNER JOIN forms f2 on f.form_id = f2.form_id inner join company c on f.company_id = c.id WHERE f.company_id = $1 order by to_char desc LIMIT 1000",
+      [req.params.companyid]
+    );
+
+    return { companyForms };
+  })
+    .then((results) => {
+      res.render('companyallforms', {
+        user: req.user,
+        companyForms: results.companyForms,
+        previousYear,
+        nextYear,
+        currentYear,
+      });
+    })
+    .catch((e) => {
+      if (e) {
+        console.log(e);
+        req.flash(
+          'error',
+          'An error has occured or the company has no submitted forms yet. Please try again or submit a support ticket.'
+        );
+        res.redirect('/');
+      }
+    });
+};

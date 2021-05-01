@@ -22,7 +22,13 @@ const pgp = require('pg-promise')({
 });
 
 exports.index = function (req, res) {
-  res.render('login', { title: 'Login', user: req.user, currentYear });
+  res.render('login', {
+    title: 'Login',
+    user: req.user,
+    currentYear,
+    previousYear,
+    nextYear,
+  });
 };
 
 exports.logout = function (req, res, next) {
@@ -58,39 +64,39 @@ exports.duedatepost = function (req, res, next) {
       'SELECT form_name, id, duedate FROM formduedate INNER JOIN forms on form_reference = form_id ORDER BY form_name ASC'
     );
 
-    return {dueDates};
-  }).then(data => {
+    return { dueDates };
+  })
+    .then((data) => {
+      const dataMulti = [];
 
-    const dataMulti = [];
-
-    data.dueDates.map(date => {
-      dataMulti.push(
-        {
+      data.dueDates.map((date) => {
+        dataMulti.push({
           id: date.id,
-          duedate: req.body[`${date.id}`]
-        }
-      );
-      return dataMulti;
+          duedate: req.body[`${date.id}`],
+        });
+        return dataMulti;
+      });
+
+      console.log(dataMulti);
+
+      const cs = new pgp.helpers.ColumnSet(['?id', 'duedate'], {
+        table: 'formduedate',
+      });
+
+      const query = pgp.helpers.update(dataMulti, cs) + 'WHERE v.id = t.id';
+
+      const recordsResponse = db.none(query);
+
+      req.flash('info', 'Thank you for updating the form due dates!');
+      res.redirect('/thanks');
     })
-
-    console.log(dataMulti)
-
-    const cs = new pgp.helpers.ColumnSet(['?id', 'duedate'], {table: 'formduedate'});
-  
-
-    const query = pgp.helpers.update(dataMulti, cs) + 'WHERE v.id = t.id';
-  
-    const recordsResponse = db.none(query);
-
-    req.flash('info', 'Thank you for updating the form due dates!');
-    res.redirect('/thanks')
-  }).catch(e => {
-    if (e) {
-      console.log(e);
-      req.flash('error', 'An error has occured. Please try again.');
-      res.redirect('/');
-    }
-  });
+    .catch((e) => {
+      if (e) {
+        console.log(e);
+        req.flash('error', 'An error has occured. Please try again.');
+        res.redirect('/');
+      }
+    });
 };
 
 exports.signup = function (req, res) {
@@ -222,8 +228,6 @@ exports.companyhome = function (req, res, next) {
 };
 
 exports.profile = async function (req, res, next) {
-  
-
   db.tx(async (t) => {
     const accountInfo = await t.one(
       'SELECT * from useraccount INNER JOIN company on useraccount.company_id = company.id WHERE username = $1',
@@ -244,7 +248,12 @@ exports.profile = async function (req, res, next) {
       'SELECT id, form_reference, form_name, link, duedate from formduedate INNER JOIN forms on form_reference = form_id ORDER BY form_name ASC'
     );
 
-    return { accountInfo, recentForms, submittedForms, dueDates };
+    const messages = await db.manyOrNone(
+      'SELECT subject_title, support_type, username, ticketid from helptickets h INNER JOIN useraccount u on h.sender_id = u.id where sender_id = $1 OR user_id = $1 ORDER BY date_submitted ASC LIMIT 10',
+      [req.user.id]
+    );
+
+    return { accountInfo, recentForms, submittedForms, dueDates, messages };
   })
     .then((data) => {
       res.render('profile', {
@@ -258,6 +267,8 @@ exports.profile = async function (req, res, next) {
         previousYear,
         todaysDate,
         recentForms: data.recentForms,
+        ccdnLink: process.env.CCDN_SITE,
+        supporttickets: data.messages,
       });
     })
     .catch((error) => {
