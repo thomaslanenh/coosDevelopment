@@ -8,6 +8,7 @@ block content
         } else {
             return false;
         }}
+
     section(style="flex: 1 0 auto; padding: 20px;")
         div(class='columns is-multiline is-mobile is-centered')
             div(class='box has-text-centered mt-5')
@@ -25,20 +26,20 @@ block content
                             div(style='field')
                                 label(class='label')=company.attribute_name
                                 div(class='control')
-                                    if company.attribute_name.toLowerCase().includes('year')
+                                    if company.attribute_name.toLowerCase().includes('year') && !company.attribute_name.toLowerCase().includes('score')
                                         label(class='label')
                                             p(class='help') Make sure new values is in the same format of YYYY
-                                        input(class='input' type='text' value=company.value name=company.attrib_id)
+                                        input(class='input' type='text' value=company.value name=company.record_id id=company.attrib_id)
                                     else if company.attribute_name.toLowerCase().includes('date')
                                         label(class='label')
                                             p(class='help') Make sure new value is in the same format of MM/DD/YYYY
-                                        input(class='input' type='date' value=company.value name=company.attrib_id)
+                                        input(class='input' type='date' value=company.value name=company.record_id id=company.attrib_id)
                                     else if company.value.length > 101
-                                        textarea(rows='20' class='textarea' name=company.attrib_id )=company.value
+                                        textarea(rows='20' class='textarea' name=company.record_id  id=company.attrib_id)=company.value
                                     else if company.attribute_name.toLowerCase().includes('number')
-                                        input(class='input' type='number' min=0 value=company.value name=company.attrib_id)
+                                        input(class='input' type='number' min=0 value=company.value name=company.record_id id=company.attrib_id)
                                     else
-                                        input(class='input' type='text' value=company.value name=company.attrib_id style='width:100%;margin:-3px;border:2px inset #eee')
+                                        input(class='input' type='text' value=company.value id=company.attrib_id name=company.record_id style='width:100%;margin:-3px;border:2px inset #eee')
                             br
                     div(class='field is-grouped')
                         button(type='submit' class='button is-primary is-outlined mb-4 mr-5' name='formSubmit' value='updateForm') Update Form

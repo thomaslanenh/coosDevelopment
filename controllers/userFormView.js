@@ -1,15 +1,21 @@
 const db = require('../db');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
+const { ColumnSet } = require('pg-promise');
 var currentYear = new Date().getFullYear();
 var previousYear = new Date().getFullYear() - 1;
 var nextYear = new Date().getFullYear() + 1;
+
+const pgp = require('pg-promise')({
+  /* initialization options */
+  capSQL: true, // capitalize all generated SQL
+});
 
 exports.index = async function (req, res, next) {
   // queries the DB to return information about the selected form that brought them to this page.
   await db
     .any(
-      `select f4.attrib_id, c.company_name, f2.form_name, f3.attribute_name, f4.value, f4.staff_id 
+      `select f4.attrib_id, f4.record_id, c.company_name, f2.form_name, f3.attribute_name, f4.value, f4.staff_id 
       from company c 
       inner join formresponse f on c.id = f.company_id 
       inner join forms f2 on f.form_id = f2.form_id 
@@ -76,12 +82,124 @@ exports.index = async function (req, res, next) {
 
 exports.indexpost = function (req, res, next) {
   let inputValue = req.body.formSubmit;
-
+  console.log(req.params);
+  console.log('reqData: ', req.body['1']);
   if (inputValue == 'deleteFORM') {
-    console.log('Delete Hit');
-    res.send('NYI Delete');
+    db.tx(async (t) => {
+      const formResponsesDeleted = await t.result(
+        'delete from formquestionresponse f2 where f2.response_id = $1 returning *',
+        [req.params.formresponseid],
+        (a) => a.rowCount
+      );
+      const formDeleted = await t.result(
+        'delete from formresponse f where f.response_id = $1 RETURNING *',
+        [req.params.formresponseid],
+        (a) => a.rowCount
+      );
+      return { formResponsesDeleted, formDeleted };
+    })
+      .then((results) => {
+        console.log(results.formResponsesDeleted);
+        console.log(results.formDeleted);
+        req.flash('info', 'Your form has been succesfully deleted.');
+        res.redirect('/');
+      })
+      .catch((e) => {
+        if (e) {
+          console.log(e);
+          req.flash(
+            'error',
+            'An error has occured. Please try again or submit a support ticket.'
+          );
+          res.redirect('/');
+        }
+      });
   } else {
-    res.send('NYI Update');
+    db.tx(async (t) => {
+      const attributeNAME = await t.many(
+        'select distinct f3.attribute_name, f.record_id, f.attrib_id from formquestionresponse f inner join formresponse f2 on f.response_id = f2.response_id inner join formquestion f3 on f.attrib_id = f3.attrib_id where f.response_id = $1 and f2.company_id = $2 and f2.form_id = $3',
+        [req.params.formresponseid, req.params.companyid, req.params.formid]
+      );
+
+      return { attributeNAME };
+    })
+      .then((results) => {
+        const cs = new pgp.helpers.ColumnSet(
+          [
+            '?record_id',
+            {
+              name: 'value',
+            },
+            {
+              name: 'date_modified',
+              mod: '^',
+              def: 'CURRENT_TIMESTAMP',
+            },
+          ],
+          {
+            table: 'formquestionresponse',
+          }
+        );
+
+        const attribs = results.attributeNAME;
+
+        console.log(attribs);
+
+        const dataMulti = [];
+
+        // const arrayCheck = (valueField, data) => {
+        //   for (var i = 0; i <= valueField.length; i++) {
+        //     console.log('field? ', valueField[i]);
+        //     dataMulti.push({
+        //       record_id: parseInt(data.record_id),
+        //       value: req.body.id,
+        //     });
+        //     return dataMulti;
+        //   }
+        // };
+
+        attribs.map((data) => {
+          let valueField = req.body[data.record_id.toString()];
+          console.log('valueField: ', valueField);
+
+          dataMulti.push({
+            record_id: parseInt(data.record_id),
+            value: valueField,
+          });
+        });
+
+        const updater =
+          pgp.helpers.update(dataMulti, cs) +
+          ' WHERE v.record_id = t.record_id';
+
+        db.tx(async (t) => {
+          db.none(updater);
+        })
+          .then((data) => {
+            req.flash('info', 'Your form has been succesfully updated.');
+            res.redirect('/');
+          })
+          .catch((e) => {
+            if (e) {
+              console.log(e);
+              req.flash(
+                'error',
+                'An error has occured. Please try again or submit a support ticket.'
+              );
+              res.redirect('/');
+            }
+          });
+      })
+      .catch((e) => {
+        if (e) {
+          console.log(e);
+          req.flash(
+            'error',
+            'An error has occured. Please try again or submit a support ticket'
+          );
+          res.redirect('/');
+        }
+      });
   }
 };
 

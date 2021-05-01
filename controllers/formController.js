@@ -258,7 +258,7 @@ exports.qiaoutcome_post = function (req, res, next) {
 
   db.tx(async (t) => {
     const useraccount = await db.one(
-      'SELECT company_id, company_name from company inner join useraccount on id= company_id WHERE username = $1',
+      'SELECT u.company_id, c.company_name from company c inner join useraccount u on c.id = u.company_id WHERE username = $1',
       [req.user.user]
     );
     const formresponseID = await t.one(
