@@ -1,31 +1,49 @@
 extends layout
 
 block content
-    section(class='section')
-        div(class='notification is-dark is-centered')
-            p QIA Progress Reporting Form
-        div(class='columns is-mobile is-centered')
-            div(class='column is-half')
-                form(action='' method="POST")
-                    div(class='field')
-                        label(class='label') Date:
-                        input(type='date' name='date' class='input' required)
-                    div(class='field')
-                        label(class='label') Reporting Year:
-                        div(class='select')
-                            select(name='reportingyear')
-                                for year in years
-                                    option(value=year)=year
-                    div(class='field')
-                        label(class='label') Early Childhood Professional:
-                        input(type='text' name='earlyprofessional' class='input' required)
-                    div(class='field')
-                        label(class='label') Item(s) Bought:
-                        p(class='help') Enter each item on a new line.
-                        textarea(class='textarea' name='itemsbought' required)
-                    div(class='field')
-                        label(class='label') Evidence of Progress Towards Implementation:
-                        p(class='help') Please provide an update of the progress you have made so far in the expenditure of funds and how this has improved your program, improved outcomes for children, increased your skill level as a teacher, and/or created sustainable change in the quality of child care in Coös County.
-                        textarea(name='evidenceprogress' class='textarea' rows='20' col='40' required)
-                    div(class='field')
-                        button(type='Submit' class='button is-primary') Submit
+    section(class='section' style="flex: 1 0 auto;")
+        div(class='columns is-mobile is-centered is-multiline')
+            div(class='column is-full')
+                h1(class='has-text-centered has-text-weight-bold is-size-2') QIA PROGRESS REPORTING FORM FOR  #{currentYear} 
+            div(class="column is-full")
+        div(class='columns is-mobile is-centered is-multiline')
+            div(class='column is-8')
+                form(action='' method='POST' class='js-form')
+                        div(class='field')
+                            label(class='label') Date:
+                            input(type='date' name='1' class='input' required)
+                        div(class='field')
+                            label(class='label') Reporting Year:
+                            div(class='select')
+                                select(name='5')
+                                    for year in years
+                                        option(value=year)=year
+                        div(class='field')
+                            label(class='label') Early Childhood Professional:
+                            input(type='text' name='2' class='input' required)
+                        div(class='field')
+                            label(class='label') Item(s) Bought:
+                            p(class='help') Enter each item on a new line.
+                            textarea(class='textarea' name='3' required)
+                        div(class='field')
+                            label(class='label') Evidence of Progress Towards Implementation:
+                                p(class='help') Please provide an update of the progress you have made so far in the expenditure of funds and how this has improved your program, improved outcomes for children, increased your skill level as a teacher, and/or created sustainable change in the quality of child care in Coös County.
+                                textarea(name='4' class='textarea' rows='20' col='40' required)
+                        div(class='field')
+                            button(type='submit' class='button is-primary') Submit Form
+                            button(type='button' class='ml-5 button is-info js-button' ) Save Form Data
+                            button(type='button' class='ml-5 button is-danger js-clearbutton' ) Clear Form Data
+        script(src='https://unpkg.com/form-storage@1.2.0/build/form-storage.js')
+        script. 
+            var formStorage = new FormStorage('.js-form');
+            formStorage.apply();
+            var button = document.querySelector('.js-button');
+            var button2 = document.querySelector('.js-clearbutton')
+            button.addEventListener('click', function(){
+                formStorage.save();
+                location.reload(true);
+            });
+            button2.addEventListener('click', function(){
+                formStorage.clear();
+                location.reload(true);
+            })

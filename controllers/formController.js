@@ -48,86 +48,88 @@ exports.qiaprogress = function (req, res, next) {
 };
 
 exports.qiaprogress_post = async function (req, res, next) {
-  // takes the itemsbought text field and turns it into a array of lines.
-  var lines = req.body.itemsbought
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .filter((line) => line);
-
-  // sets username to useraccount variable in order to grab company ID.
-  var useraccount = req.user.user;
-
   db.tx(async (t) => {
-    const associatedCompany = await t.one(
+    const companyDetails = await t.one(
       'SELECT u.company_id, c.company_name, c.first_name, c.last_name, c.town FROM company c INNER JOIN useraccount u on c.id= u.company_id WHERE u.username = $1',
       [req.user.user]
     );
-
-    const formresponseID = await t.one(
-      'INSERT INTO formresponse(form_id, company_id) values (1, $1) returning response_id',
-      [associatedCompany.company_id]
+    const insertForm = await t.one(
+      'INSERT INTO formresponse(form_id, company_id) VALUES(1, $1) RETURNING response_id',
+      [companyDetails.company_id]
     );
 
-    let profileUpdate = await db.none(
-      'UPDATE company SET last_modified = to_timestamp($1 / 1000.0) WHERE company_name = $2',
-      [Date.now(), associatedCompany.company_name]
-    );
-
-    // deal with the weird array from text box thing.
-    let arrayinput = await t.none(
-      'INSERT INTO formquestionresponse (attrib_id, value, response_id) VALUES (3, unnest(array[$1:csv]), $2)',
-      [lines, formresponseID.response_id]
-    );
-
-    // sets the use of the ColumnSet feature of PG Promise allowing multiple entries at once.
     const cs = new pgp.helpers.ColumnSet(
-      ['attrib_id', 'value', 'response_id'],
+      [
+        {
+          name: 'value',
+        },
+        {
+          name: 'attrib_id',
+        },
+        {
+          name: 'response_id',
+          def: insertForm.response_id,
+        },
+      ],
       {
         table: 'formquestionresponse',
       }
     );
 
-    // the assigned values & entries for PG Promise
     const values = [
       {
         attrib_id: 1,
-        value: req.body.date,
-        response_id: formresponseID.response_id,
+        value: req.body['1'],
       },
       {
         attrib_id: 2,
-        value: req.body.earlyprofessional,
-        response_id: formresponseID.response_id,
+        value: req.body['2'],
       },
       {
         attrib_id: 4,
-        value: req.body.evidenceprogress,
-        response_id: formresponseID.response_id,
+        value: req.body['4'],
       },
       {
         attrib_id: 5,
-        value: req.body.reportingyear,
-        response_id: formresponseID.response_id,
+        value: req.body['5'],
       },
     ];
 
-    // Sets the query to run in the DB via PG Promise, and splits up the return into variables to insert later on.
+    var linesone = req.body['3']
+      .replace(/\r\n/g, '\n')
+      .split('\n')
+      .filter((line) => line);
+
+    linesone.map((line) => {
+      values.push({
+        value: line,
+        attrib_id: 3,
+      });
+      return values;
+    });
 
     const query = pgp.helpers.insert(values, cs);
-    const responseofRecords = await t.none(query);
+    const responseInsert = await t.none(query);
+
+    return { companyDetails, insertForm };
   })
-    .then((data) => {
-      console.log(data);
-      res.redirect('../thanks');
+    .then((results) => {
+      req.flash('info', 'Your form has been succesfully submitted.');
+      res.redirect('/');
     })
-    .catch((error) => {
-      next(error);
+    .catch((e) => {
+      console.log(e);
+      req.flash(
+        'error',
+        'An error has occured. Please try again or submit a support ticket.'
+      );
+      res.redirect('/');
     });
 };
 
 // QIA Outcome
 
-exports.qiaoutcome = function (req, res, next) {
+exports.qiaoutcome = async function (req, res, next) {
   let measures = db
     .any('SELECT * from qualitymeasures ORDER BY measure_id desc')
     .then((results) => {
@@ -149,132 +151,34 @@ exports.qiaoutcome = function (req, res, next) {
     });
 };
 
-exports.qiaoutcome_post = function (req, res, next) {
-  // turn items bought entries into seperate fields
-  var linesone = req.body.itemsboughtgoalone
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .filter((line) => line);
-
-  var linestwo = req.body.itemsboughtgoaltwo
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .filter((line) => line);
-
-  var linesthree = req.body.itemsboughtgoalthree
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .filter((line) => line);
-
-  // set arrays up for measurements
-  let arraygoalone = req.body.measuresgoalone;
-
-  if (arraygoalone.length > 1) {
-    arraygoalone = arraygoalone.map((i) => Number(i));
-  } else {
-    arraygoalone = parseInt(arraygoalone);
-  }
-
-  let arraygoaltwo = req.body.measuresgoaltwo;
-
-  if (arraygoaltwo.length > 1) {
-    arraygoaltwo = arraygoaltwo.map((i) => Number(i));
-  } else {
-    arraygoaltwo = parseInt(arraygoaltwo);
-  }
-
-  let arraygoalthree = req.body.measuresgoalthree;
-
-  if (arraygoalthree.length > 1) {
-    arraygoalthree = arraygoalthree.map((i) => Number(i));
-  } else {
-    arraygoalthree = parseInt(arraygoalthree);
-  }
-
-  const arrayInsert = (formid) => {
-    db.tx(async (t) => {
-      // now for the arrays of items bought
-      if (linesone.length > 1 && arraygoalone.length > 1) {
-        let arrayinsertOne = await t.none(
-          'INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,unnest(array[$4:csv]))',
-          [10, linesone, formid, arraygoalone]
-        );
-      } else if (linesone.length === 1 && arraygoalone.length > 1) {
-        let arrayinsertOne = await t.none(
-          'INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,unnest(array[$4:csv]))',
-          [10, linesone, formid, arraygoalone]
-        );
-      } else if (linesone.length === 0) {
-        return;
-      } else {
-        let arrayinsertOne = await t.none(
-          'INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,$4)',
-          [10, linesone, formid, arraygoalone]
-        );
-      }
-
-      // line two
-      if (linestwo.length > 1 && arraygoaltwo.length > 1) {
-        let arrayinserttwo = await t.none(
-          'INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,unnest(array[$4:csv]))',
-          [10, linestwo, formid, arraygoaltwo]
-        );
-      } else if (linestwo.length === 1 && arraygoaltwo.length > 1) {
-        let arrayinserttwo = await t.none(
-          'INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,unnest(array[$4:csv]))',
-          [10, linestwo, formid, arraygoaltwo]
-        );
-      } else if (linestwo.length === 0) {
-        return;
-      } else {
-        let arrayinserttwo = await t.none(
-          'INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,$4)',
-          [10, linestwo, formid, arraygoaltwo]
-        );
-      }
-
-      // lines three
-      if (linesthree.length > 1 && arraygoalthree.length > 1) {
-        let arrayinsertthree = await t.none(
-          'INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,unnest(array[$4:csv]))',
-          [10, linesthree, formid, arraygoalthree]
-        );
-      } else if (linesthree.length === 1 && arraygoalthree.length > 1) {
-        let arrayinsertthree = await t.none(
-          'INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,unnest(array[$4:csv]))',
-          [10, linesthree, formid, arraygoalthree]
-        );
-      } else if (linesthree.length === 0) {
-        return;
-      } else {
-        let arrayinsertthree = await t.none(
-          'INSERT INTO formquestionresponse(attrib_id, value, response_id, measure_id) values($1,unnest(array[$2:csv]),$3,$4)',
-          [10, linesthree, formid, arraygoalthree]
-        );
-      }
-    });
-  };
-  // begin database inserts
-
+exports.qiaoutcome_post = async function (req, res, next) {
   db.tx(async (t) => {
-    const useraccount = await db.one(
-      'SELECT u.company_id, c.company_name from company c inner join useraccount u on c.id = u.company_id WHERE username = $1',
+    const companyDetails = await t.one(
+      'SELECT u.company_id, c.company_name, c.first_name, c.last_name, c.town FROM company c INNER JOIN useraccount u on c.id= u.company_id WHERE u.username = $1',
       [req.user.user]
     );
-    const formresponseID = await t.one(
-      'INSERT INTO formresponse(form_id, company_id) VALUES (2, $1) RETURNING response_id',
-      [useraccount.company_id]
+    const insertForm = await t.one(
+      'INSERT INTO formresponse(form_id, company_id) VALUES(2, $1) RETURNING response_id',
+      [companyDetails.company_id]
     );
-
-    let profileUpdate = await db.none(
-      'UPDATE company SET last_modified = to_timestamp($1 / 1000.0) WHERE company_name = $2',
-      [Date.now(), useraccount.company_name]
-    );
-
-    // insert the responses into the database proper utilizing ColumnSet
 
     const cs = new pgp.helpers.ColumnSet(
-      ['attrib_id', 'value', 'response_id', 'measure_id'],
+      [
+        {
+          name: 'value',
+        },
+        {
+          name: 'attrib_id',
+        },
+        {
+          name: 'measure_id',
+          def: 8,
+        },
+        {
+          name: 'response_id',
+          def: insertForm.response_id,
+        },
+      ],
       {
         table: 'formquestionresponse',
       }
@@ -282,255 +186,170 @@ exports.qiaoutcome_post = function (req, res, next) {
 
     const values = [
       {
+        value: req.body['16'],
         attrib_id: 16,
-        value: req.body.date,
-        response_id: formresponseID.response_id,
-        measure_id: 8,
       },
       {
+        value: req.body['17'],
         attrib_id: 17,
-        value: req.body.earlyprofessionalgoalone,
-        response_id: formresponseID.response_id,
-        measure_id: 8,
-      },
-      {
-        attrib_id: 2,
-        value: req.body.centerimprovementgoalone,
-        response_id: formresponseID.response_id,
-        measure_id: 8,
-      },
-      {
-        attrib_id: 9,
-        value: req.body.measuretypeindicatoronechoice1,
-        response_id: formresponseID.response_id,
-        measure_id: req.body.measuretypeindicatoronechoice1,
-      },
-      {
-        attrib_id: 12,
-        value: req.body.indicatorgoalonechoice1,
-        response_id: formresponseID.response_id,
-        measure_id: req.body.measuretypeindicatoronechoice1,
-      },
-      {
-        attrib_id: 13,
-        value: req.body.previousyearscoregoalonechoice1,
-        response_id: formresponseID.response_id,
-        measure_id: req.body.measuretypeindicatoronechoice1,
-      },
-      {
-        attrib_id: 14,
-        value: req.body.currentyearscoregoalonechoice1,
-        response_id: formresponseID.response_id,
-        measure_id: req.body.measuretypeindicatoronechoice1,
-      },
-      {
-        attrib_id: 15,
-        value: req.body.narrativeforgoalone,
-        response_id: formresponseID.response_id,
-        measure_id: 8,
       },
     ];
 
-    // loop for response one indicator section
-    for (var x = 1; x > 7; x++) {
-      if (req.body.measuretypeindicatoronechoice[x] != 8) {
-        values.push(
-          {
-            attrib_id: 9,
-            value: req.body.measuretypeindicatoronechoice[x],
-            response_id: formresponseID.response_id,
-            measure_id: req.body.measuretypeindicatoronechoice[x],
-          },
-          {
-            attrib_id: 12,
-            value: req.body.indicatorgoalonechoice[x],
-            response_id: formresponseID.response_id,
-            measure_id: req.body.measuretypeindicatoronechoice[x],
-          },
-          {
-            attrib_id: 13,
-            value: req.body.previousyearscoregoalonechoice[x],
-            response_id: formresponseID.response_id,
-            measure_id: req.body.measuretypeindicatoronechoice[x],
-          },
-          {
-            attrib_id: 14,
-            value: req.body.currentyearscoregoalonechoice[x],
-            response_id: formresponseID.response_id,
-            measure_id: req.body.measuretypeindicatoronechoice[x],
-          }
-        );
+    // loops over goals in the list and adds them to values
+    let goalsList = [81, 82, 83];
+
+    goalsList.map((goal) => {
+      if (req.body[`${goal}`].length <= 0) {
+        return;
+      } else {
+        values.push({
+          value: req.body[`${goal}`],
+          attrib_id: 8,
+        });
+        return values;
       }
-    }
+    });
 
-    //loop for response two indicator section
-    for (var x = 0; x > 7; x++) {
-      if (req.body.measuretypeindicatortwochoice[x] != 8) {
-        values.push(
-          {
+    // loops over quality measurement select fields and adds them to values
+
+    let qmSelects = [91, 92, 93];
+
+    qmSelects.map((qm) => {
+      let qmSelections = req.body[`${qm}`];
+
+      if (qmSelections.length > 0) {
+        if (Array.isArray(qmSelections)) {
+          qmSelections.map((quality) => {
+            values.push({
+              value: quality,
+              attrib_id: 9,
+            });
+            return values;
+          });
+        } else {
+          values.push({
+            value: req.body[`${qm}`],
             attrib_id: 9,
-            value: req.body.measuretypeindicatortwochoice[x],
-            response_id: formresponseID.response_id,
-            measure_id: req.body.measuretypeindicatortwochoice[x],
-          },
-          {
-            attrib_id: 12,
-            value: req.body.indicatorgoaltwochoice[x],
-            response_id: formresponseID.response_id,
-            measure_id: req.body.measuretypeindicatortwochoice[x],
-          },
-          {
-            attrib_id: 13,
-            value: req.body.previousyearscoregoaltwochoice[x],
-            response_id: formresponseID.response_id,
-            measure_id: req.body.measuretypeindicatortwochoice[x],
-          },
-          {
-            attrib_id: 14,
-            value: req.body.currentyearscoregoaltwochoice[x],
-            response_id: formresponseID.response_id,
-            measure_id: req.body.measuretypeindicatortwochoice[x],
-          }
-        );
-      }
-    }
-
-    // conditional logic for goal #2 insert to DB
-
-    if (req.body.centerimprovementgoaltwo.length > 0) {
-      values.push(
-        {
-          attrib_id: 2,
-          value: req.body.centerimprovementgoaltwo,
-          response_id: formresponseID.response_id,
-          measure_id: 8,
-        },
-        {
-          attrib_id: 9,
-          value: req.body.measuretypeindicatortwochoice1,
-          response_id: formresponseID.response_id,
-          measure_id: req.body.measuretypeindicatortwochoice1,
-        },
-        {
-          attrib_id: 12,
-          value: req.body.indicatorgoaltwochoice1,
-          response_id: formresponseID.response_id,
-          measure_id: req.body.measuretypeindicatortwochoice1,
-        },
-        {
-          attrib_id: 13,
-          value: req.body.previousyearscoregoaltwochoice1,
-          response_id: formresponseID.response_id,
-          measure_id: req.body.measuretypeindicatortwochoice1,
-        },
-        {
-          attrib_id: 14,
-          value: req.body.currentyearscoregoaltwochoice1,
-          response_id: formresponseID.response_id,
-          measure_id: req.body.measuretypeindicatortwochoice1,
-        },
-        {
-          attrib_id: 15,
-          value: req.body.narrativeforgoaltwo,
-          response_id: formresponseID.response_id,
-          measure_id: 8,
+          });
+          return values;
         }
-      );
-    }
-
-    // loop for response three indicator section
-    for (var x = 0; x > 7; x++) {
-      if (req.body.measuretypeindicatorthreechoice[x] != 8) {
-        values.push(
-          {
-            attrib_id: 9,
-            value: req.body.measuretypeindicatorthreechoice[x],
-            response_id: formresponseID.response_id,
-            measure_id: req.body.measuretypeindicatorthreechoice[x],
-          },
-          {
-            attrib_id: 12,
-            value: req.body.indicatorgoalthreechoice[x],
-            response_id: formresponseID.response_id,
-            measure_id: req.body.measuretypeindicatorthreechoice[x],
-          },
-          {
-            attrib_id: 13,
-            value: req.body.previousyearscoregoalthreechoice[x],
-            response_id: formresponseID.response_id,
-            measure_id: req.body.measuretypeindicatorthreechoice[x],
-          },
-          {
-            attrib_id: 14,
-            value: req.body.currentyearscoregoalthreechoice[x],
-            response_id: formresponseID.response_id,
-            measure_id: req.body.measuretypeindicatorthreechoice[x],
-          }
-        );
+      } else {
+        return;
       }
-    }
+    });
 
-    // conditional logic for goal 3
-    // conditional logic for goal #2 insert to DB
+    // turn items bought entries into seperate fields, fields 101, 102 & 103
 
-    if (req.body.centerimprovementgoalthree.length > 0) {
-      values.push(
-        {
-          attrib_id: 2,
-          value: req.body.centerimprovementgoalthree,
-          response_id: formresponseID.response_id,
-          measure_id: 8,
-        },
-        {
-          attrib_id: 9,
-          value: req.body.measuretypeindicatorthreechoice1,
-          response_id: formresponseID.response_id,
-          measure_id: req.body.measuretypeindicatorthreechoice1,
-        },
-        {
-          attrib_id: 12,
-          value: req.body.indicatorgoalthreechoice1,
-          response_id: formresponseID.response_id,
-          measure_id: req.body.measuretypeindicatorthreechoice1,
-        },
-        {
-          attrib_id: 13,
-          value: req.body.previousyearscoregoalthreechoice1,
-          response_id: formresponseID.response_id,
-          measure_id: req.body.measuretypeindicatorthreechoice1,
-        },
-        {
-          attrib_id: 14,
-          value: req.body.currentyearscoregoalthreechoice1,
-          response_id: formresponseID.response_id,
-          measure_id: req.body.measuretypeindicatorthreechoice1,
-        },
-        {
-          attrib_id: 15,
-          value: req.body.narrativeforgoalthree,
-          response_id: formresponseID.response_id,
-          measure_id: 8,
+    var linesone = req.body['101']
+      .replace(/\r\n/g, '\n')
+      .split('\n')
+      .filter((line) => line);
+
+    var linestwo = req.body['102']
+      .replace(/\r\n/g, '\n')
+      .split('\n')
+      .filter((line) => line);
+
+    var linesthree = req.body['103']
+      .replace(/\r\n/g, '\n')
+      .split('\n')
+      .filter((line) => line);
+
+    linesone.map((line) => {
+      values.push({
+        value: line,
+        attrib_id: 10,
+      });
+      return values;
+    });
+
+    linestwo.length > 0
+      ? linestwo.map((line) => {
+          values.push({
+            value: line,
+            attrib_id: 10,
+          });
+          return values;
+        })
+      : null;
+
+    linesthree.length > 0
+      ? linesthree.map((line) => {
+          values.push({
+            value: line,
+            attrib_id: 10,
+          });
+          return values;
+        })
+      : null;
+
+    // quality measures
+
+    let rowsQM = [1, 2, 3, 4, 5, 6, 7, 8];
+    let totalRows = [1, 2, 3];
+
+    totalRows.map((instance) => {
+      rowsQM.map((row) => {
+        let measure_id = parseInt(req.body[`qm${row}${instance}`]);
+        if (measure_id >= 1 && measure_id != 8) {
+          values.push(
+            {
+              value: req.body[`12${row}${instance}`],
+              attrib_id: 12,
+              measure_id: measure_id,
+            },
+            {
+              value: req.body[`13${row}${instance}`],
+              attrib_id: 13,
+              measure_id: measure_id,
+            },
+            {
+              value: req.body[`14${row}${instance}`],
+              attrib_id: 14,
+              measure_id: measure_id,
+            }
+          );
+          return values;
+        } else {
+          return;
         }
-      );
-    }
+      });
+      return values;
+    });
 
-    // Sets the query to run in the DB via PG Promise, and splits up the return into variables to insert later on.
+    // narrative set loop
+    let narratives = [1, 2, 3];
+
+    narratives.map((nar) => {
+      if (req.body[`15${nar}`].length > 1) {
+        values.push({
+          value: req.body[`15${nar}`],
+          attrib_id: 15,
+        });
+        return values;
+      } else {
+        return;
+      }
+    });
 
     const query = pgp.helpers.insert(values, cs);
-    const responseofRecords = await t.none(query);
-    arrayInsert(formresponseID.response_id);
+    const responseInsert = await t.none(query);
+
+    return { companyDetails, insertForm };
   })
-    .then((response) => {
-      req.flash('info', 'Your form has been submitted. Thank you!');
-      res.redirect('/thanks');
-    })
-    .catch((error) => {
-      console.log(error);
-      req.flash(
-        'error',
-        'An error has occured. Please try again or submit a support ticket.'
-      );
+    .then((results) => {
+      req.flash('info', 'Your form has been succesfully submitted.');
       res.redirect('/');
+    })
+    .catch((e) => {
+      if (e) {
+        console.log(e);
+        req.flash(
+          'error',
+          'An error has occured. Please try again or submit a support ticket.'
+        );
+        res.redirect('/');
+      }
     });
 };
 

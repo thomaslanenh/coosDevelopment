@@ -25,6 +25,15 @@ block content
                             -console.log(company)
                             div(style='field')
                                 label(class='label')=company.attribute_name
+                                if (company.date_modified != null)
+                                    p(class='help has-text-weight-bold') Last Modified: 
+                                    p(class='help pb-2')=company.date_modified
+                                if (company.staff_id != null)
+                                    p(class='help has-text-weight-bold') Staff Member Assigned to this Field:
+                                    p(class='help pb-2') #{company.first_name} #{company.last_name}
+                                if (company.measure_id != null && company.measure_id != 8)
+                                    p(class='help has-text-weight-bold') Quality Measure Type Used: 
+                                    p(class='help pb-2')=company.measure_type
                                 div(class='control')
                                     if company.attribute_name.toLowerCase().includes('year') && !company.attribute_name.toLowerCase().includes('score')
                                         label(class='label')
