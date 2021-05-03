@@ -15,17 +15,19 @@ exports.index = async function (req, res, next) {
   db.tx(async (t) => {
     // queries the DB to return information about the selected form that brought them to this page.
     const formResults = await db.many(
-      `select f4.attrib_id, c.id, mt.measure_type, c.company_name, f4.date_modified, f4.record_id, f4.measure_id, c.company_name, f2.form_name, f3.attribute_name, f4.value, f4.staff_id
+      `select f4.attrib_id, u.first_name, u.last_name, c.id, mt.measure_type, c.company_name, f4.date_modified, f4.record_id, f4.measure_id, c.company_name, f2.form_name, f3.attribute_name, f4.value, f4.staff_id
       from company c 
       inner join formresponse f on c.id = f.company_id 
       inner join forms f2 on f.form_id = f2.form_id 
       inner join formquestion f3 on f2.form_id = f3.form_id 
       inner join formquestionresponse f4 on f3.attrib_id  = f4.attrib_id
       inner join qualitymeasures mt on f4.measure_id  = mt.measure_id 
+      left outer join useraccount u on f4.staff_id = u.id 
       where f.company_id = $1 AND f.form_id = $2 AND f.response_id = $3 AND f4.response_id = $3
       order by case when f4.staff_id is null then f4.attrib_id else min(f4.attrib_id) over (partition by f4.staff_id) end,
    f4.staff_id,
     f4.attrib_id
+
 `,
       [
         parseInt(req.params.companyid),
@@ -34,18 +36,12 @@ exports.index = async function (req, res, next) {
       ]
     );
 
-    const userDetails = await db.manyOrNone(
-      `select distinct u.first_name, u.last_name from useraccount u
-      inner join formquestionresponse f4 on f4.staff_id = u.id 
-      where f4.response_id = $3`, [req.params.formresponseid]
-    )
-
     const companyDetails = await db.one(
       'SELECT u.company_id, c.company_name, c.first_name, c.last_name, c.town FROM company c INNER JOIN useraccount u on c.id= u.company_id WHERE u.username = $1',
       [req.user.user]
     );
 
-    return { formResults, companyDetails, userDetails };
+    return { formResults, companyDetails };
   })
     .then((results) => {
       // create a doc
@@ -82,7 +78,6 @@ exports.index = async function (req, res, next) {
       res.render('userformview', {
         companyForm: results.formResults,
         user: req.user,
-        userDetails: results.userDetails,
         currentYear,
         nextYear,
         previousYear,
