@@ -10,7 +10,7 @@ block content
             div(class="column is-full")
                 p(class='has-text-centered') The purpose of the Coos County Director Network Annual Report is to consolidate information and data on targeted elements to demonstrate progress in center development and quality improvements over a particular 12 month period. This information will be used to demonstrate effectiveness of the Early Childhood Initiative to funders and to document and track individual center’s activities and progress. This Annual Report is also necessary to be eligible for the Quality Improvement Award (QIA) for the recorded year.
         div(class='columns is-mobile is-centered is-multiline')
-            form(action='' method='POST' class='js-form')
+            form(action='' method='POST' class='js-formAR')
                 div(class='mt-5 columns is-mobile is-responsive is-multiline')
                     div(class='mt-5 column is-full')
                         label(class='label is-size-4') Date 
@@ -727,15 +727,17 @@ block content
                         button(type='button' class='ml-5 button is-danger js-clearbutton' ) Clear Form Data
     script(src='https://unpkg.com/form-storage@1.2.0/build/form-storage.js')
     script. 
-        var formStorage = new FormStorage('.js-form');
-        formStorage.apply();
+        var formStorageAR = new FormStorage('.js-formAR', {
+            name: 'ar-storage'
+        });
+        formStorageAR.apply();
         var button = document.querySelector('.js-button');
         var button2 = document.querySelector('.js-clearbutton')
         button.addEventListener('click', function(){
-            formStorage.save();
+            formStorageAR.save();
             location.reload(true);
         });
         button2.addEventListener('click', function(){
-            formStorage.clear();
+            formStorageAR.clear();
             location.reload(true);
         })

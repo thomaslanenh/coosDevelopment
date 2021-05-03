@@ -7,7 +7,7 @@ block content
             div(class='column is-full')
                 h1(class='has-text-centered has-text-weight-bold is-size-2') QIA #{currentYear} CENTER IMPROVEMENT PLAN
             div(class='column is-full')
-                form(action='' method='POST')
+                form(action='' method='POST' class="js-formqiaimprov")
                     div(class='field')
                         label(class='label') Program Name:
                         input(disabled class='input' value=companyDetails.company_name)
@@ -325,5 +325,24 @@ block content
                                     input(class='input' type='date' name='expectedcompletion8' )
                                 td
                                     input(class='input' type='text' name='followup8')
-                        div(class='field')
-                            button(class='button is-primary' type='Submit') Submit Form
+                        div(class='column is-full mt-6 mb-6')
+                            div(class='field')
+                                button(type='submit' class='button is-primary') Submit Form
+                                button(type='button' class='ml-5 button is-info js-button' ) Save Form Data
+                                button(type='button' class='ml-5 button is-danger js-clearbutton' ) Clear Form Data
+    script(src='https://unpkg.com/form-storage@1.2.0/build/form-storage.js')
+    script. 
+        var formStorageqiacenterimprov = new FormStorage('.js-formqiaimprov', {
+            name: 'qiacenterimprovs-storage'
+        });
+        formStorageqiacenterimprov.apply();
+        var button = document.querySelector('.js-button');
+        var button2 = document.querySelector('.js-clearbutton')
+        button.addEventListener('click', function(){
+            formStorageqiacenterimprov.save();
+            location.reload(true);
+        });
+        button2.addEventListener('click', function(){
+           formStorageqiacenterimprov.clear();
+            location.reload(true);
+        })

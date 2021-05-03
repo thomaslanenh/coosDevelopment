@@ -13,7 +13,7 @@ block content
                 p(class='is-italic pt-2 help') If the above information is wrong, please submit a support ticket.
         div(class='columns is-mobile is-centered is-multiline mt-5')
             div(class='columns is-mobile is-responsive is-multiline is-5')
-                    form(action='' method='POST' class='js-form')
+                    form(action='' method='POST' class='js-formasqcon')
                         div(class='column is-full')
                             label(class='label') Date
                             input(type='date' name='245' class='input' required)
@@ -87,15 +87,17 @@ block content
                                 button(type='button' class='ml-5 button is-danger js-clearbutton' ) Clear Form Data
     script(src='https://unpkg.com/form-storage@1.2.0/build/form-storage.js')
     script. 
-        var formStorage = new FormStorage('.js-form');
-        formStorage.apply();
+        var formStorageasqC = new FormStorage('.js-formasqcon', {
+            name: 'asq-storage'
+        });
+        formStorageasqC.apply();
         var button = document.querySelector('.js-button');
         var button2 = document.querySelector('.js-clearbutton')
         button.addEventListener('click', function(){
-            formStorage.save();
+            formStorageasqC.save();
             location.reload(true);
         });
         button2.addEventListener('click', function(){
-            formStorage.clear();
+           formStorageasqC.clear();
             location.reload(true);
         })

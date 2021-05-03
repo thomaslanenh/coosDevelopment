@@ -151,7 +151,9 @@ block content
                             button(type='button' class='ml-5 button is-danger js-clearbutton' ) Clear Form Data
         script(src='https://unpkg.com/form-storage@1.2.0/build/form-storage.js')
         script. 
-            var formStorage = new FormStorage('.js-form');
+            var formStorage = new FormStorage('.js-form', {
+                name: 'qiao-storage'
+            });
             formStorage.apply();
             var button = document.querySelector('.js-button');
             var button2 = document.querySelector('.js-clearbutton')

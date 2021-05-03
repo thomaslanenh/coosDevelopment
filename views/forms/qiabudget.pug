@@ -7,7 +7,7 @@ block content
             div(class='column is-full')
                 h1(class='has-text-centered has-text-weight-bold is-size-2') DETAILED BUDGET #{currentYear}
             div(class='column is-full')
-                form(action='' method='POST')
+                form(action='' method='POST' class='js-formqia')
                     div(class='field')
                         label(class='label') Program Name:
                         input(type='text' class='input' value= companyDetails.company_name name='programname' disabled)
@@ -280,5 +280,23 @@ block content
                                             select( name='allreceiptssubmitted')
                                                 option(value='No' selected) No
                                                 option(value='Yes') Yes
-                    div(class='field')
-                        button(class='button is-primary' type='Submit') Submit Form
+                        div(class='field')
+                            button(type='submit' class='button is-primary') Submit Form
+                            button(type='button' class='ml-5 button is-info js-button' ) Save Form Data
+                            button(type='button' class='ml-5 button is-danger js-clearbutton' ) Clear Form Data
+    script(src='https://unpkg.com/form-storage@1.2.0/build/form-storage.js')
+    script. 
+        var formStorage = new FormStorage('.js-formqia', {
+            name: 'qiabudg-storage'
+        });
+        formStorage.apply();
+        var button = document.querySelector('.js-button');
+        var button2 = document.querySelector('.js-clearbutton')
+        button.addEventListener('click', function(){
+            formStorage.save();
+            location.reload(true);
+        });
+        button2.addEventListener('click', function(){
+            formStorage.clear();
+            location.reload(true);
+        })

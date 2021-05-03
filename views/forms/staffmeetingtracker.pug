@@ -6,7 +6,7 @@ block content
         div(class='columns is-mobile is-multiline is-centered')
             h1(class='has-text-centered has-text-weight-bold is-size-2') DN #{currentYear} STAFF MEETING TRACKER FORM
             div(class='column is-full')
-                form(action='' method='POST')
+                form(action='' method='POST' class="js-formstafftrack")
                     div(class='field')
                         label(class='label') Program:
                         input(type='text' disabled value=programDetails.company_name class='input')
@@ -70,5 +70,24 @@ block content
                                     th December
                                     td
                                         input(type='text' class='input' name='decemberdates')
-                    div(class='field')    
-                        button(type='submit' class='button is-primary') Submit
+                    div(class='column is-full mt-6 mb-6')
+                            div(class='field')
+                                button(type='submit' class='button is-primary') Submit Form
+                                button(type='button' class='ml-5 button is-info js-button' ) Save Form Data
+                                button(type='button' class='ml-5 button is-danger js-clearbutton' ) Clear Form Data
+    script(src='https://unpkg.com/form-storage@1.2.0/build/form-storage.js')
+    script. 
+        var formStoragestaffTrack = new FormStorage('.js-formstafftrack', {
+            name: 'staffmeetingtrack-storage'
+        });
+        formStoragestaffTrack.apply();
+        var button = document.querySelector('.js-button');
+        var button2 = document.querySelector('.js-clearbutton')
+        button.addEventListener('click', function(){
+            formStoragestaffTrack.save();
+            location.reload(true);
+        });
+        button2.addEventListener('click', function(){
+           formStoragestaffTrack.clear();
+            location.reload(true);
+        })
