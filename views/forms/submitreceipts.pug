@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  
+  section(class="section" style="flex: 1 0 auto; padding: 20px;")
+    div(class='columns is-multiline is-centered ')
+      div(class='column is-narrow')
+        form(action='' method='POST' enctype="multipart/form-data")
+          div(class='field')
+            label(class='label') Submit a Receipt
+            input(type='file' class='input' name='receipt' required)
+          div(class='field')
+            button(class='button is-primary' type='Submit') Submit Receipts

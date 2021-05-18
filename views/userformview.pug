@@ -35,6 +35,7 @@ block content
                                     p(class='help has-text-weight-bold') Quality Measure Type Used: 
                                     p(class='help pb-2')=company.measure_type
                                 div(class='control')
+                                -console.log(company.attribute_name)
                                     if company.attribute_name.toLowerCase().includes('year') && !company.attribute_name.toLowerCase().includes('score')
                                         label(class='label')
                                             p(class='help') Make sure new values is in the same format of YYYY

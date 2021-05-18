@@ -3,7 +3,14 @@ var express = require('express');
 var db = require('../db');
 var router = express.Router();
 var currentYear = new Date().getFullYear();
-
+var NodeGoogleDrive = require('node-google-drive');
+const { path } = require('../app');
+const { ColumnSet } = require('pg-promise');
+const dirPath = require('path');
+const pgp = require('pg-promise')({
+  /* initialization options */
+  capSQL: true, // capitalize all generated SQL
+});
 // controller inits
 var homepage_controller = require('../controllers/homepageController');
 var useraccount_controller = require('../controllers/useraccountController');
@@ -12,8 +19,10 @@ var formcreate_controller = require('../controllers/formController');
 var adminformview_controller = require('../controllers/adminFormView');
 var userformview_controller = require('../controllers/userFormView');
 var support_controller = require('../controllers/supportController');
-
 var async = require('async');
+
+const ROOT_FOLDER = '1LOJ5KvYGLbeU2-C6Sz9qyi-iSfnAfkhW',
+  PATH_TO_CREDENTIALS = dirPath.resolve(`${__dirname}/my-credentials.json`);
 
 // multer initiation and sets upload folder to be /uploads
 var multer = require('multer');
@@ -28,7 +37,6 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage });
 
 var passport = require('passport');
-const { path } = require('../app');
 
 // ensures authentication for user before letting them log in
 function ensureAuthentication(req, res, next) {
@@ -103,19 +111,19 @@ router.post('/messages/:messageid', support_controller.messagedetailpost);
 router.get('/duedates', administratorCheck, useraccount_controller.duedate);
 router.post('/duedates', useraccount_controller.duedatepost);
 
-// Route to Create a Company
-router.get(
-  '/createcompany',
-  administratorCheck,
-  companycreate_controller.createcompany
-);
-
 // sets variables for company uploader to take the File input type. Sticks it in the "uplaods' folder"
 
 var compUploader = upload.fields([
   { name: 'logo' },
   { name: 'business_picture' },
 ]);
+
+// Route to Create a Company
+router.get(
+  '/createcompany',
+  administratorCheck,
+  companycreate_controller.createcompany
+);
 
 router.post('/createcompany', compUploader, function (req, res, next) {
   console.log(req.files.logo[0].originalname);
@@ -202,6 +210,7 @@ router.post(
 );
 
 // QIA Detailed Budget Form
+
 router.get(
   '/forms/qiabudget',
   ensureAuthentication,
@@ -209,6 +218,157 @@ router.get(
 );
 
 router.post('/forms/qiabudget', formcreate_controller.detailedbudgetpost);
+
+// Route & Logic to Upload Photos Before & After QIA
+router.get(
+  '/forms/submitphotos',
+  ensureAuthentication,
+  formcreate_controller.submitphotos
+);
+
+var storage = multer.memoryStorage();
+var beforeafterUpload = multer({ storage: storage });
+var beforePhotosUpload = beforeafterUpload.fields([
+  { name: 'beforePhoto' },
+  { name: 'afterPhoto' },
+]);
+
+router.post(
+  '/forms/submitphotos',
+  beforePhotosUpload,
+  async function (req, res, next) {
+    db.tx(async (t) => {
+      const companyDetails = await t.one(
+        'SELECT c.company_name, c.id, u.first_name, u.last_name FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1',
+        [req.user.user]
+      );
+
+      let profileUpdate = await db.none(
+        'UPDATE company SET last_modified = to_timestamp($1 / 1000.0) WHERE company_name = $2',
+        [Date.now(), companyDetails.company_name]
+      );
+
+      const insertedForm = await t.one(
+        'INSERT INTO formresponse(company_id, form_id) VALUES ($1, $2) RETURNING response_id',
+        [companyDetails.id, 14]
+      );
+
+      const insertData1 = await t.any(
+        'INSERT INTO formquestionresponse(attrib_id, value, response_id) VALUES ($1, $2, $3)',
+        [
+          247,
+          companyDetails.company_name + req.files.beforePhoto[0].originalname,
+          insertedForm.response_id,
+        ]
+      );
+
+      const insertData2 = await t.any(
+        'INSERT INTO formquestionresponse(attrib_id, value, response_id) VALUES ($1, $2, $3)',
+        [
+          248,
+          companyDetails.company_name + req.files.afterPhoto[0].originalname,
+          insertedForm.response_id,
+        ]
+      );
+
+      return { companyDetails, insertedForm };
+    })
+      .then(async (data) => {
+        const creds_service_user = require(PATH_TO_CREDENTIALS);
+
+        const googleDriveInstance = new NodeGoogleDrive({
+          ROOT_FOLDER: '16JxQ0u4HR2JTMfnr9F0AuT6RwDREMbN8',
+        });
+
+        let gdrive = await googleDriveInstance.useServiceAccountAuth(
+          creds_service_user
+        );
+
+        let uploadResponseBefore = await googleDriveInstance.create({
+          source: req.files.beforePhoto[0].buffer,
+          name:
+            data.companyDetails.company_name +
+            req.files.beforePhoto[0].originalname,
+          mimeType: req.files.beforePhoto[0].mimetype,
+        });
+
+        let uploadResponseAfter = await googleDriveInstance.create({
+          source: req.files.afterPhoto[0].buffer,
+          name:
+            data.companyDetails.company_name +
+            req.files.afterPhoto[0].originalname,
+          mimeType: req.files.afterPhoto[0].mimetype,
+        });
+
+        req.flash('info', 'Thank you for submitting the receipts.');
+        res.redirect('/');
+      })
+      .catch((e) => {
+        if (e) {
+          console.log(e);
+          req.flash(
+            'error',
+            'An error has occured. Please try again or submit a support ticket.'
+          );
+        }
+      });
+  }
+);
+
+// Submit Receipts
+
+router.get(
+  '/forms/submitreceipts',
+  ensureAuthentication,
+  formcreate_controller.submitreceipts
+);
+
+var receiptUpload = multer({ storage: storage });
+
+router.post(
+  '/forms/submitreceipts',
+  receiptUpload.single('receipt'),
+  async function (req, res, next) {
+    db.tx(async (t) => {
+      const companyDetails = await t.one(
+        'SELECT u.company_id, c.company_name, c.first_name, c.last_name, c.town FROM company c INNER JOIN useraccount u on c.id= u.company_id WHERE u.username = $1',
+        [req.user.user]
+      );
+
+      return { companyDetails };
+    })
+      .then(async (data) => {
+        console.log(req.file.buffer);
+
+        const creds_service_user = require(PATH_TO_CREDENTIALS);
+
+        const googleDriveInstance = new NodeGoogleDrive({
+          ROOT_FOLDER: ROOT_FOLDER,
+        });
+
+        let gdrive = await googleDriveInstance.useServiceAccountAuth(
+          creds_service_user
+        );
+
+        let uploadResponse = await googleDriveInstance.create({
+          source: req.file.buffer,
+          name: data.companyDetails.company_name + req.file.originalname,
+        });
+
+        req.flash('info', 'Thank you for submitting the receipts.');
+        res.redirect('/');
+      })
+      .catch((e) => {
+        if (e) {
+          console.log(e);
+          req.flash(
+            'error',
+            'An error has occured. Please try again or submit a support ticket.'
+          );
+        }
+      });
+  }
+);
 
 // QIA Center Improvement Plan Form
 router.get(
@@ -290,6 +450,13 @@ router.get(
   '/admin/formviewer/:companyid',
   administratorCheck,
   adminformview_controller.formviewer
+);
+
+// receipt viewer
+router.get(
+  '/admin/receiptviewer/:companyname',
+  administratorCheck,
+  adminformview_controller.receiptviewer
 );
 
 // view all user forms

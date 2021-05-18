@@ -9,9 +9,45 @@ var currentYear = new Date().getFullYear();
 var previousYear = new Date().getFullYear() - 1;
 var nextYear = new Date().getFullYear() + 1;
 var isEmpty = require('lodash.isempty');
+const path = require('path');
+var NodeGoogleDrive = require('node-google-drive');
 const { ColumnSet } = require('pg-promise');
 const { NULL } = require('node-sass');
 var todaysDate = new Date();
+
+var multer = require('multer');
+
+const ROOT_FOLDER = '1LOJ5KvYGLbeU2-C6Sz9qyi-iSfnAfkhW',
+  PATH_TO_CREDENTIALS = path.resolve(`${__dirname}/my-credentials.json`);
+
+// google drive
+async function PhotoUploader() {
+  const creds_service_user = require(PATH_TO_CREDENTIALS);
+
+  const googleDriveInstance = new NodeGoogleDrive({
+    ROOT_FOLDER: ROOT_FOLDER,
+  });
+
+  let gdrive = await googleDriveInstance.useServiceAccountAuth(
+    creds_service_user
+  );
+
+  let folderResponse = await googleDriveInstance.listFolders(
+    ROOT_FOLDER,
+    null,
+    false
+  );
+
+  let listFilesResponse = await googleDriveInstance.listFiles(
+    ROOT_FOLDER,
+    null,
+    false
+  );
+
+  for (let file of listFilesResponse.files) {
+    console.log({ file });
+  }
+}
 
 function inputSkipper(column) {
   console.log(column.value);
@@ -25,6 +61,30 @@ const pgp = require('pg-promise')({
   /* initialization options */
   capSQL: true, // capitalize all generated SQL
 });
+
+// submit photos
+exports.submitphotos = function (req, res, next) {
+  res.render('./forms/submitphotos', {
+    user: req.user,
+    currentYear,
+    nextYear,
+    previousYear,
+  });
+};
+
+exports.submitphotos_post = function (req, res, next) {
+  res.send('NYI');
+};
+
+// submit receipts
+exports.submitreceipts = function (req, res, next) {
+  res.render('./forms/submitreceipts', {
+    user: req.user,
+    currentYear,
+    previousYear,
+    nextYear,
+  });
+};
 
 // QIA Progress
 
@@ -358,7 +418,7 @@ exports.qiaoutcome_post = async function (req, res, next) {
 exports.detailedbudget = function (req, res, next) {
   db.tx(async (t) => {
     const companydetails = await t.one(
-      'SELECT company_name, c.id, u.first_name, u.last_name FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1',
+      'SELECT c.company_name, c.id, u.first_name, u.last_name FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1',
       [req.user.user]
     );
     return companydetails;
@@ -509,7 +569,7 @@ exports.detailedbudgetpost = function (req, res, next) {
 
   db.tx(async (t) => {
     const companyDetails = await t.one(
-      'SELECT company_name, c.id, first_name, last_name FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1',
+      'SELECT c.company_name, c.id, u.first_name, u.last_name FROM company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1',
       [req.user.user]
     );
 
@@ -530,6 +590,11 @@ exports.detailedbudgetpost = function (req, res, next) {
         {
           attrib_id: 20,
           value: results.companyDetails.company_name,
+          response_id: results.insertedForm.response_id,
+        },
+        {
+          attrib_id: 246,
+          value: req.body.receiptnames,
           response_id: results.insertedForm.response_id,
         },
         {

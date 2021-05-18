@@ -39,7 +39,7 @@ exports.logout = function (req, res, next) {
 exports.duedate = function (req, res, next) {
   db.tx(async (t) => {
     const dueDates = await t.any(
-      'SELECT form_name, id, duedate FROM formduedate INNER JOIN forms on form_reference = form_id ORDER BY form_name ASC'
+      'SELECT f.form_name, fd.id, fd.duedate FROM formduedate fd INNER JOIN forms f on form_reference = form_id ORDER BY form_name ASC'
     );
     return { dueDates };
   })
@@ -61,7 +61,7 @@ exports.duedate = function (req, res, next) {
 exports.duedatepost = function (req, res, next) {
   db.tx(async (t) => {
     const dueDates = await t.any(
-      'SELECT form_name, id, duedate FROM formduedate INNER JOIN forms on form_reference = form_id ORDER BY form_name ASC'
+      'SELECT f.form_name, fd.id, fd.duedate FROM formduedate fd INNER JOIN forms f on form_reference = form_id ORDER BY form_name ASC'
     );
 
     return { dueDates };
@@ -73,6 +73,7 @@ exports.duedatepost = function (req, res, next) {
         dataMulti.push({
           id: date.id,
           duedate: req.body[`${date.id}`],
+          link: req.body[`${date.link}`],
         });
         return dataMulti;
       });

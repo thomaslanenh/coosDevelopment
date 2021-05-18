@@ -1,0 +1,11 @@
+extends layout
+
+block content
+    section(class='section' style="flex: 1 0 auto;")
+            div(class='columns is-mobile is-centered is-multiline')
+                div(class='column has-text-centered')
+                    h1(class='is-size-1 has-text-weight-bold') Submitted Receipts
+                    each receipt in compReceipts
+                        -console.log(receipt.mimeType)
+                        li
+                            a(href=`https://drive.google.com/file/d/${receipt.id}/view`)=receipt.name

@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  
+  section(class="section" style="flex: 1 0 auto; padding: 20px;")
+    div(class='columns is-multiline is-centered ')
+      div(class='column is-narrow')
+        h1 Before & After Photos 
+        p(class='help') Please note that it may take a while to upload the files depending on size.
+        form(action='' method='POST' enctype="multipart/form-data")
+          div(class='field')
+            label(class='label') Submit a Before Photo
+            input(type='file' class='input' name='beforePhoto' required)
+          div(class='field')
+            label(class='label') Submit a After Photo
+            input(type='file' class='input' name='afterPhoto' required)
+          div(class='field')
+            button(class='button is-primary' type='Submit') Submit Receipts

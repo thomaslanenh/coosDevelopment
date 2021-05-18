@@ -7,7 +7,10 @@ block content
                 div(class='column is-full')
                     h1(class='has-text-centered has-text-weight-bold is-size-2') #{companyForms[0].company_name} Forms
                 div(class="column is-full")
-                    p(class='help has-text-centered') This page lists all forms submitted by #{companyForms[0].company_name}. If you think a form is missing, or you need to request a form that is not shown, please submit a #[a(href="/support") Support Ticket].
+                    p(class='help has-text-centered') This page lists all forms & receipts submitted by #{companyForms[0].company_name}. If you think a form is missing, or you need to request a form that is not shown, please submit a #[a(href="/support") Support Ticket].
+            div(class='columns is-mobile is-striped is-narrow is-hoverable')
+                div(class='column has-text-centered')
+                    a(href=`/admin/receiptviewer/${companyForms[0].company_name}`) View Receipts Submitted by Company
             div(class='columns is-mobile is-centered is-multiline is-half')
                 table(class='table is-bordered is-striped is-narrow is-hoverable')
                     thead 
@@ -32,3 +35,4 @@ block content
                                 td 
                                     a(class="is-link" href=`/${user.user}/forms/${form.id}/${form.form_id}/${form.response_id}`)
                                         p View Form
+                

@@ -3,6 +3,10 @@ const db = require('../db');
 var currentYear = new Date().getFullYear();
 var previousYear = new Date().getFullYear() - 1;
 var nextYear = new Date().getFullYear() + 1;
+var NodeGoogleDrive = require('node-google-drive');
+const path = require('path');
+const ROOT_FOLDER = '1LOJ5KvYGLbeU2-C6Sz9qyi-iSfnAfkhW',
+  PATH_TO_CREDENTIALS = '../routes/my-credentials.json';
 
 exports.index = async function (req, res, next) {
   db.tx(async (t) => {
@@ -42,7 +46,34 @@ exports.formviewer = async function (req, res, next) {
 
     return { companyForms };
   })
-    .then((results) => {
+    .then(async (results) => {
+      // const creds_service_user = require(PATH_TO_CREDENTIALS);
+
+      // const googleDriveInstance = new NodeGoogleDrive({
+      //   ROOT_FOLDER: ROOT_FOLDER,
+      // });
+
+      // let gdrive = await googleDriveInstance.useServiceAccountAuth(
+      //   creds_service_user
+      // );
+
+      // let receiptData = await googleDriveInstance.listFiles();
+
+      // // receiptData = Object.entries(receiptData.files);
+
+      // let compReceipts = [];
+
+      // let stringCompanyName = results.companyForms[0].company_name.toString();
+
+      // receiptData.files.forEach(async (i) => {
+      //   let stringNa = i.name.toString();
+
+      //   if (stringNa.startsWith(stringCompanyName)) {
+      //     compReceipts.push(i);
+      //   }
+      //   return compReceipts;
+      // });
+
       res.render('companyallforms', {
         user: req.user,
         companyForms: results.companyForms,
@@ -61,4 +92,38 @@ exports.formviewer = async function (req, res, next) {
         res.redirect('/');
       }
     });
+};
+
+exports.receiptviewer = async function (req, res, next) {
+  const creds_service_user = require(PATH_TO_CREDENTIALS);
+
+  const googleDriveInstance = new NodeGoogleDrive({
+    ROOT_FOLDER: ROOT_FOLDER,
+  });
+
+  let gdrive = await googleDriveInstance.useServiceAccountAuth(
+    creds_service_user
+  );
+
+  let receiptData = await googleDriveInstance.listFiles();
+
+  // receiptData = Object.entries(receiptData.files);
+
+  let compReceipts = [];
+
+  let stringCompanyName = req.params.companyname;
+
+  receiptData.files.forEach(async (i) => {
+    let stringNa = i.name.toString();
+
+    if (stringNa.startsWith(stringCompanyName)) {
+      compReceipts.push(i);
+    }
+    return compReceipts;
+  });
+
+  res.render('receiptviewer', {
+    user: req.user,
+    compReceipts,
+  });
 };

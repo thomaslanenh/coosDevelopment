@@ -9,6 +9,7 @@ block content
           each form in duedates
             div(class='field')
               label(class='label')=form.form_name
-              input(class='input' type='date' value=form.duedate name=form.id)
+              label(class="help") Form Due Date:
+                input(class='input' type='date' value=form.duedate name=form.id)
           div(class='field')
             button(class='button is-primary' type='Submit') Submit Form

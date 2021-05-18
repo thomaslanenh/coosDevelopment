@@ -13,6 +13,8 @@ block content
             p(class='menu-label') Form System
             ul(class='menu-list')
                 li
+                    a(href='/forms/submitreceipts' class='is-italic has-text-weight-bold') Upload a Receipt
+                li
                     a(href=`/${userinfo.username}/forms/${userinfo.company_id}/all` class='is-italic') Completed Forms
                 li 
                     a(href=`/${userinfo.company_id}/staffMembers` class='is-italic') Staff Members
@@ -81,6 +83,15 @@ block content
                                                     a(class='is-link' href=form.link)
                                                         p(class='has-text-weight-bold')=form.form_name 
                                                 td 
+                                                    p(class='help is-italic has-text-weight-bold has-text-centered') --
+                                                td 
+                                                    p=formdue
+                                        else if form.form_name === 'QIA Signed Attestation'
+                                            tr
+                                                td
+                                                    a(class='is-link' href=form.link)
+                                                        p(class='has-text-weight-bold')=form.form_name
+                                                td
                                                     p(class='help is-italic has-text-weight-bold has-text-centered') --
                                                 td 
                                                     p=formdue

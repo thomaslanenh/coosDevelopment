@@ -30,6 +30,8 @@ block content
                                 input(type='number' class='input' name='currentchildren' value=0 required)
                     br
                     div(class='field')
+                        h2(class='has-text-weight-bold is-5') You can upload your receipts on #[a(href="/forms/submitreceipts") this page]. Please take note of the file names as you will be required to enter them below.
+                    div(class='field')
                         table(class='table is-bordered is-striped is-hoverable is-narrow')
                             thead
                                 tr(style='font-size: 12px; background-color: #e6ffff')
@@ -82,6 +84,7 @@ block content
                                             select(name='receiptsubmitted1' class='select')
                                                 option(value='Yes') Yes
                                                 option(value='No' selected) No
+                                
                                 tr
                                     td
                                         input(type='text' class='input' name='goal2')
@@ -114,6 +117,7 @@ block content
                                             select(name='receiptsubmitted2' class='select')
                                                 option(value='Yes') Yes
                                                 option(value='No' selected) No
+                                 
                                 tr
                                     td
                                         input(type='text' class='input' name='goal3')
@@ -146,6 +150,7 @@ block content
                                             select(name='receiptsubmitted3' class='select')
                                                 option(value='Yes') Yes
                                                 option(value='No' selected) No
+                                 
                                 tr
                                     td
                                         input(type='text' class='input' name='goal4')
@@ -178,6 +183,7 @@ block content
                                             select(name='receiptsubmitted4' class='select')
                                                 option(value='Yes') Yes
                                                 option(value='No' selected) No
+                                   
                                 tr
                                     td
                                         input(type='text' class='input' name='goal5')
@@ -210,6 +216,7 @@ block content
                                             select(name='receiptsubmitted5' class='select')
                                                 option(value='Yes') Yes
                                                 option(value='No' selected) No
+                              
                                 tr
                                     td
                                         input(type='text' class='input' name='goal6')
@@ -242,6 +249,11 @@ block content
                                             select(name='receiptsubmitted6' class='select')
                                                 option(value='Yes') Yes
                                                 option(value='No' selected) No
+
+                    br
+                    div(class='field')
+                        label(class='label') Submitted Receipt File Names
+                        textarea(class='textarea' rows='5' name='receiptnames')
                     br
                     div(class='field')
                         p(class='help has-text-centered has-text-weight-bold') If you would like to make any changes to the items you budgeted to buy, or would like to purchase additional items for any reason you must first get authorization from the QIA Approval Committee.
