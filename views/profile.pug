@@ -13,7 +13,7 @@ block content
             p(class='menu-label') Form System
             ul(class='menu-list')
                 li
-                    a(href='/forms/submitreceipts' class='is-italic has-text-weight-bold') Upload a Receipt
+                    a(href='/forms/submitreceipts' class='is-italic has-text-weight-bold') Upload a Picture / Receipt
                 li
                     a(href=`/${userinfo.username}/forms/${userinfo.company_id}/all` class='is-italic') Completed Forms
                 li 
@@ -38,7 +38,6 @@ block content
                             img(src=`/uploads/${userinfo.logo}` alt=userinfo.company_name)
                     else 
                         h1 No user information found. Please try again or submit a support ticket.
-
                 section(class="section" style="flex: 1 0 auto; padding: 20px;")
                     div(class='columns is-mobile is-centered is-multiline')
                         div(class='column is-full')
@@ -60,7 +59,30 @@ block content
                                     p(class="has-text-centered has-text-weight-bold") View All Messages
                             else
                                 p(class='has-text-weight-bold has-text-centered is-size-6 is-italic') You Have No Messages
+                section(class='section')
+                    h3(class='has-text-weight-semibold has-text-centered is-size-5') Recently Completed Forms:
+                    if recentForms.length > 0
+                        table(class='table is-bordered is-striped is-hoverable')
+                            thead
+                                tr
+                                    th Form Name
+                                    th Completion Date
+                                tbody
+                                    each form in recentForms
+                                        tr
+                                            td
+                                                a(class='is-link' href=`/${userinfo.username}/forms/${form.company_id}/${form.form_id}/${form.response_id}`)
+                                                    p #{form.form_name}
+                                            td #{form.to_char}
+                        section(class='section')
+                            a(href=`/${userinfo.username}/forms/${recentForms[0].company_id}/all`)
+                                p(class='help') Please note that this lists only the most recent distinct form. If it's missing a form, check the following:
+                                p(class='has-text-centered has-text-weight-bold is-italic') View More Forms
+                            
+                    else
+                        p(class='is-italic has-text-centered subtitle') No Recently Completed Forms.                
             div(class='column is-narrow')
+            form(action='' method='POST' class='js-form')
                 div(class='column is-narrow')
                     section(class='section')
                         table(class='table is-bordered is-striped is-hoverable')
@@ -74,6 +96,7 @@ block content
                             tbody
                                 if dueDates
                                     each form in dueDates 
+                                        -console.log(form)
                                         -let formdue = new Date(form.duedate.replace(/-/g, '\/'))
                                         - const options = { year: 'numeric', month: 'long', day: 'numeric' };
                                         -formdue = formdue.toLocaleDateString(undefined, options);
@@ -83,7 +106,29 @@ block content
                                                     a(class='is-link' href=form.link)
                                                         p(class='has-text-weight-bold')=form.form_name 
                                                 td 
-                                                    p(class='help is-italic has-text-weight-bold has-text-centered') --
+                                                   select(class='select' name='strFamily')
+                                                        option(value='Yes') ✓ 
+                                                        option(selected) No
+                                                td 
+                                                    p=formdue
+                                        else if parseInt(form.form_reference) >= 25 && parseInt(form.form_reference) <= 32
+                                            tr
+                                                td
+                                                    p(class='has-text-weight-bold')=form.form_name
+                                                td
+                                                    select(class='select' name=`${form.form_reference}`)
+                                                        option(value='Yes') ✓ 
+                                                        option(selected) No
+                                                td 
+                                                    p=formdue
+                                        else if parseInt(form.form_reference) == 34 || parseInt(form.form_reference) == 35
+                                            tr
+                                                td
+                                                    p(class='has-text-weight-bold')=form.form_name
+                                                td
+                                                   select(class='select' name=`${form.form_reference}`)
+                                                        option(value='Yes') ✓ 
+                                                        option(selected) No
                                                 td 
                                                     p=formdue
                                         else if form.form_name === 'QIA Signed Attestation'
@@ -92,9 +137,83 @@ block content
                                                     a(class='is-link' href=form.link)
                                                         p(class='has-text-weight-bold')=form.form_name
                                                 td
-                                                    p(class='help is-italic has-text-weight-bold has-text-centered') --
+                                                   select(class='select' name='qiaAttestation')
+                                                        option(value='Yes') ✓ 
+                                                        option(selected) No
                                                 td 
                                                     p=formdue
+                                        else if form.form_name === "ASQ Welligent Form"
+                                            tr 
+                                                td 
+                                                    p(class='has-text-weight-bold')=form.form_name
+                                                td 
+                                                    select(class='select' name='asqWelligent')
+                                                            option(value='Yes') ✓ 
+                                                            option(selected) No
+                                                td
+                                                    p=formdue
+                                        else if form.form_name === "ASQ Report Form"
+                                            tr 
+                                                td 
+                                                    p(class='has-text-weight-bold')=form.form_name
+                                                td 
+                                                    select(class='select' name='asqReport')
+                                                        option(value='Yes') ✓ 
+                                                        option(selected) No
+                                                td
+                                                    p=formdue
+                                        else if form.form_name === "Program License"
+                                                tr 
+                                                    td 
+                                                        a(class='is-link' href=form.link)
+                                                            p(class='has-text-weight-bold')=form.form_name
+                                                    td 
+                                                        select(class='select' name='programLicense')
+                                                            option(value='Yes') ✓ 
+                                                            option(selected) No
+                                                    td
+                                                        p=formdue
+                                        else if form.form_name === "Parent Area"
+                                            tr 
+                                                td 
+                                                    a(class='is-link' href=form.link)
+                                                        p(class='has-text-weight-bold')=form.form_name
+                                                td 
+                                                    select(class='select' name='parentarea')
+                                                        option(value='Yes') ✓ 
+                                                        option(selected) No
+                                                td
+                                                    p=formdue
+                                        else if form.form_name === "QRIS License/Accreditation"
+                                                tr 
+                                                    td 
+                                                        p(class='has-text-weight-bold')=form.form_name
+                                                    td 
+                                                        select(class='select' name='qrisLicense')
+                                                            option(value='Yes') ✓ 
+                                                            option(selected) No
+                                                    td
+                                                        p=formdue
+                                        else if form.form_name === "COR/TS Gold Snapshot (Spring)"
+                                                tr 
+                                                    td 
+                                                        p(class='has-text-weight-bold')=form.form_name
+                                                    td 
+                                                        select(class='select' name='corSpring')
+                                                                option(value='Yes') ✓ 
+                                                                option(selected) No
+                                                    td
+                                                        p=formdue
+                                        else if form.form_name === "COR/TS Gold Snapshot (Fall)"
+                                                tr 
+                                                    td 
+                                                        p(class='has-text-weight-bold')=form.form_name
+                                                    td 
+                                                        select(class='select' name='corFall')
+                                                                option(value='Yes') ✓ 
+                                                                option(selected) No
+                                                    td
+                                                        p=formdue
                                         else
                                             tr 
                                                 td 
@@ -113,26 +232,15 @@ block content
                                 else 
                                     tr 
                                         p No Forms found, please refresh or submit a support ticket.
-                div(class='column is-narrow')
-                    section(class='section')
-                        h3(class='has-text-weight-semibold has-text-centered is-size-5') Recently Completed Forms:
-                        if recentForms.length > 0
-                            table(class='table is-bordered is-striped is-hoverable')
-                                thead
-                                    tr
-                                        th Form Name
-                                        th Completion Date
-                                    tbody
-                                        each form in recentForms
-                                            tr
-                                                td
-                                                    a(class='is-link' href=`/${userinfo.username}/forms/${form.company_id}/${form.form_id}/${form.response_id}`)
-                                                        p #{form.form_name}
-                                                td #{form.to_char}
-                            section(class='section')
-                                a(href=`/${userinfo.username}/forms/${recentForms[0].company_id}/all`)
-                                    p(class='help') Please note that this lists only the most recent distinct form. If it's missing a form, check the following:
-                                    p(class='has-text-centered has-text-weight-bold is-italic') View More Forms
-                                
-                        else
-                            p(class='is-italic has-text-centered subtitle') No Recently Completed Forms.
+                    button(type='button' class='ml-5 button is-info js-button') Save Form Status
+    script(src='https://unpkg.com/form-storage@1.2.0/build/form-storage.js')
+    script.
+        var formStorage = new FormStorage('.js-form', {
+            name: 'form-status'
+        });
+        formStorage.apply();
+        var button = document.querySelector('.js-button');
+        button.addEventListener('click', function(){
+            formStorage.save();
+            location.reload(true);
+        });

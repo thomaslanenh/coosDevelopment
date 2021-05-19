@@ -1087,6 +1087,161 @@ exports.staffmeetingtrackerpost = function (req, res, next) {
     });
 };
 
+// Staff Credential Tracking
+exports.credentials = function (req, res, next) {
+  db.tx(async (t) => {
+    const companyDetails = await t.one(
+      'SELECT * from company c INNER JOIN useraccount u on c.id = u.company_id WHERE u.username = $1',
+      [req.user.user]
+    );
+    const classTypes = await t.manyOrNone('SELECT * from classtypes');
+    const staffMembers = await t.manyOrNone(
+      'SELECT u.first_name, u.last_name, u.id, t.type, d.degree, dt.degree_type from useraccount u INNER JOIN usertypes t ON u.user_type = t.type_ref INNER JOIN degree_types dt on u.degree_type = dt.type_id INNER JOIN degrees d on u.degree =  d.degree_id WHERE u.company_id = $1 ORDER BY t.type ASC, u.last_name asc',
+      [companyDetails.company_id]
+    );
+
+    return { companyDetails, staffMembers, classTypes };
+  })
+    .then((results) => {
+      res.render('./forms/credentials', {
+        user: req.user,
+        currentYear,
+        previousYear,
+        nextYear,
+        companyName: results.companyDetails,
+        staffMembers: results.staffMembers,
+        classTypes: results.classTypes,
+      });
+    })
+    .catch((e) => {
+      if (e) {
+        console.log(e);
+        req.flash(
+          'error',
+          'There has been a error. Your company may not have any Staff Members. Try again or submit a Support Ticket.'
+        );
+        res.redirect('/');
+      }
+    });
+};
+
+exports.credentials_post = function (req, res, next) {
+  db.tx(async (t) => {
+    const companyAccount = await t.one(
+      'SELECT c.id, u.company_id, c.company_name from company c INNER JOIN useraccount u on c.id = u.company_id where u.username = $1',
+      [req.user.user]
+    );
+    const staffMembers = await t.manyOrNone(
+      'SELECT u.first_name, u.last_name, u.id, d.degree, dt.degree_type from useraccount u INNER JOIN degree_types dt on u.degree_type = dt.type_id INNER JOIN degrees d on dt.type_id = d.degree_id INNER JOIN company c on u.company_id = c.id WHERE c.id = $1',
+      [companyAccount.company_id]
+    );
+    let profileUpdate = await db.none(
+      'UPDATE company SET last_modified = to_timestamp($1 / 1000.0) WHERE company_name = $2',
+      [Date.now(), companyAccount.company_name]
+    );
+
+    const insertForm = await t.one(
+      'INSERT INTO formresponse(form_id, company_id) values (18, $1) returning response_id',
+      [companyAccount.company_id]
+    );
+    return { companyAccount, staffMembers, insertForm };
+  })
+    .then((result) => {
+      const cs = new pgp.helpers.ColumnSet(
+        [
+          {
+            name: 'attrib_id',
+          },
+          {
+            name: 'value',
+          },
+          {
+            name: 'response_id',
+          },
+          {
+            name: 'staff_id',
+            def: null,
+          },
+        ],
+        {
+          table: 'formquestionresponse',
+        }
+      );
+
+      const values = [
+        {
+          attrib_id: 249,
+          value: result.companyAccount.company_name,
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 250,
+          value: req.body.date,
+          response_id: result.insertForm.response_id,
+        },
+      ];
+
+      const staffMembers = result.staffMembers;
+
+      staffMembers.map((member) => {
+        values.push(
+          {
+            attrib_id: 251,
+            value: member.first_name + ' ' + member.last_name,
+            response_id: result.insertForm.response_id,
+            staff_id: member.id,
+          },
+          {
+            attrib_id: 252,
+            value:
+              req.body[
+                `${member.first_name}${member.last_name}credentialPreviousYear`
+              ],
+            response_id: result.insertForm.response_id,
+            staff_id: member.id,
+          },
+          {
+            attrib_id: 253,
+            value:
+              req.body[`${member.first_name}${member.last_name}credentialType`],
+            response_id: result.insertForm.response_id,
+            staff_id: member.id,
+          },
+          {
+            attrib_id: 254,
+            value: req.body[`${member.first_name}${member.last_name}inTod`],
+            response_id: result.insertForm.response_id,
+            staff_id: member.id,
+          },
+
+          {
+            attrib_id: 255,
+            value:
+              req.body[`${member.first_name}${member.last_name}expirationDate`],
+            response_id: result.insertForm.response_id,
+            staff_id: member.id,
+          }
+        );
+      });
+
+      const query = pgp.helpers.insert(values, cs);
+      const recordsResponse = db.none(query);
+
+      req.flash('info', 'Thank you for your form submission.');
+      res.redirect('/');
+    })
+    .catch((e) => {
+      if (e) {
+        console.log(e);
+        req.flash(
+          'error',
+          'An error has occured. Please try again or submit a support ticket'
+        );
+        res.redirect('/');
+      }
+    });
+};
+
 // ECE Credit Tracking
 
 exports.ececredittracking = function (req, res, next) {

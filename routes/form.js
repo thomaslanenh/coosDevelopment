@@ -395,6 +395,15 @@ router.post(
   formcreate_controller.staffmeetingtrackerpost
 );
 
+// staff credential form
+router.get(
+  '/forms/credentials',
+  ensureAuthentication,
+  formcreate_controller.credentials
+);
+
+router.post('/forms/credentials', formcreate_controller.credentials_post);
+
 // ASQ Consent Form
 router.get(
   '/forms/asqconsent',
