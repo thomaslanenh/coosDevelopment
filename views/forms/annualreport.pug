@@ -41,14 +41,42 @@ block content
                                     th 
                                         p Out of Coos
                             tbody 
-                                each agegroup in agesServed 
-                                    tr 
-                                        th 
-                                            p(class='is-size-6') #{agegroup.range_description} - #{agegroup.age_range}
-                                        td 
-                                            input(class='input' type='number' placeholder=0 name=`${companyDetails.company_id}${agegroup.id}coosnumber`)
-                                        td 
-                                            input(class='input' type='number' placeholder=0 name=`${companyDetails.company_id}${agegroup.id}outofcoosnumber`)
+                                tr 
+                                    th 
+                                        p(class="is-size-6") Infants - 0 - 12 Months 
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name=`${companyDetails.company_id}1coosnumber`)
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name=`${companyDetails.company_id}1outofcoosnumber`)
+                                tr 
+                                    th 
+                                        p(class="is-size-6") Toddlers - 12 - 36 Months
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name=`${companyDetails.company_id}2coosnumber`)
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name=`${companyDetails.company_id}2outofcoosnumber`)
+                                tr 
+                                    th 
+                                        p(class="is-size-6") Preschool - 3 - 5 Years Old
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name=`${companyDetails.company_id}3coosnumber`)
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name=`${companyDetails.company_id}3outofcoosnumber`)
+                                tr 
+                                    th 
+                                        p(class="is-size-6") Kindergarten - 5 - 6 Years Old
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name=`${companyDetails.company_id}4coosnumber`)
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name=`${companyDetails.company_id}4outofcoosnumber`)
+                                tr 
+                                    th 
+                                        p(class="is-size-6") School Age - 5 - 12 Years Old
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name=`${companyDetails.company_id}5coosnumber`)
+                                    td 
+                                        input(class='input' type='number' placeholder=0 name=`${companyDetails.company_id}5outofcoosnumber`)
+                                    
                 div(class='mt-5 columns is-mobile is-responsive is-multiline')
                     div(class='column is-half')
                         label(class='label is-size-4') Typical Enrollment 

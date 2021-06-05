@@ -1956,16 +1956,12 @@ exports.annualreport = function (req, res, next) {
       'SELECT u.company_id, c.company_name, c.first_name,c.last_name, c.town, l.license_type from company c INNER JOIN license l ON c.license_type = l.id INNER JOIN useraccount u ON c.id = u.company_id WHERE u.username = $1',
       [req.user.user]
     );
-    const agesServed = await t.many(
-      'SELECT * FROM agerange a INNER JOIN companyages ca ON a.id = ca.age_id WHERE ca.company_id = $1',
-      [companyDetails.company_id]
-    );
-    return { companyDetails, agesServed };
+
+    return { companyDetails };
   })
     .then((results) => {
       res.render('./forms/annualreport', {
         companyDetails: results.companyDetails,
-        agesServed: results.agesServed,
         user: req.user,
         currentYear,
         previousYear,
@@ -2031,24 +2027,57 @@ exports.annualreportpost = function (req, res, next) {
         },
         {
           attrib_id: 97,
-          value: req.body[`${result.companyAccount.company_id}5coosnumber`],
+          value: req.body[`${result.companyAccount.company_id}1coosnumber`],
           response_id: result.insertForm.response_id,
         },
         {
           attrib_id: 98,
           value:
-            req.body[`${result.companyAccount.company_id}5outofcoosnumber`],
+            req.body[`${result.companyAccount.company_id}1outofcoosnumber`],
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 257,
+          value: req.body[`${result.companyAccount.company_id}2coosnumber`],
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 258,
+          value:
+            req.body[`${result.companyAccount.company_id}2outofcoosnumber`],
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 259,
+          value: req.body[`${result.companyAccount.company_id}3coosnumber`],
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 260,
+          value:
+            req.body[`${result.companyAccount.company_id}3outofcoosnumber`],
           response_id: result.insertForm.response_id,
         },
         {
           attrib_id: 99,
-          value: req.body[`${result.companyAccount.company_id}6coosnumber`],
+          value: req.body[`${result.companyAccount.company_id}4coosnumber`],
           response_id: result.insertForm.response_id,
         },
         {
           attrib_id: 100,
           value:
-            req.body[`${result.companyAccount.company_id}6outofcoosnumber`],
+            req.body[`${result.companyAccount.company_id}4outofcoosnumber`],
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 261,
+          value: req.body[`${result.companyAccount.company_id}5coosnumber`],
+          response_id: result.insertForm.response_id,
+        },
+        {
+          attrib_id: 262,
+          value:
+            req.body[`${result.companyAccount.company_id}5outofcoosnumber`],
           response_id: result.insertForm.response_id,
         },
         {
