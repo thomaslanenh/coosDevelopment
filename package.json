@@ -9,6 +9,9 @@
     "start": "node ./bin/www",
     "start:dev": "npm run watch-code & npm run css-watch"
   },
+  "engines": {
+    "node": "15.0.0"
+  },
   "dependencies": {
     "async": "^3.2.0",
     "bcrypt": "^5.0.1",
