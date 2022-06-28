@@ -315,6 +315,8 @@ router.post(
   }
 );
 
+
+
 // Submit Receipts
 
 router.get(
@@ -355,7 +357,7 @@ router.post(
           name: data.companyDetails.company_name + req.file.originalname,
         });
 
-        req.flash('info', 'Thank you for submitting the receipts.');
+        req.flash('info', 'Thank you for submitting your form or receipts.');
         res.redirect('/');
       })
       .catch((e) => {

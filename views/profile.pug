@@ -106,9 +106,8 @@ block content
                                                     a(class='is-link' href=form.link)
                                                         p(class='has-text-weight-bold')=form.form_name 
                                                 td 
-                                                   select(class='select' name='strFamily')
-                                                        option(value='Yes') ✓ 
-                                                        option(selected) No
+                                                   a(class="is-link" href='/forms/submitreceipts')
+                                                        p(class='has-text-weight-bold') Submit Form
                                                 td 
                                                     p=formdue
                                         else if parseInt(form.form_reference) >= 25 && parseInt(form.form_reference) <= 32
@@ -116,9 +115,8 @@ block content
                                                 td
                                                     p(class='has-text-weight-bold')=form.form_name
                                                 td
-                                                    select(class='select' name=`${form.form_reference}`)
-                                                        option(value='Yes') ✓ 
-                                                        option(selected) No
+                                                    a(class="is-link" href='/forms/submitreceipts')
+                                                        p(class='has-text-weight-bold') Submit Form
                                                 td 
                                                     p=formdue
                                         else if parseInt(form.form_reference) == 34 || parseInt(form.form_reference) == 35
@@ -126,9 +124,8 @@ block content
                                                 td
                                                     p(class='has-text-weight-bold')=form.form_name
                                                 td
-                                                   select(class='select' name=`${form.form_reference}`)
-                                                        option(value='Yes') ✓ 
-                                                        option(selected) No
+                                                    a(class="is-link" href='/forms/submitreceipts')
+                                                        p(class='has-text-weight-bold') Submit Form
                                                 td 
                                                     p=formdue
                                         else if form.form_name === 'QIA Signed Attestation'
@@ -137,29 +134,26 @@ block content
                                                     a(class='is-link' href=form.link)
                                                         p(class='has-text-weight-bold')=form.form_name
                                                 td
-                                                   select(class='select' name='qiaAttestation')
-                                                        option(value='Yes') ✓ 
-                                                        option(selected) No
+                                                    a(class="is-link" href='/forms/submitreceipts')
+                                                        p(class='has-text-weight-bold') Submit Form
                                                 td 
                                                     p=formdue
                                         else if form.form_name === "ASQ Welligent Form"
                                             tr 
                                                 td 
                                                     p(class='has-text-weight-bold')=form.form_name
-                                                td 
-                                                    select(class='select' name='asqWelligent')
-                                                            option(value='Yes') ✓ 
-                                                            option(selected) No
+                                                td
+                                                    a(class="is-link" href='/forms/submitreceipts')
+                                                        p(class='has-text-weight-bold') Submit Form
                                                 td
                                                     p=formdue
                                         else if form.form_name === "ASQ Report Form"
                                             tr 
                                                 td 
                                                     p(class='has-text-weight-bold')=form.form_name
-                                                td 
-                                                    select(class='select' name='asqReport')
-                                                        option(value='Yes') ✓ 
-                                                        option(selected) No
+                                                td
+                                                    a(class="is-link" href='/forms/submitreceipts')
+                                                        p(class='has-text-weight-bold') Submit Form
                                                 td
                                                     p=formdue
                                         else if form.form_name === "Program License"
@@ -167,10 +161,9 @@ block content
                                                     td 
                                                         a(class='is-link' href=form.link)
                                                             p(class='has-text-weight-bold')=form.form_name
-                                                    td 
-                                                        select(class='select' name='programLicense')
-                                                            option(value='Yes') ✓ 
-                                                            option(selected) No
+                                                    td
+                                                        a(class="is-link" href='/forms/submitreceipts')
+                                                            p(class='has-text-weight-bold') Submit Form
                                                     td
                                                         p=formdue
                                         else if form.form_name === "Parent Area"
@@ -178,40 +171,36 @@ block content
                                                 td 
                                                     a(class='is-link' href=form.link)
                                                         p(class='has-text-weight-bold')=form.form_name
-                                                td 
-                                                    select(class='select' name='parentarea')
-                                                        option(value='Yes') ✓ 
-                                                        option(selected) No
+                                                td
+                                                    a(class="is-link" href='/forms/submitreceipts')
+                                                        p(class='has-text-weight-bold') Submit Receipts
                                                 td
                                                     p=formdue
                                         else if form.form_name === "QRIS License/Accreditation"
                                                 tr 
                                                     td 
                                                         p(class='has-text-weight-bold')=form.form_name
-                                                    td 
-                                                        select(class='select' name='qrisLicense')
-                                                            option(value='Yes') ✓ 
-                                                            option(selected) No
+                                                    td
+                                                        a(class="is-link" href='/forms/submitreceipts')
+                                                            p(class='has-text-weight-bold') Submit Form
                                                     td
                                                         p=formdue
                                         else if form.form_name === "COR/TS Gold Snapshot (Spring)"
                                                 tr 
                                                     td 
                                                         p(class='has-text-weight-bold')=form.form_name
-                                                    td 
-                                                        select(class='select' name='corSpring')
-                                                                option(value='Yes') ✓ 
-                                                                option(selected) No
+                                                    td
+                                                        a(class="is-link" href='/forms/submitreceipts')
+                                                            p(class='has-text-weight-bold') Submit Form
                                                     td
                                                         p=formdue
                                         else if form.form_name === "COR/TS Gold Snapshot (Fall)"
                                                 tr 
                                                     td 
                                                         p(class='has-text-weight-bold')=form.form_name
-                                                    td 
-                                                        select(class='select' name='corFall')
-                                                                option(value='Yes') ✓ 
-                                                                option(selected) No
+                                                    td
+                                                        a(class="is-link" href='/forms/submitreceipts')
+                                                            p(class='has-text-weight-bold') Submit Form
                                                     td
                                                         p=formdue
                                         else

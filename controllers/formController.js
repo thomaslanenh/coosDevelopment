@@ -72,6 +72,17 @@ exports.submitphotos = function (req, res, next) {
   });
 };
 
+
+// submit photos
+exports.submitforms = function (req, res, next) {
+  res.render('./forms/submitforms', {
+    user: req.user,
+    currentYear,
+    nextYear,
+    previousYear,
+  });
+};
+
 exports.submitphotos_post = function (req, res, next) {
   res.send('NYI');
 };
